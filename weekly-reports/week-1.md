@@ -10,9 +10,9 @@
 ## 1. Công việc đã hoàn thành
 | Thành viên | MSSV | Công việc | Link Commit/PR |
 |------------|------|-----------|----------------|
-| Trịnh Thị Anh Thư | 2351010205 | Khởi tạo repository trên GitHub, thiết lập cấu trúc thư mục dự án, và dựng khung cơ bản cho backend bằng Spring Boot | [370987b]https://github.com/thuttat/AI-RESUME-SCREENING/commit/370987b2a7e1cc10474c7911ac41f7dcbe90ba50 |
+| Trịnh Thị Anh Thư | 2351010205 | Khởi tạo repository trên GitHub, thiết lập cấu trúc thư mục dự án, và dựng khung cơ bản cho backend bằng Spring Boot | [370987b]https://github.com/thuttat/AI-RESUME-SCREENING/commit/370987b |
 | Lê Hoàng Bảo Trân | 2351010214 | Tạo file README.md (thông tin nhóm, tech stack) | [def456](link) |
-| Nguyễn Triệu Duy | 2351010036 | Khởi tạo template báo cáo Tuần 1 | [ghi789](link) | 
+| Nguyễn Triệu Duy | 2351010036 | Khởi tạo template báo cáo Tuần 1 | [0628f6c ](https://github.com/thuttat/AI-RESUME-SCREENING/commit/0628f6c) | 
 
 ---
 
