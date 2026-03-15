@@ -10,9 +10,9 @@
 ## 1. Công việc đã hoàn thành
 | Thành viên | MSSV | Công việc | Link Commit/PR |
 |------------|------|-----------|----------------|
-| Trịnh Thị Anh Thư | 2351010205 | Phân tích Use cases và thiết kế Wireframes cho phân hệ Admin (Trang Dashboard, quản lý user, danh mục, job templates). | [a1b2c3d](https://github.com/thuttat/AI-RESUME-SCREENING/commit/a1b2c3d) |
-| Lê Hoàng Bảo Trân | 2351010214 | Phân tích Use cases và vẽ Wireframes cho phân hệ Nhà tuyển dụng (Recruiter). Hoàn thiện luồng kịch bản tích hợp AI (AI Integration Workflow), quy trình chấm điểm và chiến lược tối ưu chi phí API. | [e4f5g6h](https://github.com/thuttat/AI-RESUME-SCREENING/commit/e4f5g6h) |
-| Nguyễn Triệu Duy | 2351010036 | Phân tích Use cases, vẽ Wireframes cho phân hệ Hiring Manager. Tổng hợp, định dạng (format) và hoàn thành bản chốt file `docs/requirements.md`. |- [WF]([https://github.com/thuttat/AI-RESUME-SCREENING/commit/i7j8k9l](https://github.com/thuttat/AI-RESUME-SCREENING/issues/11)) - [UC](https://github.com/thuttat/AI-RESUME-SCREENING/issues/10) - [doc](https://github.com/thuttat/AI-RESUME-SCREENING/commit/7aa024c220bbff92b46aee9662502666c05a940b)| 
+| Trịnh Thị Anh Thư | 2351010205 | Phân tích Use cases và thiết kế Wireframes cho phân hệ Admin (Trang Dashboard, quản lý user, danh mục, job templates). |  [WF](https://github.com/thuttat/AI-RESUME-SCREENING/issues/5)<br>[UC](https://github.com/thuttat/AI-RESUME-SCREENING/issues/4)<br>[report](https://github.com/thuttat/AI-RESUME-SCREENING/commit/605f8e9d0e4edc90ac8f492b321e3e78b3de8148)  |
+| Lê Hoàng Bảo Trân | 2351010214 | Phân tích Use cases và vẽ Wireframes cho phân hệ Nhà tuyển dụng (Recruiter). Hoàn thiện luồng kịch bản tích hợp AI (AI Integration Workflow), quy trình chấm điểm và chiến lược tối ưu chi phí API. | [WF](https://github.com/thuttat/AI-RESUME-SCREENING/issues/8)<br>[UC](https://github.com/thuttat/AI-RESUME-SCREENING/issues/7)<br>[promp](https://github.com/thuttat/AI-RESUME-SCREENING/commit/fa450cf87c30d9b28c59d252da1599de5aab9c1c)  |
+| Nguyễn Triệu Duy | 2351010036 | Phân tích Use cases, vẽ Wireframes cho phân hệ Hiring Manager. Tổng hợp, định dạng (format) và hoàn thành bản chốt file `docs/requirements.md`. | [WF](https://github.com/thuttat/AI-RESUME-SCREENING/issues/11)<br>[UC](https://github.com/thuttat/AI-RESUME-SCREENING/issues/10)<br>[doc](https://github.com/thuttat/AI-RESUME-SCREENING/commit/7aa024c220bbff92b46aee9662502666c05a940b) | 
 
 ---
 
