@@ -140,11 +140,12 @@
 | POST | /api/email-templates/{id}/preview | Xem trước (render) mẫu email với một dữ liệu giả định để kiểm tra các biến động có hoạt động đúng không |
 
 4. AI Configuration
+
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/ai-config | Lấy các thiết lập cấu hình AI hiện tại (ngưỡng điểm pass, trọng số kỹ năng, prompt mặc định...) |
+| GET | /api/ai-config | Lấy các thiết lập cấu hình AI hiện tại |
 | PUT | /api/ai-config | Cập nhật lại các thông số thiết lập cấu hình AI cho hệ thống |
-| POST | /api/ai-config/test | Chạy thử nghiệm cấu hình AI hiện tại với một file CV mẫu để kiểm tra độ chính xác trước khi áp dụng thực tế |
+| POST | /api/ai-config/test | Chạy thử nghiệm cấu hình AI hiện tại với một file CV mẫu để kiểm tra độ chính xác trước khi áp dụng thực tế|
 
 5. Dashboard / Reports
 
