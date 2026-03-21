@@ -125,7 +125,5 @@ Lưu trữ đánh giá thủ công của Hiring Manager.
 3. **Application - AIAnalysisResult (Analyse):** Quan hệ **1-1**. Mỗi CV ứng tuyển chỉ có một bản báo cáo phân tích AI duy nhất tương ứng.
 4. **Application - Evaluation (Feedback):** Quan hệ **1-N**. Một hồ sơ ứng viên có thể nhận được các bản đánh giá từ nhiều vòng/nhiều người khác nhau.
 5. **User - Evaluation (Evaluate):** Quan hệ **1-N**. Một Hiring Manager có thể tham gia đánh giá nhiều hồ sơ
-
-8.
 9.
 10. .
