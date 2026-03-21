@@ -7,7 +7,7 @@
 
 ## 1. Sơ đồ Thực thể - Liên kết (ERD)
 
-![Sơ đồ ERD](../assets/ERD.png)
+![Sơ đồ ERD](../docs/assets/ERD.png)
 
 ---
 
