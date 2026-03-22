@@ -5,7 +5,7 @@
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| POST | /api/auth/register | Đăng ký tài khoản Hiring Manager mới. Gửi lên các thông tin cơ bản |
+| POST | /api/auth/register | Đăng ký tài khoản Hiring Manager mới |
 | POST | /api/auth/login | Xác thực Hiring Manager, trả về Access Token (JWT) |
 | POST | /api/auth/logout | Hủy token, đăng xuất khỏi hệ thống |
 | GET | /api/auth/me | Lấy thông tin profile của Hiring Manager đang đăng nhập |
