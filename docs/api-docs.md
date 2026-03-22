@@ -9,13 +9,13 @@
 | POST | /api/auth/logout | Hủy token, đăng xuất khỏi hệ thống |
 | GET | /api/auth/me | Lấy thông tin profile của Hiring Manager đang đăng nhập |
 
-2. Jobs & Recruitment History (Xem lịch sử tuyển dụng)
+2. Job Application History (Lịch sử tuyển dụng)
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/jobs | Lấy danh sách các job/vị trí đang mở mà Hiring Manager này phụ trách |
+| GET | /api/jobs | Lấy danh sách các job/vị trí đang mở mà Hiring Manager này quản lý |
 | GET | /api/jobs/{job_id} | Xem chi tiết thông tin một job cụ thể |
-| GET | /api/jobs/history | Lấy danh sách lịch sử các chiến dịch tuyển dụng đã đóng trong quá khứ |
+| GET | /api/jobs/history | Lấy danh sách các chiến dịch tuyển dụng đã đóng (Lịch sử tuyển dụng) |
 
 3. Applications & Shortlisted (Xem danh sách shortlisted)
 
@@ -23,7 +23,7 @@
 |----------|------------|----------------------|
 | GET | /api/jobs/{job_id}/applications | Lấy danh sách ứng viên nộp vào 1 job. Hỗ trợ query params: ?status=shortlisted để lọc danh sách shortlisted |
 | GET | /api/applications/{application_id} | Xem chi tiết một hồ sơ ứng tuyển (trạng thái, ngày nộp,...) |
-| PATCH | /api/applications/{application_id}/status | Cập nhật trạng thái hồ sơ (ví dụ: chuyển từ Applied sang Shortlisted) |
+| PATCH | /api/applications/{application_id}/status | Cập nhật luồng trạng thái của CV |
 
 4. Candidates (Xem hồ sơ & So sánh)
 
@@ -31,35 +31,22 @@
 |----------|------------|----------------------|
 | GET | /api/candidates/{candidate_id} | Lấy thông tin cá nhân cơ bản của ứng viên (Tên, Email, Skills,...) |
 | GET | /api/candidates/{candidate_id}/resume | Tải xuống hoặc lấy link xem file CV/Resume của ứng viên |
-| GET | /api/candidates/compare | So sánh ứng viên. Truyền query params: ?ids=id1,id2,id3 để lấy data so sánh |
+| GET | /api/candidates/compare | So sánh ứng viên side-by-side. Truyền query params: ?ids=id1,id2,id3 để lấy data so sánh |
 
-5. Ratings & Evaluations (Đánh giá và rating)
-
-| Method | Endpoint | Description (Mô tả) |
-|----------|------------|----------------------|
-| GET | /api/applications/{application_id}/ratings | Lấy toàn bộ các đánh giá (điểm số, nhận xét sơ bộ) của hồ sơ này |
-| POST | /api/applications/{application_id}/ratings | Tạo một bài đánh giá/chấm điểm mới cho ứng viên |
-| PUT | /api/ratings/{rating_id} | Cập nhật điểm số/đánh giá đã tạo |
-| DELETE | /api/ratings/{rating_id} | Xóa một đánh giá bị sai |
-
-6. Interviews & Feedback (Ghi feedback phỏng vấn)
+5. Evaluations (Đánh giá & Ghi Feedback phỏng vấn)
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/applications/{application_id}/interviews |  |
-| GET | /api/interviews/{interview_id}/feedbacks | Xem các feedback đã ghi lại trong một buổi phỏng vấn cụ thể |
-| POST| /api/interviews/{interview_id}/feedbacks | Ghi nhận xét, feedback mới sau khi phỏng vấn xong |
-| PUT| /api/feedbacks/{feedback_id} | Chỉnh sửa nội dung feedback phỏng vấn |
-| DELETE| /api/feedbacks/{feedback_id} | Xóa feedback phỏng vấn |
+| GET | /api/applications/{application_id}/evaluations | Lấy toàn bộ lịch sử đánh giá của hồ sơ (bao gồm cả điểm số, nhận xét, và người đánh giá) |
+| POST | /api/applications/{application_id}/evaluations | Tạo một bài đánh giá mới (Gửi lên cùng lúc cả score và feedback) |
+| PUT | /api/evaluations/{evaluation_id} | Cập nhật lại nội dung bài đánh giá (sửa điểm hoặc sửa nhận xét) của chính Hiring Manager đó |
+| DELETE | /api/evaluations/{evaluation_id} | Xóa một đánh giá bị sai |
 
-7. Hiring Decisions (Quyết định tuyển dụng)
+6. Hiring Decisions (Quyết định tuyển dụng)
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/applications/{application_id}/decision | Xem quyết định cuối cùng của hồ sơ này (Offer, Reject, Keep in pool) |
-| POST | /api/applications/{application_id}/decision | Tạo quyết định tuyển dụng (chốt pass/fail và đính kèm lý do/mức lương đề xuất) |
-| PUT | /api/decisions/{decision_id} | Cập nhật lại quyết định nếu có thay đổi (ví dụ: ứng viên từ chối offer) |
-| DELETE | /api/decisions/{decision_id} | Thu hồi quyết định tuyển dụng. |
+| PATCH | /api/applications/{application_id}/status | Đưa ra quyết định chốt bằng cách cập nhật trạng thái hồ sơ thành HIRED (Nhận), REJECTED (Từ chối) hoặc KIV (Giữ lại xem xét sau). Có thể gửi kèm note (lý do, mức lương đề xuất) trong Request Body |
 
 ## Recruiter
 1. Job Posting (JD)
