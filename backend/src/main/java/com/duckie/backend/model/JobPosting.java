@@ -24,7 +24,7 @@ public class JobPosting{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false)
     private String title;
@@ -53,10 +53,10 @@ public class JobPosting{
         if (createdAt == null) createdAt = Instant.now();
     }
 
-    public int getId() { 
+    public Long getId() { 
         return id; 
     }
-    public void setId(int id) { 
+    public void setId(Long id) { 
         this.id = id; 
     }
     public String getTitle() { 
@@ -101,7 +101,7 @@ public class JobPosting{
     }
 
     public static final class JobPostingBuilder {
-        private int id;
+        private Long id;
         private String title;
         private String description;
         private String requiredSkills;
@@ -109,7 +109,7 @@ public class JobPosting{
         private User createdBy;
         private Instant createdAt;
 
-        public JobPostingBuilder id(int id) { 
+        public JobPostingBuilder id(Long id) { 
             this.id = id; 
             return this; 
         }

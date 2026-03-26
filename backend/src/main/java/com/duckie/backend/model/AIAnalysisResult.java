@@ -16,7 +16,7 @@ public class AIAnalysisResult{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cv_id", unique = true, nullable = false)
@@ -36,10 +36,10 @@ public class AIAnalysisResult{
 
     public AIAnalysisResult() {}
 
-    public int getId() { 
+    public Long getId() { 
         return id; 
     }
-    public void setId(int id) { 
+    public void setId(Long id) { 
         this.id = id; 
     }
     public CV getCv() { 
@@ -77,14 +77,14 @@ public class AIAnalysisResult{
     }
 
     public static final class AIAnalysisResultBuilder {
-        private int id;
+        private Long id;
         private CV cv;
         private Double matchScore;
         private String extractedSkills;
         private Double yearsOfExperience;
         private String rawJsonResponse;
 
-        public AIAnalysisResultBuilder id(int id) { 
+        public AIAnalysisResultBuilder id(Long id) { 
             this.id = id; 
             return this; 
         }

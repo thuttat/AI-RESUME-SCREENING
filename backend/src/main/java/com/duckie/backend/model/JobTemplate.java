@@ -16,7 +16,7 @@ public class JobTemplate  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false)
     private String title;
@@ -30,10 +30,10 @@ public class JobTemplate  {
 
     public JobTemplate() {}
 
-    public int getId() { 
+    public Long getId() { 
         return id; 
     }
-    public void setId(int id) { 
+    public void setId(Long id) { 
         this.id = id; 
     }
     public String getTitle() { 
@@ -59,12 +59,12 @@ public class JobTemplate  {
         return new JobTemplateBuilder(); }
 
     public static final class JobTemplateBuilder {
-        private int id;
+        private Long id;
         private String title;
         private String description;
         private User createdBy;
 
-        public JobTemplateBuilder id(int id) { 
+        public JobTemplateBuilder id(Long id) { 
             this.id = id; 
             return this; 
         }

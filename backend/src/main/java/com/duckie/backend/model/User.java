@@ -1,5 +1,9 @@
 package com.duckie.backend.model;
 
+import java.time.Instant;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,6 +12,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,10 +25,10 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false, length = 100)
-    private String fullname;
+    private String username;
 
     @Column(nullable = false, length = 100)
     private String email;
@@ -37,19 +44,44 @@ public class User {
     @Column(nullable=false)
     private UserStatus status;
 
-    public User() {}
+    @Column(name="created_at", updatable=false)
+    private Instant createdAt;
 
-    public int getId() { 
+    @Column(name="updated_at",updatable=true)
+    private Instant updatedAt;
+
+    @OneToMany(mappedBy = "uploadedBy", cascade = CascadeType.ALL)
+    private List<CV> uploadedCVs;
+
+    public User() {}
+    
+    @PrePersist
+    protected void onCreate() {
+        Instant now = Instant.now();
+        if (this.createdAt == null) {
+            this.createdAt = now;
+        }
+        if(this.updatedAt == null) {
+            this.updatedAt = now;
+        }
+    }
+    
+    @PreUpdate
+    protected void onUpdate(){
+        this.updatedAt = Instant.now();
+    }
+
+    public Long getId() { 
         return id; 
     }
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id; 
     }
-    public String getFullname() {
-        return fullname; 
+    public String getUsername() {
+        return username; 
     }
-    public void setFullname(String fullname) { 
-        this.fullname = fullname; 
+    public void setUsername(String username) { 
+        this.username = username; 
     }
     public String getEmail() {
         return email; 
@@ -75,25 +107,46 @@ public class User {
     public void setStatus(UserStatus status) { 
         this.status = status; 
     }
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public List<CV> getUploadedCVs() {
+        return uploadedCVs;
+    }
+    public void setUploadedCVs(List<CV> uploadedCVs) {
+        this.uploadedCVs = uploadedCVs;
+    }
 
     public static UserBuilder builder() { 
         return new UserBuilder(); 
     }
 
     public static final class UserBuilder {
-        private int id;
-        private String fullname;
+        private Long id;
+        private String username;
         private String email;
         private String password;
         private Role role;
         private UserStatus status;
+        private Instant createdAt;
+        private Instant updatedAt;
 
-        public UserBuilder id(int id) { 
+        public UserBuilder id(Long id) { 
             this.id = id; 
             return this; 
         }
-        public UserBuilder fullname(String fullname) { 
-            this.fullname = fullname; 
+        public UserBuilder username(String username) { 
+            this.username = username; 
             return this; 
         }
         public UserBuilder email(String email) { 
@@ -112,15 +165,26 @@ public class User {
             this.status = status; 
             return this; 
         }
+        public UserBuilder createdAt(Instant createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+        
+        public UserBuilder updatedAt(Instant updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
 
         public User build() {
             User user = new User();
             user.setId(this.id);
-            user.setFullname(this.fullname);
+            user.setUsername(this.username);
             user.setEmail(this.email);
             user.setPassword(this.password);
             user.setRole(this.role);
             user.setStatus(this.status);
+            user.setCreatedAt(this.createdAt);
+            user.setUpdatedAt(this.updatedAt);
             return user;
         }
     }

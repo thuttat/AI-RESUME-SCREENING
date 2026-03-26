@@ -19,7 +19,7 @@ public class Evaluation{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "application_id", nullable = false)
@@ -45,10 +45,10 @@ public class Evaluation{
         if (createdAt == null) createdAt = Instant.now();
     }
 
-    public int getId() { 
+    public Long getId() { 
         return id; 
     }
-    public void setId(int id) { 
+    public void setId(Long id) { 
         this.id = id; 
     }
     public Application getApplication() { 
@@ -87,14 +87,14 @@ public class Evaluation{
     }
 
     public static final class EvaluationBuilder {
-        private int id;
+        private Long id;
         private Application application;
         private User evaluator;
         private int rating;
         private String feedback;
         private Instant createdAt;
 
-        public EvaluationBuilder id(int id) { 
+        public EvaluationBuilder id(Long id) { 
             this.id = id; 
             return this; 
         }

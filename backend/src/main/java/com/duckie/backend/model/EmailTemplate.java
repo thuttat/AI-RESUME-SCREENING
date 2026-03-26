@@ -16,7 +16,7 @@ public class EmailTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "template_name", nullable = false, length = 100)
     private String templateName;
@@ -29,10 +29,10 @@ public class EmailTemplate {
 
     public EmailTemplate() {}
 
-    public int getId() { 
+    public Long getId() { 
         return id; 
     }
-    public void setId(int id) { 
+    public void setId(Long id) { 
         this.id = id; 
     }
     public String getTemplateName() { 
@@ -59,12 +59,12 @@ public class EmailTemplate {
     }
 
     public static final class EmailTemplateBuilder {
-        private int id;
+        private Long id;
         private String templateName;
         private String subject;
         private String body;
 
-        public EmailTemplateBuilder id(int id) { 
+        public EmailTemplateBuilder id(Long id) { 
             this.id = id; 
             return this; 
         }

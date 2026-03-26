@@ -22,7 +22,7 @@ public class AIConfig {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "config_key", nullable = false, length = 50)
     private String configKey;
@@ -44,10 +44,10 @@ public class AIConfig {
         if (updatedAt == null) updatedAt = Instant.now();
     }
 
-    public int getId() { 
+    public Long getId() { 
         return id; 
     }
-    public void setId(int id) { 
+    public void setId(Long id) { 
         this.id = id; 
     }
     public String getConfigKey() { 
@@ -80,13 +80,13 @@ public class AIConfig {
     }
 
     public static final class AIConfigBuilder {
-        private int id;
+        private Long id;
         private String configKey;
         private String configValue;
         private User updatedBy;
         private Instant updatedAt;
 
-        public AIConfigBuilder id(int id) { 
+        public AIConfigBuilder id(Long id) { 
             this.id = id; 
             return this; 
         }

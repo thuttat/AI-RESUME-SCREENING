@@ -9,13 +9,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-
-
-
-
 
 @Entity
 @Table(name = "cv", indexes = {
@@ -28,7 +25,7 @@ public class CV {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "uploaded_by", nullable=false)
+    @JoinColumn(name = "uploaded_by", nullable=false) 
     private User uploadedBy; 
 
     @Column(name="candidate_name", nullable=false)
@@ -42,8 +39,6 @@ public class CV {
 
     @Column(name="uploaded_at",updatable=false)
     private Instant uploadedAt;
-
-
 
     public CV(){}
 
@@ -130,10 +125,13 @@ public class CV {
             this.id = id;
             return this;
         }
-        public CVBuilder configKey(User uploadedBy){
+        
+
+        public CVBuilder uploadedBy(User uploadedBy){
             this.uploadedBy = uploadedBy;
             return this;
         }
+        
         public CVBuilder candidateName(String candidateName){
             this.candidateName = candidateName;
             return this;
@@ -163,6 +161,4 @@ public class CV {
         }
         
     }
-    
-
 }
