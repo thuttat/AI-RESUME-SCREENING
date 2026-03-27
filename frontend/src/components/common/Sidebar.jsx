@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import "./../styles/Sidebar.css";
-import Button from "./Button.jsx";
+import {Button} from "./Button.jsx";
 
 const createMenu = (role, items) =>
     items.map(item => ({
@@ -34,10 +34,10 @@ const menuItems = {
         { path: "/profile", label: "Candidate History", icon: BarChart3 },
     ]),
     admin: createMenu("admin", [
-        { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-        { path: "/admin/users", label: "User Management", icon: Users },
-        { path: "/admin/templates", label: "Template Management", icon: Briefcase },
-        { path: "/admin/config", label: "AI Configuration", icon: Upload }
+        { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+        { path: "/users", label: "User Management", icon: Users },
+        { path: "/templates", label: "Template Management", icon: Briefcase },
+        { path: "/config", label: "AI Configuration", icon: Upload }
     ]),
 };
 

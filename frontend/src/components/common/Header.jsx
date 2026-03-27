@@ -1,7 +1,7 @@
 import { Bell, Search, User } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import "./../styles/Header.css";
-import Button from "./Button.jsx";
+import {Button} from "./Button.jsx";
 
 const titles = {
     "/recruiter/dashboard": "Dashboard",
@@ -18,29 +18,22 @@ export default function Header({ currentRole }) {
 
     return (
         <div className="header">
-
-            {/* LEFT */}
             <div className="header-left">
                 <h2>{title}</h2>
                 <p>{currentRole.toUpperCase()} PANEL</p>
             </div>
 
-            {/* RIGHT */}
             <div className="header-right">
-
-                {/* Search */}
                 <div className="search-box">
                     <Search size={16} />
                     <input placeholder="Search anything..." />
                 </div>
 
-                {/* Notification */}
                 <button className="icon-btn">
                     <Bell size={18} />
                     <span className="dot"></span>
                 </button>
 
-                {/* User */}
                 <div className="user">
                     <div className="user-info">
                         <h4>John Doe</h4>
@@ -51,7 +44,6 @@ export default function Header({ currentRole }) {
                     </div>
                 </div>
 
-                {/* Logout */}
                 <Button variant="outline-danger" size="sm">
                     Logout
                 </Button>

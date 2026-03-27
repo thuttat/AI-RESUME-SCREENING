@@ -11,19 +11,16 @@
     padding: 12px 20px;
     font-size: 13px;
 
-    /* tạo cảm giác floating */
     position: sticky;
     bottom: 0;
     z-index: 10;
 }
 
-/* LEFT */
 .footer-left {
     font-weight: 500;
     color: var(--foreground);
 }
 
-/* RIGHT */
 .footer-right {
     display: flex;
     align-items: center;

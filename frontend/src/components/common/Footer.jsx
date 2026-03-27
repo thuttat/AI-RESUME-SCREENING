@@ -10,7 +10,7 @@ export default function Footer() {
             <div className="footer-right">
                 <span>Version 1.0</span>
                 <span>•</span>
-                <span>Developed by Duckie</span>
+                <span>Developed by Duckie's Team</span>
             </div>
         </footer>
     );

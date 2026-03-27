@@ -2,14 +2,12 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     border-radius: var(--radius);
     cursor: pointer;
     transition: 0.2s;
     border: none;
 }
 
-/* SIZE */
 .btn-sm {
     padding: 6px 10px;
     font-size: 14px;
@@ -25,7 +23,6 @@
     font-size: 16px;
 }
 
-/* VARIANT */
 .btn-primary {
     background: var(--primary);
     color: var(--primary-foreground);
@@ -53,7 +50,7 @@
 
 .btn-outline-danger {
     color: var(--destructive);
-    border: 1px solid var(--destructive);
+    border: 1px solid var(--destructive) !important;
     background: transparent;
 }
 
@@ -61,7 +58,6 @@
     background: transparent;
 }
 
-/* HOVER */
 .btn:hover {
     opacity: 0.9;
 }

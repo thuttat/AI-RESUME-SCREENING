@@ -1,6 +1,6 @@
 import "./../styles/Button.css";
 
-export default function Button({
+export function Button({
                                    variant = "primary",
                                    size = "md",
                                    children,

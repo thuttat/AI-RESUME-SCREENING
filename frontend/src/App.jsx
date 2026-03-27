@@ -6,20 +6,27 @@ import CvUpload from "./pages/recruiter/CvUpload.jsx";
 import CandidateRanking from "./pages/recruiter/CandidateRanking.jsx";
 import Email from "./pages/recruiter/Email.jsx";
 import Pipeline from "./pages/recruiter/Pipeline.jsx";
+import Login from "./pages/auth/Login.jsx";
+import Register from "./pages/auth/Register.jsx";
 
 export default function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route element={<BaseLayout />}>
-                    <Route path="/recruiter/dashboard" element={<RecruiterDashboard />} />
-                    <Route path="/recruiter/jobs" element={<JobManagement />} />
-                    <Route path="/recruiter/upload" element={<CvUpload />} />
-                    <Route path="/recruiter/ranking" element={<CandidateRanking />} />
-                    <Route path="/recruiter/email" element={<Email />} />
-                    <Route path="/recruiter/pipeline" element={<Pipeline />} />
+                <Route path="/" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/recruiter/*" element={<BaseLayout />}>
+                    <Route path="dashboard" element={<RecruiterDashboard />} />
+                    <Route path="jobs" element={<JobManagement />} />
+                    <Route path="upload" element={<CvUpload />} />
+                    <Route path="ranking" element={<CandidateRanking />} />
+                    <Route path="email" element={<Email />} />
+                    <Route path="pipeline" element={<Pipeline />} />
                 </Route>
-
+                <Route path="/manager/*" element={<BaseLayout />}>
+                </Route>
+                <Route path="/admin/*" element={<BaseLayout />}>
+                </Route>
             </Routes>
         </BrowserRouter>
     );
