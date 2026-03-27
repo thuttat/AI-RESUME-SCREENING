@@ -4,5 +4,6 @@ public enum Status {
     PENDING,
     HIRED,
     REJECT,
-    SHORTLIST
+    SHORTLIST,
+
 }

@@ -10,14 +10,16 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="application")
-//em thay trong slide co ke thua serializer cho chuan pojo nhung ma wtf e del biet nen ke thua cai gi nen thoi :")"
+@Table(name="application", indexes = {
+    @Index(name = "idx_application_status", columnList = "status")
+}) 
 public class Application {
     
     @Id
@@ -98,6 +100,9 @@ public class Application {
     }
     public void setAppliedAt(Instant appliedAt){
         this.appliedAt=appliedAt;
+    }
+    public static ApplicationBuilder builder() { 
+        return new ApplicationBuilder(); 
     }
 
     public static final class ApplicationBuilder{
