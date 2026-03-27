@@ -1,13 +1,39 @@
 target/
-*.log
+build/
+out/
+
 *.class
+
+*.log
+
 *.jar
 *.war
+*.nar
 
-# Maven
 .mvn/
 !wrapper/maven-wrapper.jar
 
-# Gradle
 .gradle/
+
+node_modules/
+dist/
 build/
+
+.env
+.env.local
+.env.*.local
+
+.vite/
+
+.idea/
+.vscode/
+*.iml
+
+.DS_Store
+Thumbs.db
+
+coverage/
+
+*.tmp
+*.swp
+*.swo
