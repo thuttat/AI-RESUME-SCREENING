@@ -1,0 +1,13 @@
+target/
+*.log
+*.class
+*.jar
+*.war
+
+# Maven
+.mvn/
+!wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/

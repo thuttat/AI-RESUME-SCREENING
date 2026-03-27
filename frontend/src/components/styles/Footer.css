@@ -1,0 +1,41 @@
+.footer {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+
+    border-top: 1px solid var(--border);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px 20px;
+    font-size: 13px;
+
+    /* tạo cảm giác floating */
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+}
+
+/* LEFT */
+.footer-left {
+    font-weight: 500;
+    color: var(--foreground);
+}
+
+/* RIGHT */
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-right span {
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.footer-right span:hover {
+    color: var(--primary);
+}
