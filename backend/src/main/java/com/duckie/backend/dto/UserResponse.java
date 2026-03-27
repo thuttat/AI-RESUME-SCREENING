@@ -1,5 +1,7 @@
 package com.duckie.backend.dto;
 
+import java.time.Instant;
+
 import com.duckie.backend.model.Role;
 import com.duckie.backend.model.UserStatus;
 
@@ -9,8 +11,8 @@ public record UserResponse(
     String email,
     Role role,
     UserStatus status,
-    String createdAt,
-    String updatedAt
+    Instant createdAt,
+    Instant updatedAt
 ){
 
 }
