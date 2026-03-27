@@ -1,7 +1,7 @@
 package com.duckie.backend.dto;
 
 import com.duckie.backend.model.Role;
-import com.duckie.backend.model.Status;
+import com.duckie.backend.model.UserStatus;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -24,5 +24,5 @@ public record UserRequest (
         @Deprecated
         Role role,
         @Deprecated
-        Status status
+        UserStatus status
 ){}

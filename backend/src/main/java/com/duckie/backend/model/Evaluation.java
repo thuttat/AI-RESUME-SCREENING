@@ -10,12 +10,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "evaluation")
-public class Evaluation{
+public class Evaluation extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,15 +34,7 @@ public class Evaluation{
     @Column(columnDefinition = "TEXT")
     private String feedback;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
-
     public Evaluation() {}
-
-    @PrePersist
-    protected void onCreate() {
-        if (createdAt == null) createdAt = Instant.now();
-    }
 
     public Long getId() { 
         return id; 
@@ -63,9 +54,7 @@ public class Evaluation{
     public void setEvaluator(User evaluator) { 
         this.evaluator = evaluator; 
     }
-    public int getRating() { 
-        return rating; 
-    }
+    public int getRating() { return rating; }
     public void setRating(int rating) { 
         this.rating = rating; 
     }
@@ -74,12 +63,6 @@ public class Evaluation{
     }
     public void setFeedback(String feedback) { 
         this.feedback = feedback; 
-    }
-    public Instant getCreatedAt() { 
-        return createdAt; 
-    }
-    public void setCreatedAt(Instant createdAt) { 
-        this.createdAt = createdAt; 
     }
 
     public static EvaluationBuilder builder() { 
@@ -93,6 +76,7 @@ public class Evaluation{
         private int rating;
         private String feedback;
         private Instant createdAt;
+        private Instant updatedAt;
 
         public EvaluationBuilder id(Long id) { 
             this.id = id; 
@@ -118,6 +102,10 @@ public class Evaluation{
             this.createdAt = createdAt; 
             return this; 
         }
+        public EvaluationBuilder updatedAt(Instant updatedAt) { 
+            this.updatedAt = updatedAt; 
+            return this; 
+        }
 
         public Evaluation build() {
             Evaluation eval = new Evaluation();
@@ -127,6 +115,7 @@ public class Evaluation{
             eval.setRating(this.rating);
             eval.setFeedback(this.feedback);
             eval.setCreatedAt(this.createdAt);
+            eval.setUpdatedAt(this.updatedAt);
             return eval;
         }
     }

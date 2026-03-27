@@ -13,15 +13,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users", indexes = {
     @Index(name = "idx_users_email", columnList = "email", unique = true)
 })
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,46 +42,24 @@ public class User {
     @Column(nullable=false)
     private UserStatus status;
 
-    @Column(name="created_at", updatable=false)
-    private Instant createdAt;
-
-    @Column(name="updated_at",updatable=true)
-    private Instant updatedAt;
-
     @OneToMany(mappedBy = "uploadedBy", cascade = CascadeType.ALL)
     private List<CV> uploadedCVs;
 
     public User() {}
-    
-    @PrePersist
-    protected void onCreate() {
-        Instant now = Instant.now();
-        if (this.createdAt == null) {
-            this.createdAt = now;
-        }
-        if(this.updatedAt == null) {
-            this.updatedAt = now;
-        }
-    }
-    
-    @PreUpdate
-    protected void onUpdate(){
-        this.updatedAt = Instant.now();
-    }
 
     public Long getId() { 
         return id; 
     }
-    public void setId(Long id) {
-        this.id = id; 
-    }
-    public String getUsername() {
+    public void setId(Long id) { 
+        this.id = id;
+     }
+    public String getUsername() { 
         return username; 
     }
     public void setUsername(String username) { 
         this.username = username; 
     }
-    public String getEmail() {
+    public String getEmail() { 
         return email; 
     }
     public void setEmail(String email) { 
@@ -92,7 +68,7 @@ public class User {
     public String getPassword() { 
         return password; 
     }
-    public void setPassword(String password) {
+    public void setPassword(String password) { 
         this.password = password; 
     }
     public Role getRole() { 
@@ -104,27 +80,14 @@ public class User {
     public UserStatus getStatus() { 
         return status; 
     }
-    public void setStatus(UserStatus status) { 
+    public void setStatus(UserStatus status) {
         this.status = status; 
     }
-    public Instant getCreatedAt() {
-        return createdAt;
+    public List<CV> getUploadedCVs() { 
+        return uploadedCVs; 
     }
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public List<CV> getUploadedCVs() {
-        return uploadedCVs;
-    }
-    public void setUploadedCVs(List<CV> uploadedCVs) {
-        this.uploadedCVs = uploadedCVs;
+    public void setUploadedCVs(List<CV> uploadedCVs) { 
+        this.uploadedCVs = uploadedCVs; 
     }
 
     public static UserBuilder builder() { 
@@ -140,6 +103,7 @@ public class User {
         private UserStatus status;
         private Instant createdAt;
         private Instant updatedAt;
+        private List<CV> uploadedCVs;
 
         public UserBuilder id(Long id) { 
             this.id = id; 
@@ -165,14 +129,17 @@ public class User {
             this.status = status; 
             return this; 
         }
-        public UserBuilder createdAt(Instant createdAt) {
-            this.createdAt = createdAt;
-            return this;
+        public UserBuilder createdAt(Instant createdAt) { 
+            this.createdAt = createdAt; 
+            return this; 
         }
-        
         public UserBuilder updatedAt(Instant updatedAt) {
-            this.updatedAt = updatedAt;
-            return this;
+            this.updatedAt = updatedAt; 
+            return this; 
+        }
+        public UserBuilder uploadedCVs(List<CV> uploadedCVs) { 
+            this.uploadedCVs = uploadedCVs; 
+            return this; 
         }
 
         public User build() {
@@ -185,6 +152,7 @@ public class User {
             user.setStatus(this.status);
             user.setCreatedAt(this.createdAt);
             user.setUpdatedAt(this.updatedAt);
+            user.setUploadedCVs(this.uploadedCVs);
             return user;
         }
     }

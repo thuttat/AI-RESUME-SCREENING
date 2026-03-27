@@ -1,7 +1,9 @@
 package com.duckie.backend.model;
 
 import java.time.Instant;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,14 +15,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "job_posting", indexes = {
     @Index(name = "idx_job_status", columnList = "status")
 })
-public class JobPosting{
+public class JobPosting extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,15 +45,10 @@ public class JobPosting{
     @JoinColumn(name = "created_by")
     private User createdBy;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @OneToMany(mappedBy = "jobPosting", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Application> applications;
 
     public JobPosting() {}
-
-    @PrePersist
-    protected void onCreate() {
-        if (createdAt == null) createdAt = Instant.now();
-    }
 
     public Long getId() { 
         return id; 
@@ -89,11 +86,11 @@ public class JobPosting{
     public void setCreatedBy(User createdBy) { 
         this.createdBy = createdBy; 
     }
-    public Instant getCreatedAt() { 
-        return createdAt; 
+    public List<Application> getApplications() { 
+        return applications; 
     }
-    public void setCreatedAt(Instant createdAt) { 
-        this.createdAt = createdAt; 
+    public void setApplications(List<Application> applications) { 
+        this.applications = applications; 
     }
 
     public static JobPostingBuilder builder() { 
@@ -108,6 +105,8 @@ public class JobPosting{
         private JobStatus status;
         private User createdBy;
         private Instant createdAt;
+        private Instant updatedAt;
+        private List<Application> applications;
 
         public JobPostingBuilder id(Long id) { 
             this.id = id; 
@@ -123,7 +122,8 @@ public class JobPosting{
         }
         public JobPostingBuilder requiredSkills(String requiredSkills) { 
             this.requiredSkills = requiredSkills; 
-            return this; }
+            return this; 
+        }
         public JobPostingBuilder status(JobStatus status) { 
             this.status = status; 
             return this; 
@@ -136,6 +136,14 @@ public class JobPosting{
             this.createdAt = createdAt; 
             return this; 
         }
+        public JobPostingBuilder updatedAt(Instant updatedAt) { 
+            this.updatedAt = updatedAt; 
+            return this; 
+        }
+        public JobPostingBuilder applications(List<Application> applications) { 
+            this.applications = applications; 
+            return this; 
+        }
 
         public JobPosting build() {
             JobPosting jobPosting = new JobPosting();
@@ -146,6 +154,8 @@ public class JobPosting{
             jobPosting.setStatus(this.status);
             jobPosting.setCreatedBy(this.createdBy);
             jobPosting.setCreatedAt(this.createdAt);
+            jobPosting.setUpdatedAt(this.updatedAt);
+            jobPosting.setApplications(this.applications);
             return jobPosting;
         }
     }

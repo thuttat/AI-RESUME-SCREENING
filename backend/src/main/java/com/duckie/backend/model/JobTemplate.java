@@ -1,5 +1,7 @@
 package com.duckie.backend.model;
 
+import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,7 +14,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "job_template")
-public class JobTemplate  {
+public class JobTemplate extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,26 +45,29 @@ public class JobTemplate  {
         this.title = title; 
     }
     public String getDescription() { 
-        return description;
-     }
+        return description; 
+    }
     public void setDescription(String description) { 
         this.description = description; 
     }
-    public User getCreatedBy() {
+    public User getCreatedBy() { 
         return createdBy; 
     }
-    public void setCreatedBy(User createdBy) { 
-        this.createdBy = createdBy; 
-    }
+    public void setCreatedBy(User createdBy) {
+         this.createdBy = createdBy; 
+        }
 
     public static JobTemplateBuilder builder() { 
-        return new JobTemplateBuilder(); }
+        return new JobTemplateBuilder(); 
+    }
 
     public static final class JobTemplateBuilder {
         private Long id;
         private String title;
         private String description;
         private User createdBy;
+        private Instant createdAt;
+        private Instant updatedAt;
 
         public JobTemplateBuilder id(Long id) { 
             this.id = id; 
@@ -74,10 +79,18 @@ public class JobTemplate  {
         }
         public JobTemplateBuilder description(String description) { 
             this.description = description; 
-            return this;
-         }
+            return this; 
+        }
         public JobTemplateBuilder createdBy(User createdBy) { 
             this.createdBy = createdBy; 
+            return this; 
+        }
+        public JobTemplateBuilder createdAt(Instant createdAt) { 
+            this.createdAt = createdAt; 
+            return this; 
+        }
+        public JobTemplateBuilder updatedAt(Instant updatedAt) { 
+            this.updatedAt = updatedAt; 
             return this; 
         }
 
@@ -87,6 +100,8 @@ public class JobTemplate  {
             template.setTitle(this.title);
             template.setDescription(this.description);
             template.setCreatedBy(this.createdBy);
+            template.setCreatedAt(this.createdAt);
+            template.setUpdatedAt(this.updatedAt);
             return template;
         }
     }

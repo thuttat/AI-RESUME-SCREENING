@@ -15,8 +15,8 @@ public class UserMapper {
             user.getEmail(),
             user.getRole(),
             user.getStatus(),
-            user.getCreatedAt(),
-            user.getUpdatedAt() 
+            user.getCreatedAt() != null ? user.getCreatedAt().toString() : null,
+            user.getUpdatedAt() != null ? user.getUpdatedAt().toString() : null
         );
     }
 }

@@ -1,5 +1,7 @@
 package com.duckie.backend.model;
 
+import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +14,7 @@ import jakarta.persistence.Table;
 @Table(name = "email_template", indexes = {
     @Index(name = "idx_email_template_name", columnList = "template_name", unique = true)
 })
-public class EmailTemplate {
+public class EmailTemplate extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +52,7 @@ public class EmailTemplate {
     public String getBody() { 
         return body; 
     }
-    public void setBody(String body) {
+    public void setBody(String body) { 
         this.body = body; 
     }
 
@@ -63,6 +65,8 @@ public class EmailTemplate {
         private String templateName;
         private String subject;
         private String body;
+        private Instant createdAt;
+        private Instant updatedAt;
 
         public EmailTemplateBuilder id(Long id) { 
             this.id = id; 
@@ -72,14 +76,20 @@ public class EmailTemplate {
             this.templateName = templateName; 
             return this; 
         }
-
-
         public EmailTemplateBuilder subject(String subject) { 
             this.subject = subject; 
             return this; 
         }
         public EmailTemplateBuilder body(String body) { 
             this.body = body; 
+            return this; 
+        }
+        public EmailTemplateBuilder createdAt(Instant createdAt) { 
+            this.createdAt = createdAt; 
+            return this; 
+        }
+        public EmailTemplateBuilder updatedAt(Instant updatedAt) { 
+            this.updatedAt = updatedAt; 
             return this; 
         }
 
@@ -89,6 +99,8 @@ public class EmailTemplate {
             email.setTemplateName(this.templateName);
             email.setSubject(this.subject);
             email.setBody(this.body);
+            email.setCreatedAt(this.createdAt);
+            email.setUpdatedAt(this.updatedAt);
             return email;
         }
     }

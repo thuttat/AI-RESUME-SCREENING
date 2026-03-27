@@ -1,5 +1,7 @@
 package com.duckie.backend.model;
 
+import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,7 +14,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "ai_analysis_result")
-public class AIAnalysisResult{
+public class AIAnalysisResult extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,12 +57,14 @@ public class AIAnalysisResult{
         this.matchScore = matchScore; 
     }
     public String getExtractedSkills() { 
-        return extractedSkills; }
+        return extractedSkills; 
+    }
     public void setExtractedSkills(String extractedSkills) { 
         this.extractedSkills = extractedSkills; 
     }
     public Double getYearsOfExperience() { 
         return yearsOfExperience; 
+    
     }
     public void setYearsOfExperience(Double yearsOfExperience) { 
         this.yearsOfExperience = yearsOfExperience; 
@@ -83,6 +87,8 @@ public class AIAnalysisResult{
         private String extractedSkills;
         private Double yearsOfExperience;
         private String rawJsonResponse;
+        private Instant createdAt;
+        private Instant updatedAt;
 
         public AIAnalysisResultBuilder id(Long id) { 
             this.id = id; 
@@ -108,6 +114,14 @@ public class AIAnalysisResult{
             this.rawJsonResponse = rawJsonResponse; 
             return this; 
         }
+        public AIAnalysisResultBuilder createdAt(Instant createdAt) { 
+            this.createdAt = createdAt; 
+            return this; 
+        }
+        public AIAnalysisResultBuilder updatedAt(Instant updatedAt) { 
+            this.updatedAt = updatedAt; 
+            return this; 
+        }
 
         public AIAnalysisResult build() {
             AIAnalysisResult result = new AIAnalysisResult();
@@ -117,6 +131,8 @@ public class AIAnalysisResult{
             result.setExtractedSkills(this.extractedSkills);
             result.setYearsOfExperience(this.yearsOfExperience);
             result.setRawJsonResponse(this.rawJsonResponse);
+            result.setCreatedAt(this.createdAt);
+            result.setUpdatedAt(this.updatedAt);
             return result;
         }
     }
