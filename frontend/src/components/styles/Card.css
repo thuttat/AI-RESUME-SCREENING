@@ -1,0 +1,27 @@
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+}
+
+.card-body {
+    padding: 16px 20px;
+}
+
+.card-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+}
