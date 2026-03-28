@@ -8,9 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface CVRepository extends JpaRepository<CV, Long> {
-    Page<CV> findByUserId(Long userId, Pageable pageable);
+    Page<CV> findByUploadedById(Long uploadedById, Pageable pageable);
+
+    boolean existsByCandidateEmail(String candidateEmail);
 
     @Query("SELECT c FROM CV c WHERE " +
-            "(:search IS NULL OR c.fileName LIKE %:search%)")
+            "(:search IS NULL OR LOWER(c.candidateName) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(c.candidateEmail) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<CV> findAllBySearch(@Param("search") String search, Pageable pageable);
 }

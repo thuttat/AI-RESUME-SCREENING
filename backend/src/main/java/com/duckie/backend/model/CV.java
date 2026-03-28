@@ -28,13 +28,13 @@ public class CV {
     @JoinColumn(name = "uploaded_by", nullable=false) 
     private User uploadedBy; 
 
-    @Column(name="candidate_name", nullable=false)
+    @Column(name="candidate_name")
     private String candidateName;
 
     @Column(name="cv_file_url", updatable=false)
     private String cvFileUrl;
 
-    @Column(name="candidate_email", nullable=false)
+    @Column(name="candidate_email")
     private String candidateEmail;
 
     @Column(name="uploaded_at",updatable=false)

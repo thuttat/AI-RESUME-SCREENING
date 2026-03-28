@@ -22,4 +22,12 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     Page<Application> findRankedApplicationByJobId(@Param("jobId") Long jobId, Pageable pageable);
 
     long countByJobPostingIdAndStatus(Long jobPostingId, Status status);
+
+    @Query("SELECT COUNT(a) > 0 FROM Application a " +
+            "WHERE a.jobPosting.id = :jobId " +
+            "AND a.cv.id != :currentCvId " +
+            "AND LOWER(a.cv.candidateEmail) = LOWER(:email)")
+    boolean existsDuplicateByEmailForJob(@Param("email") String email,
+                                         @Param("jobId") Long jobId,
+                                         @Param("currentCvId") Long currentCvId);
 }

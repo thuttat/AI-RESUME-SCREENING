@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
     @Query("SELECT j FROM JobPosting j WHERE" +
             "(:search IS NULL OR LOWER(j.title) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
@@ -15,4 +18,8 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
     Page<JobPosting> findAllBySearchAndStatus(@Param("search") String search, @Param("status") JobStatus status, Pageable pageable);
 
     Page<JobPosting> findByCreatedById(Long createdById, Pageable pageable);
+
+    List<JobPosting> findByCreatedByUsername(String username);
+
+    Optional<JobPosting> findByIdAndCreatedByUsername(Long id, String username);
 }
