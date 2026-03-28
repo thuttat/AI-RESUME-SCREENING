@@ -19,7 +19,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (userRepository.count() == 0) {
-            System.out.println("🌱 Bắt đầu tạo dữ liệu mẫu (Seeding Data)...");
+            System.out.println("Start Seeding Data...");
 
             User recruiter = User.builder()
                     .username("recruiter_test")
@@ -30,20 +30,20 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .build();
 
             userRepository.save(recruiter);
-            System.out.println("✅ Đã tạo tài khoản Recruiter: hr@duckie.com | Pass: 123456");
+            System.out.println("Successfully seed");
 
             JobPosting job = JobPosting.builder()
                     .title("Senior Java Spring Boot Developer")
                     .description("Tham gia phát triển hệ thống AI Resume Screening...")
                     .requiredSkills("Java, Spring Boot, PostgreSQL, React, REST API")
-                    .status(JobStatus.OPEN) // Enum JobStatus
+                    .status(JobStatus.OPEN)
                     .createdBy(recruiter)
                     .build();
 
             jobPostingRepository.save(job);
-            System.out.println("✅ Đã tạo Job Posting mẫu (ID: " + job.getId() + ") - " + job.getTitle());
+            System.out.println("ID: " + job.getId() + ") - " + job.getTitle());
 
-            System.out.println("🌿 Hoàn tất tạo dữ liệu mẫu!");
+            System.out.println("Done!");
         }
     }
 }
