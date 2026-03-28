@@ -66,7 +66,7 @@ public class AuthService {
         User user=User.builder().username(request.username())
             .email(request.email())
             .password(passwordEncoder.encode(request.password()))
-            .role(Role.USER)
+            .role(request.role() != null ? request.role() : Role.USER)
             .status(UserStatus.ACTIVE)
             .build();
         user=userRepository.save(user);
