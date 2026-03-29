@@ -43,6 +43,10 @@ public class Application extends BaseEntity {
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Evaluation> evaluations;
 
+
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EmailLog> emailLogs;
+
     public Application(){}
 
     public Long getId(){ 
@@ -52,6 +56,7 @@ public class Application extends BaseEntity {
         this.id=id; 
     }
     public JobPosting getJobPosting(){ 
+        
         return jobPosting; 
     }
     public void setJobPosting(JobPosting jobPosting){ 
@@ -75,6 +80,13 @@ public class Application extends BaseEntity {
     public void setEvaluations(List<Evaluation> evaluations) { 
         this.evaluations = evaluations; 
     }
+    
+    public List<EmailLog> getEmailLogs() { 
+        return emailLogs; 
+    }
+    public void setEmailLogs(List<EmailLog> emailLogs) { 
+        this.emailLogs = emailLogs; 
+    }
 
     public static ApplicationBuilder builder() { 
         return new ApplicationBuilder(); 
@@ -88,6 +100,7 @@ public class Application extends BaseEntity {
         private Instant createdAt;
         private Instant updatedAt;
         private List<Evaluation> evaluations;
+        private List<EmailLog> emailLogs; 
 
         public ApplicationBuilder id(Long id){ 
             this.id = id; 
@@ -107,16 +120,16 @@ public class Application extends BaseEntity {
         }
         public ApplicationBuilder createdAt(Instant createdAt){ 
             this.createdAt = createdAt; 
-            return this; 
-        }
+            return this; }
         public ApplicationBuilder updatedAt(Instant updatedAt){ 
             this.updatedAt = updatedAt; 
-            return this; 
-        }
+            return this; }
         public ApplicationBuilder evaluations(List<Evaluation> evaluations){ 
             this.evaluations = evaluations; 
-            return this; 
-        }
+            return this; }
+        public ApplicationBuilder emailLogs(List<EmailLog> emailLogs){ 
+            this.emailLogs = emailLogs; 
+            return this; }
 
         public Application build(){
             Application application = new Application();
@@ -127,6 +140,7 @@ public class Application extends BaseEntity {
             application.setCreatedAt(this.createdAt);
             application.setUpdatedAt(this.updatedAt);
             application.setEvaluations(this.evaluations);
+            application.setEmailLogs(this.emailLogs); 
             return application;
         }
     }
