@@ -1,9 +1,10 @@
 package com.duckie.backend.repository;
 
-import com.duckie.backend.model.Evaluation;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.duckie.backend.entity.Evaluation;
 
 public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
     List<Evaluation> findByApplicationId(Long applicationId);

@@ -9,7 +9,7 @@ import {
     ChevronRight,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import "./../styles/Sidebar.css";
+import "../styles/Sidebar.css";
 import {Button} from "./Button.jsx";
 
 const createMenu = (role, items) =>
@@ -24,8 +24,8 @@ const menuItems = {
         { path: "/jobs", label: "Job Management", icon: Briefcase },
         { path: "/upload", label: "CV Upload", icon: Upload },
         { path: "/ranking", label: "Candidate Ranking", icon: Users },
-        { path: "/email", label: "Email", icon: Mail },
-        { path: "/pipeline", label: "Pipeline", icon: BarChart3 },
+        { path: "/email", label: "Email Notifications", icon: Mail },
+        { path: "/pipeline", label: "Pipeline Report", icon: BarChart3 },
     ]),
     manager: createMenu("manager", [
         { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
