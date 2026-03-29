@@ -23,7 +23,7 @@
 | :--- | :--- | :--- |
 | Phân tích yêu cầu | Đã hoàn thành | 100% |
 | Thiết kế kiến trúc / DB / API | Đã hoàn thành | 100% |
-| **Backend Core & Security** | **Đã hoàn thành** | **1000%** |
+| **Backend Core & Security** | **Đã hoàn thành** | **100%** |
 | Frontend UI (Base & Auth) | Đang làm | 30% |
 | API Core Business & AI | Chưa bắt đầu | 0% |
 | Ghép nối & Kiểm thử (QA) | Chưa bắt đầu | 0% |
