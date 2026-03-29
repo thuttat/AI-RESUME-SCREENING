@@ -30,10 +30,11 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request,
             HttpServletResponse response, 
-            AccessDeniedException authException)throws IOException,ServletException {
-        log.debug("Forbidden:{} {}", request.getRequestURI(), authException.getMessage());
+            AccessDeniedException authException) throws IOException, ServletException {
+        
+        log.debug("Forbidden: {} {}", request.getRequestURI(), authException.getMessage());
 
-        response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
 
@@ -45,8 +46,5 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             Instant.now()
         );
         objectMapper.writeValue(response.getOutputStream(), body);
-
     }
-    
-    
 }
