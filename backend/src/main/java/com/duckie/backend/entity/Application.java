@@ -1,4 +1,4 @@
-package com.duckie.backend.model;
+package com.duckie.backend.entity;
 
 import java.time.Instant;
 import java.util.List;

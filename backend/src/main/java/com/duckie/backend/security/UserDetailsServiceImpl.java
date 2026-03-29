@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.duckie.backend.model.User;
+import com.duckie.backend.entity.User;
 import com.duckie.backend.repository.UserRepository;
 
 @Service

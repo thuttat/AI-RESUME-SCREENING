@@ -16,11 +16,11 @@ import com.duckie.backend.dto.AuthResponse;
 import com.duckie.backend.dto.LoginRequest;
 import com.duckie.backend.dto.RegisterRequest;
 import com.duckie.backend.dto.UserResponse;
+import com.duckie.backend.entity.Role;
+import com.duckie.backend.entity.User;
+import com.duckie.backend.entity.UserStatus;
 import com.duckie.backend.exception.DuplicateResourceException;
 import com.duckie.backend.exception.ResourceNotFoundException;
-import com.duckie.backend.model.Role;
-import com.duckie.backend.model.User;
-import com.duckie.backend.model.UserStatus;
 import com.duckie.backend.repository.UserRepository;
 import com.duckie.backend.security.JwtService;
 
@@ -65,8 +65,9 @@ public class AuthService {
         }
         User user=User.builder().username(request.username())
             .email(request.email())
+            .fullname(request.fullname())           
             .password(passwordEncoder.encode(request.password()))
-            .role(Role.USER)
+            .role(request.role() != null ? request.role() : Role.USER)
             .status(UserStatus.ACTIVE)
             .build();
         user=userRepository.save(user);

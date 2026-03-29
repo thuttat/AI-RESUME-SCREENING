@@ -1,10 +1,12 @@
 package com.duckie.backend.dto;
 
-import com.duckie.backend.model.Role;
-import com.duckie.backend.model.UserStatus;
+
+import com.duckie.backend.entity.Role;
+import com.duckie.backend.entity.UserStatus;
 
 public record UserResponse( 
     Long id,
+    String fullname,
     String username,
     String email,
     Role role,

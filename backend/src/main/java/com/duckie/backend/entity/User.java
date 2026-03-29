@@ -1,4 +1,4 @@
-package com.duckie.backend.model;
+package com.duckie.backend.entity;
 
 import java.time.Instant;
 import java.util.List;
@@ -26,6 +26,9 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(nullable = false, length = 100)
+    private String fullname;
+
+    @Column(nullable = false, length = 100)
     private String username;
 
     @Column(nullable = false, length = 100)
@@ -50,15 +53,26 @@ public class User extends BaseEntity {
     public Long getId() { 
         return id; 
     }
+
     public void setId(Long id) { 
         this.id = id;
      }
     public String getUsername() { 
         return username; 
     }
-    public void setUsername(String username) { 
+
+    public User setUsername(String username) { 
         this.username = username; 
+        return this;
     }
+    public String getFullname() {
+        return fullname; 
+    }
+    public void setFullname(String fullname) { 
+        this.fullname = fullname; 
+    }
+
+
     public String getEmail() { 
         return email; 
     }
@@ -94,8 +108,11 @@ public class User extends BaseEntity {
         return new UserBuilder(); 
     }
 
+
+
     public static final class UserBuilder {
         private Long id;
+        private String fullname;
         private String username;
         private String email;
         private String password;
@@ -107,6 +124,10 @@ public class User extends BaseEntity {
 
         public UserBuilder id(Long id) { 
             this.id = id; 
+            return this; 
+        }
+        public UserBuilder fullname(String fullname) { 
+            this.fullname = fullname; 
             return this; 
         }
         public UserBuilder username(String username) { 
@@ -145,6 +166,7 @@ public class User extends BaseEntity {
         public User build() {
             User user = new User();
             user.setId(this.id);
+            user.setFullname(fullname);
             user.setUsername(this.username);
             user.setEmail(this.email);
             user.setPassword(this.password);
