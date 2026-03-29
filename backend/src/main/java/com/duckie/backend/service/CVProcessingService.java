@@ -2,7 +2,7 @@ package com.duckie.backend.service;
 
 import com.duckie.backend.exception.DuplicateResourceException;
 import com.duckie.backend.exception.ResourceNotFoundException;
-import com.duckie.backend.model.*;
+import com.duckie.backend.entity.*;
 import com.duckie.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +15,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CVProcessingService {
+    
     private final CVRepository cvRepository;
     private final JobPostingRepository jobPostingRepository;
     private final UserRepository userRepository;
@@ -43,7 +44,7 @@ public class CVProcessingService {
                 Application application = createNewApplication(jobPosting, cv);
                 savedApplications.add(application);
             } catch (Exception e) {
-                throw new RuntimeException("Execution error" + e);
+                throw new RuntimeException("Execution error: " + e.getMessage());
             }
         }
         return savedApplications;
@@ -61,7 +62,7 @@ public class CVProcessingService {
         String extractedNameFromAI = "Ho Ngoc Ha";
         String extractedEmailFromAI = "hngocha@gmail.com";
 
-        boolean isDuplicate = checkDuplicateApplication(extractedEmailFromAI, jobPosting.getId(), cv.getID());
+        boolean isDuplicate = checkDuplicateApplication(extractedEmailFromAI, jobPosting.getId(), cv.getId());
 
         if (isDuplicate) {
             applicationRepository.delete(application);
@@ -87,21 +88,11 @@ public class CVProcessingService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
     }
 
-    private CV saveNewCV(User recruiter, String name, String email, String fileUrl) {
-        CV cv = CV.builder()
-                .uploadedBy(recruiter)
-                .candidateName(name)
-                .candidateEmail(email)
-                .cvFileUrl(fileUrl)
-                .build();
-        return cvRepository.save(cv);
-    }
-
     private Application createNewApplication(JobPosting jobPosting, CV cv) {
         Application application = Application.builder()
                 .jobPosting(jobPosting)
                 .cv(cv)
-                .status(Status.PENDING)
+                .status(Status.PENDING) 
                 .build();
         return applicationRepository.save(application);
     }

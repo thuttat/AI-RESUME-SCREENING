@@ -1,6 +1,6 @@
 package com.duckie.backend.repository;
 
-import com.duckie.backend.model.AIAnalysisResult;
+import com.duckie.backend.entity.AIAnalysisResult;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -30,6 +30,7 @@ public class DatabaseSeeder implements CommandLineRunner {
             User recruiter = User.builder()
                     .username("recruiter_test")
                     .email("hr@duckie.com")
+                    .fullname("System Administrator")
                     .password(passwordEncoder.encode("123456"))
                     .role(Role.RECUITER)
                     .status(UserStatus.ACTIVE)

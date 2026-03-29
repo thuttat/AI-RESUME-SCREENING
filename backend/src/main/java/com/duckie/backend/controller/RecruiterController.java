@@ -35,17 +35,19 @@ public class RecruiterController {
                 return ResponseEntity.badRequest().body("Choose at least 1 cv!");
             }
             
+            // Gọi service để xử lý lưu CV và tạo Application
             List<Application> applications = cvProcessingService.uploadBulkCVs(jobId, files);
 
+            // Chuyển đổi từ Entity Application sang DTO ApplicationResponse
             List<ApplicationResponse> responseList = applications.stream().map(app ->
                     new ApplicationResponse(
-                            app.getId(),
-                            app.getJobPosting().getId(),
-                            app.getJobPosting().getTitle(),
-                            app.getCV().getCandidateName(),
-                            app.getCV().getCandidateEmail(),
-                            app.getCV().getCvFileUrl(),
-                            app.getStatus().name()
+                            app.getId(),                        
+                            app.getJobPosting().getId(),        
+                            app.getJobPosting().getTitle(),      
+                            app.getCV().getCandidateName(),      
+                            app.getCV().getCandidateEmail(),     
+                            app.getCV().getCvFileUrl(),          
+                            app.getStatus()                      
                     )
             ).toList();
 
@@ -59,6 +61,7 @@ public class RecruiterController {
     public ResponseEntity<?> parseCV(@PathVariable Long applicationId) {
         try {
             AIAnalysisResult result = cvProcessingService.parseCVWithAI(applicationId);
+            
             AIAnalysisResponse cleanResponse = new AIAnalysisResponse(
                     result.getId(),
                     result.getCv().getCandidateName(),
