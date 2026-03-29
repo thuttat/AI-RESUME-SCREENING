@@ -65,13 +65,6 @@ public class JwtService {
                 .getBody();
     }
 
-    // private Claims extractAllClaims(String token) {
-    // return Jwts.parser() // Bỏ chữ Builder đi
-    //         .verifyWith((javax.crypto.SecretKey) getSigningKey()) // Đổi setSigningKey thành verifyWith
-    //         .build()
-    //         .parseSignedClaims(token) // Đổi parseClaimsJws thành parseSignedClaims
-    //         .getPayload(); // Đổi getBody thành getPayload
-    // }
 
     public boolean isTokenExpired(String token){
         return extractExpiration(token).before(new Date());

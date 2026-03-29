@@ -1,4 +1,4 @@
-package com.duckie.backend.model;
+package com.duckie.backend.entity;
 
 public enum UserStatus {
     ACTIVE,

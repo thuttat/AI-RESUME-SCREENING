@@ -1,4 +1,4 @@
-package com.duckie.backend.model;
+package com.duckie.backend.entity;
 
 import java.time.Instant;
 import java.util.List;
@@ -26,6 +26,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 100)
+    private String fullname;
 
     @Column(nullable = false, length = 100)
     private String username;
@@ -77,6 +80,14 @@ public class User {
     public void setId(Long id) {
         this.id = id; 
     }
+
+    public String getFullname() {
+        return fullname; 
+    }
+    public void setFullname(String fullname) { 
+        this.fullname = fullname; 
+    }
+
     public String getUsername() {
         return username; 
     }
@@ -132,8 +143,11 @@ public class User {
         return new UserBuilder(); 
     }
 
+
+
     public static final class UserBuilder {
         private Long id;
+        private String fullname;
         private String username;
         private String email;
         private String password;
@@ -144,6 +158,10 @@ public class User {
 
         public UserBuilder id(Long id) { 
             this.id = id; 
+            return this; 
+        }
+        public UserBuilder fullname(String fullname) { 
+            this.fullname = fullname; 
             return this; 
         }
         public UserBuilder username(String username) { 
@@ -179,6 +197,7 @@ public class User {
         public User build() {
             User user = new User();
             user.setId(this.id);
+            user.setFullname(fullname);
             user.setUsername(this.username);
             user.setEmail(this.email);
             user.setPassword(this.password);

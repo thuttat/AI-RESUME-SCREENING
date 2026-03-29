@@ -1,7 +1,7 @@
 package com.duckie.backend.dto;
 
-import com.duckie.backend.model.Role;
-import com.duckie.backend.model.UserStatus;
+import com.duckie.backend.entity.Role;
+import com.duckie.backend.entity.UserStatus;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;

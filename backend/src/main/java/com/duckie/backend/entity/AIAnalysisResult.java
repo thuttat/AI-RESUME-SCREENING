@@ -1,4 +1,4 @@
-package com.duckie.backend.model;
+package com.duckie.backend.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

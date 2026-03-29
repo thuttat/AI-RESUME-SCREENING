@@ -1,13 +1,17 @@
 package com.duckie.backend.dto;
 
-import com.duckie.backend.model.Role;
-import com.duckie.backend.model.Status;
+import com.duckie.backend.entity.Role;
+import com.duckie.backend.entity.Status;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record UserRequest (
+        @NotBlank(message = "Fullname can not be blank")
+        @Size(min = 3, max = 100)
+        String fullname,
+
         @NotBlank(message = "Username can not be blank")
         @Size(min = 3, max = 50)
         String username,
