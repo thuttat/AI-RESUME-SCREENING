@@ -58,7 +58,6 @@ function Register() {
                     <div className="login-header">
                         <div className="login-icon">✍️</div>
                         <h3>Create Account</h3>
-                        <p className="text-muted">Join us to start booking</p>
                     </div>
 
                     <form className="login-form" onSubmit={handleSubmit}>
@@ -133,7 +132,7 @@ function Register() {
                     <div className="login-footer">
                         <p className="text-muted">
                             Already have an account?{" "}
-                            <a href="/login" className="link-primary">
+                            <a href="/" className="link-primary">
                                 Sign in
                             </a>
                         </p>

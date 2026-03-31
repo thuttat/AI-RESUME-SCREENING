@@ -6,12 +6,19 @@ const PrivateRoute = ({ children, allowedRoles }) => {
 
     const currentRole = localStorage.getItem("role");
 
-    if (!token) {
+    if (!token || !currentRole) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
         return <Navigate to="/" replace />;
     }
 
-    if (allowedRoles && !allowedRoles.includes(currentRole)) {
-        return <Navigate to="/unauthorized" replace />;
+    const hasAccess = allowedRoles.some(role => currentRole.includes(role));
+
+    if (!hasAccess) {
+        console.warn("Unauthorized...");
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        return <Navigate to="/" replace />;
     }
 
     return children;

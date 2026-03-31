@@ -8,6 +8,7 @@ import Email from "./pages/recruiter/Email.jsx";
 import Pipeline from "./pages/recruiter/Pipeline.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
+import PrivateRoute from "./pages/auth/PrivateRoute.jsx";
 
 export default function App() {
     return (
@@ -15,7 +16,14 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/recruiter/*" element={<BaseLayout />}>
+                <Route
+                    path="/recruiter/*"
+                    element={
+                    <PrivateRoute allowedRoles={["RECUITER"]}>
+                        <BaseLayout />
+                    </PrivateRoute>
+                    }
+                >
                     <Route path="dashboard" element={<RecruiterDashboard />} />
                     <Route path="jobs" element={<JobManagement />} />
                     <Route path="upload" element={<CvUpload />} />
@@ -23,9 +31,23 @@ export default function App() {
                     <Route path="email" element={<Email />} />
                     <Route path="pipeline" element={<Pipeline />} />
                 </Route>
-                <Route path="/manager/*" element={<BaseLayout />}>
+                <Route
+                    path="/manager/*"
+                    element={
+                        <PrivateRoute allowedRoles={["HIRING_MANAGER"]}>
+                            <BaseLayout />
+                        </PrivateRoute>
+                    }
+                >
                 </Route>
-                <Route path="/admin/*" element={<BaseLayout />}>
+                <Route
+                    path="/admin/*"
+                    element={
+                        <PrivateRoute allowedRoles={["ADMIN"]}>
+                            <BaseLayout />
+                        </PrivateRoute>
+                    }
+                >
                 </Route>
             </Routes>
         </BrowserRouter>

@@ -34,7 +34,7 @@ function Login() {
                 localStorage.setItem("token", response.data.accessToken);
                 const userRole = response.data.user.role;
                 localStorage.setItem("role", userRole);
-                
+
                 switch (userRole) {
                     case "ADMIN":
                         navigate("/admin/dashboard");
@@ -63,14 +63,11 @@ function Login() {
                     <div className="login-header">
                         <div className="login-icon">🔐</div>
                         <h3>Welcome Back</h3>
-                        <p className="text-muted">
-                            Sign in to book your sports court
-                        </p>
                     </div>
 
                     <form className="login-form" onSubmit={handleSubmit}>
                         <div className="form-group">
-                            <label>Email hoặc Username</label>
+                            <label>Email or Username</label>
                             <input
                                 type="text" 
                                 className="input"
