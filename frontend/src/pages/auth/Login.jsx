@@ -23,7 +23,7 @@ function Login() {
         e.preventDefault();
         try {
             const payloadToSend = {
-                username: formData.usernameOrEmail.trim(),
+                usernameOrEmail: formData.usernameOrEmail.trim(),
                 password: formData.password.trim(),
             };
             
@@ -31,10 +31,24 @@ function Login() {
             const response = await axios.post("http://localhost:8080/api/auth/login", payloadToSend);
             
             if (response.status === 200) {
-              
-                localStorage.setItem("token", response.data.token);
-                alert("Login successful!");
-                navigate("/"); 
+                localStorage.setItem("token", response.data.accessToken);
+                const userRole = response.data.user.role;
+                localStorage.setItem("role", userRole);
+                
+                switch (userRole) {
+                    case "ADMIN":
+                        navigate("/admin/dashboard");
+                        break;
+                    case "HIRING_MANAGER":
+                        navigate("/manager/dashboard");
+                        break;
+                    case "RECUITER":
+                        navigate("/recruiter/dashboard");
+                        break;
+                    default:
+                        navigate("/");
+                        break;
+                }
             }
         } catch (error) {
             console.error("Lỗi đăng nhập:", error);

@@ -1,11 +1,17 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = ({ children, allowedRoles }) => {
     const token = localStorage.getItem("token");
+
+    const currentRole = localStorage.getItem("role");
 
     if (!token) {
         return <Navigate to="/" replace />;
+    }
+
+    if (allowedRoles && !allowedRoles.includes(currentRole)) {
+        return <Navigate to="/unauthorized" replace />;
     }
 
     return children;
