@@ -1,50 +1,117 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Button } from '../../components/common/Button';
 import { Plus } from 'lucide-react';
 import JobTable from './components/JobTable';
 import JobFormModal from './components/JobFormModal';
 import './styles/JobManagement.css';
+import {JobService} from "../../api/JobService.js";
 
-const mockJobs = [
-    { id: 1, title: 'Senior React Developer', applicants: 45, status: 'open', postedDate: '2026-03-01' },
-    { id: 2, title: 'Senior Front-end Developer', applicants: 20, status: 'close', postedDate: '2026-03-10' },
-    { id: 3, title: 'Fresher Back-end Developer', applicants: 75, status: 'open', postedDate: '2026-03-05' },
-    { id: 4, title: 'Fresher Back-end Developer', applicants: 75, status: 'open', postedDate: '2026-03-05' },
-    { id: 5, title: 'Fresher Back-end Developer', applicants: 75, status: 'close', postedDate: '2026-03-07' },
-    { id: 6, title: 'Fresher Back-end Developer', applicants: 75, status: 'open', postedDate: '2026-03-05' },
-    { id: 7, title: 'Fresher Back-end Developer', applicants: 75, status: 'open', postedDate: '2026-03-05' },
-    { id: 8, title: 'Fresher Back-end Developer', applicants: 75, status: 'close', postedDate: '2026-03-04' },
-    { id: 9, title: 'Fresher Back-end Developer', applicants: 75, status: 'open', postedDate: '2026-03-05' },
-    { id: 10, title: 'Fresher Back-end Developer', applicants: 75, status: 'open', postedDate: '2026-03-05' },
-    { id: 11, title: 'Fresher Back-end Developer', applicants: 75, status: 'open', postedDate: '2026-03-05' },
-];
 
 export default function JobManagement() {
-    const [jobs, setJobs] = useState(mockJobs);
+    const [jobs, setJobs] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const [selectedJob, setSelectedJob] = useState(null);
+    const [modalMode, setModalMode] = useState('create');
+    const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
-    const handleCreateJob = (newJob) => {
-        setJobs([
-            ...jobs,
-            {
-                ...newJob,
-                id: Date.now(),
-                applicants: 0,
-                status: 'open',
-                postedDate: new Date().toISOString().slice(0, 10),
-            },
-        ]);
+    const fetchJobs = async () => {
+        try {
+            setLoading(true);
+            const response = await JobService.getOwnJobs();
+            setJobs(response.data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchJobs();
+    }, []);
+
+    const handleFormSubmit = async (formData) => {
+        if (!formData.title || formData.title.trim().length < 5) {
+            alert("Job title must have at least 5 characters!");
+            return;
+        }
+
+        try {
+            const requestPayload = {
+                title: formData.title,
+                description: formData.description,
+                requiredSkills: formData.skills,
+            }
+
+            if (modalMode === 'edit') {
+                await JobService.updateJob(selectedJob.id, requestPayload);
+            } else {
+                await JobService.createJob(requestPayload);
+            }
+            setIsModalOpen(false);
+            fetchJobs();
+        } catch (error) {
+            console.log(error);
+            alert("Create job failed!");
+        }
+    };
+
+    const handleToggleStatus = async (id) => {
+        try {
+            await JobService.toggleStatus(id);
+            fetchJobs();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const openCreateModal = () => {
+        setSelectedJob(null);
+        setModalMode('create');
+        setIsModalOpen(true);
+    };
+
+    const handleEditClick = async (id) => {
+        try {
+            const response = await JobService.getJob(id);
+            setSelectedJob(response.data);
+            setModalMode('edit');
+            setIsModalOpen(true);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleViewClick = async (id) => {
+        try {
+            const response = await JobService.getJob(id);
+            setSelectedJob(response.data);
+            setModalMode('view');
+            setIsModalOpen(true);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleDeleteJob = async (id) => {
+        if (!window.confirm(`Are you sure you want to delete this job?`)) return;
+        try {
+            await JobService.deleteJob(id);
+            fetchJobs();
+        } catch (error) {
+            console.log(error);
+            alert("Delete job failed!");
+        }
     };
 
     const sortJobs = (jobs) => {
         return [...jobs].sort((a, b) => {
             if (a.status !== b.status) {
-                return a.status === 'open' ? -1 : 1;
+                return a.status === 'OPEN' ? -1 : 1;
             }
-            return new Date(b.postedDate) - new Date(a.postedDate);
+            return new Date(b.createdAt) - new Date(a.createdAt);
         });
     };
 
@@ -60,41 +127,55 @@ export default function JobManagement() {
             <div className="job-header">
                 <div>
                     <h3>All Jobs</h3>
-                    <p className="job-subtitle">Manage job postings</p>
+                    <p className="page-subtitle">Manage job postings</p>
                 </div>
 
-                <Button onClick={() => setIsModalOpen(true)}>
+                <Button onClick={openCreateModal}>
                     <Plus size={18} />
                     Create Job
                 </Button>
             </div>
 
-            <JobTable jobs={currentJobs} />
+            {loading ? (
+                <p style={{ textAlign: 'center', padding: '1px' }}>Loading jobs...</p>
+            ) : (
+                <JobTable
+                    jobs={currentJobs}
+                    onToggleStatus={handleToggleStatus}
+                    onDeleteJob={handleDeleteJob}
+                    onEditJob={handleEditClick}
+                    onViewJob={handleViewClick}
+                />
+            )}
 
-            <div className="pagination">
-                <Button
-                    variant="outline"
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                >
-                    Prev
-                </Button>
+            {jobs.length > 0 && (
+                <div className="pagination">
+                    <Button
+                        variant="outline"
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                    >
+                        Prev
+                    </Button>
 
-                <span>Page {currentPage} / {totalPages}</span>
+                    <span>Page {currentPage} / {totalPages}</span>
 
-                <Button
-                    variant="primary"
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                >
-                    Next
-                </Button>
-            </div>
+                    <Button
+                        variant="primary"
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                    >
+                        Next
+                    </Button>
+                </div>
+            )}
 
             <JobFormModal
                 isOpen={isModalOpen}
+                mode={modalMode}
+                initialData={selectedJob}
                 onClose={() => setIsModalOpen(false)}
-                onSubmit={handleCreateJob}
+                onSubmit={handleFormSubmit}
             />
         </div>
     );

@@ -3,7 +3,8 @@ import { Card, CardBody } from '../../../components/common/Card';
 import { Table, TableHeader, TableBody, TableRow, TableHead } from '../../../components/common/Table';
 import JobRow from "./JobRow.jsx";
 
-const JobTable = ({ jobs }) => {
+// 1. Thêm onEditJob và onViewJob vào đây
+const JobTable = ({ jobs, onToggleStatus, onDeleteJob, onEditJob, onViewJob }) => {
     return (
         <Card>
             <CardBody className="no-padding">
@@ -25,7 +26,16 @@ const JobTable = ({ jobs }) => {
                                 </td>
                             </TableRow>
                         ) : (
-                            jobs.map((job) => <JobRow key={job.id} job={job} />)
+                            jobs.map((job) => (
+                                <JobRow
+                                    key={job.id}
+                                    job={job}
+                                    onToggleStatus={onToggleStatus}
+                                    onDeleteJob={onDeleteJob}
+                                    onEditJob={onEditJob}
+                                    onViewJob={onViewJob}
+                                />
+                            ))
                         )}
                     </TableBody>
                 </Table>
