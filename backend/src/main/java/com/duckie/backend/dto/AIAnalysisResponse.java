@@ -7,5 +7,6 @@ public record AIAnalysisResponse(
     String candidateEmail,
     Double matchScore,
     String extractedSkills,
-    Double yearsOfExperience
+    Double yearsOfExperience,
+    String critique
 ) {}

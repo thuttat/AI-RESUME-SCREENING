@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.duckie.backend.entity.JobPosting;
-import com.duckie.backend.entity.Status;
 import com.duckie.backend.repository.AIAnalysisResultRepository;
 import com.duckie.backend.repository.ApplicationRepository;
 import com.duckie.backend.repository.JobPostingRepository;
@@ -71,21 +69,11 @@ public class RecruiterController {
             responseData.put("yearsOfExperience", result.getYearsOfExperience());
             responseData.put("candidateName", result.getCv().getCandidateName());
             responseData.put("candidateEmail", result.getCv().getCandidateEmail());
+            responseData.put("critique", result.getCritique());
 
             return ResponseEntity.ok(responseData);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
-//
-//    @GetMapping("test-extract-pdf")
-//    public ResponseEntity<String> textExtractPdf(@RequestParam String url) {
-//        try {
-//            String extractedText = cvProcessingService.extractTextFromPdfUrl(url);
-//
-//            return ResponseEntity.ok(extractedText);
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body("Lỗi: " + e.getMessage());
-//        }
-//    }
 }

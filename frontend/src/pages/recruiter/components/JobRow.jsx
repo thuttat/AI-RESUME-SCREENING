@@ -13,7 +13,7 @@ const JobRow = ({ job, onToggleStatus, onDeleteJob, onViewJob, onEditJob }) => {
                 <p className="job-date">Posted {new Date(job.createdAt).toLocaleDateString()}</p>
             </TableCell>
 
-            <TableCell>{job.applications ? job.applications.length : 0}</TableCell>
+            <TableCell>{job.applicationCount || 0}</TableCell>
 
             <TableCell>
                 <span onClick={() => onToggleStatus(job.id)} style={{ cursor: 'pointer' }}>

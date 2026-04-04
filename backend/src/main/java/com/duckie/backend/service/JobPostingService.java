@@ -51,7 +51,8 @@ public class JobPostingService {
                 savedJob.getStatus(), 
                 recruiter.getId(),  
                 savedJob.getCreatedAt(),
-                savedJob.getUpdatedAt()
+                savedJob.getUpdatedAt(),
+                savedJob.getApplications().size()
         );    
     }
 
@@ -82,7 +83,8 @@ public class JobPostingService {
                 job.getStatus(),
                 job.getCreatedBy().getId(),
                 job.getCreatedAt(),
-                job.getUpdatedAt()
+                job.getUpdatedAt(),
+                job.getApplications().size()
         )).toList();
     }
 
@@ -94,7 +96,8 @@ public class JobPostingService {
         return new JobPostingResponse(
                 job.getId(), job.getTitle(), job.getDescription(),
                 job.getRequiredSkills(), job.getStatus(), 
-                job.getCreatedBy().getId(), job.getCreatedAt(), job.getUpdatedAt()
+                job.getCreatedBy().getId(), job.getCreatedAt(), job.getUpdatedAt(),
+                job.getApplications().size()
         );
     }
 
@@ -112,7 +115,8 @@ public class JobPostingService {
         return new JobPostingResponse(
                 updatedJob.getId(), updatedJob.getTitle(), updatedJob.getDescription(),
                 updatedJob.getRequiredSkills(), updatedJob.getStatus(), 
-                updatedJob.getCreatedBy().getId(), updatedJob.getCreatedAt(), updatedJob.getUpdatedAt()
+                updatedJob.getCreatedBy().getId(), updatedJob.getCreatedAt(), updatedJob.getUpdatedAt(),
+                updatedJob.getApplications().size()
         );
     }
 
