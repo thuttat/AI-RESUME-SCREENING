@@ -2,6 +2,8 @@ package com.duckie.backend.entity;
 
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity
 @Table(name = "evaluation")
@@ -22,6 +26,7 @@ public class Evaluation extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "application_id", nullable = false)
+    @JsonIgnore
     private Application application;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,6 +34,7 @@ public class Evaluation extends BaseEntity {
     private User evaluator;
 
     @Column(nullable = false)
+    @Min(1) @Max(5)
     private int rating;
 
     @Column(columnDefinition = "TEXT")

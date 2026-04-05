@@ -75,7 +75,6 @@ public class AuthService {
     }
 
 
-    //login
     public AuthResponse login (LoginRequest request){
         User user=userRepository.findByUsername(request.usernameOrEmail())
             .or(()->userRepository.findByEmail(request.usernameOrEmail()))
@@ -97,7 +96,6 @@ public class AuthService {
                 userMapper.toResponse(user));
     }
 
-    //getCurrentUser
     public UserResponse getCurrentUser(Authentication authentication){
         if(authentication==null ||!authentication.isAuthenticated()){
             throw new ResourceNotFoundException("Chua dang nhap");

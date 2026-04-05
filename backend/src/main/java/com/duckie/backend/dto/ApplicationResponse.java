@@ -6,8 +6,8 @@ public record ApplicationResponse(
     Long id,
     Long jobId,
     String jobTitle,
+    Status status,
     String candidateName,
     String candidateEmail,
-    String cvFileUrl,
-    Status status
+    String cvFileUrl
 ) {}

@@ -14,6 +14,7 @@ import com.duckie.backend.dto.AIAnalysisResponse;
 import com.duckie.backend.dto.ApplicationResponse;
 import com.duckie.backend.entity.AIAnalysisResult;
 import com.duckie.backend.entity.Application;
+import com.duckie.backend.service.ApplicationMapper;
 import com.duckie.backend.service.CVProcessingService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class RecruiterController {
     
     private final CVProcessingService cvProcessingService;
+    private final ApplicationMapper applicationMapper;
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadBulkCVs(
@@ -39,17 +41,9 @@ public class RecruiterController {
             List<Application> applications = cvProcessingService.uploadBulkCVs(jobId, files);
 
             // Chuyển đổi từ Entity Application sang DTO ApplicationResponse
-            List<ApplicationResponse> responseList = applications.stream().map(app ->
-                    new ApplicationResponse(
-                            app.getId(),                        
-                            app.getJobPosting().getId(),        
-                            app.getJobPosting().getTitle(),      
-                            app.getCV().getCandidateName(),      
-                            app.getCV().getCandidateEmail(),     
-                            app.getCV().getCvFileUrl(),          
-                            app.getStatus()                      
-                    )
-            ).toList();
+            List<ApplicationResponse> responseList = applications.stream()
+                    .map(applicationMapper::toResponse)
+                    .toList();
 
             return ResponseEntity.ok(responseList);
         } catch (Exception e) {

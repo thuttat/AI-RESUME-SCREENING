@@ -5,9 +5,8 @@ import java.time.Instant;
 public record EvaluationResponse(
     Long id,
     Long applicationId,
-    Long evaluatorId,
+    String evaluatorName,
     int rating,
     String feedback,
-    Instant createdAt,
-    Instant updatedAt
+    Instant createdAt
 ) {}

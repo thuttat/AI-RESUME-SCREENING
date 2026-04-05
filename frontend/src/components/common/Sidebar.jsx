@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import "../styles/Sidebar.css";
-import {Button} from "./Button.jsx";
+import { Button } from "./Button.jsx";
 
 const createMenu = (role, items) =>
     items.map(item => ({
@@ -29,9 +29,8 @@ const menuItems = {
     ]),
     manager: createMenu("manager", [
         { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-        { path: "/shortlisted", label: "Shortlisted Candidates", icon: Users },
-        { path: "/history", label: "Hiring History", icon: BarChart3 },
-        { path: "/profile", label: "Candidate History", icon: BarChart3 },
+        { path: "/pipeline", label: "Candidate Pipeline", icon: Users },
+        { path: "/email-logs", label: "Email Tracking", icon: Mail },
     ]),
     admin: createMenu("admin", [
         { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -41,10 +40,8 @@ const menuItems = {
     ]),
 };
 
-
 export default function Sidebar({ currentRole, collapsed, onToggleCollapse }) {
     const items = menuItems[currentRole] || [];
-    console.log(items);
 
     return (
         <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
