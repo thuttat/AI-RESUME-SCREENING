@@ -11,7 +11,7 @@
 
 | Thành viên | MSSV | Công việc | Link Commit/PR |
 | :--- | :--- | :--- | :--- |
-| **Trịnh Thị Anh Thư** | 2351010205 | Hoàn thành API phân hệ Đánh giá (`/api/evaluations`, `/api/ratings`) và xử lý logic chốt quyết định tuyển dụng lưu vào `status` của Application. Hoàn thiện UI trang Xem chi tiết ứng viên và Form nhập điểm/feedback cho Hiring Manager. | [e]() |
+| **Trịnh Thị Anh Thư** | 2351010205 | Hoàn thành API phân hệ Đánh giá (`/api/evaluations`, `/api/ratings`) và xử lý logic chốt quyết định tuyển dụng lưu vào `status` của Application. Hoàn thiện UI trang Xem chi tiết ứng viên và Form nhập điểm/feedback cho Hiring Manager. | [e](https://github.com/thuttat/AI-RESUME-SCREENING/commit/1c8982ec8cf339f92271734e6c524fc2c7280e4f) |
 | **Lê Hoàng Bảo Trân** | 2351010214 | Tích hợp thành công OpenAI API (`/api/cvs/{id}/parse`). Áp dụng chiến lược tiền xử lý CV. Hoàn thành UI Upload CV hàng loạt. | [e](https://github.com/thuttat/AI-RESUME-SCREENING/commit/5e911490059848ae5e0ca45bb0ac796cfca8dc64) |
 | **Nguyễn Triệu Duy** | 2351010036 | Xây dựng xong API quản lý `JobTemplate`, `EmailTemplate` và `AIConfig`. Hoàn thiện API `/api/dashboard` trả về số liệu tổng quan. Dựng xong giao diện Admin Dashboard hiển thị thống kê. | [e](https://github.com/thuttat/AI-RESUME-SCREENING/commit/482efa02ee59ef570d3d571c70d7540e35c6f30c) |
 
