@@ -8,6 +8,10 @@ import Email from "./pages/recruiter/Email.jsx";
 import Pipeline from "./pages/recruiter/Pipeline.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+
+
+import "./App.css";
 
 export default function App() {
     return (
@@ -25,7 +29,9 @@ export default function App() {
                 </Route>
                 <Route path="/manager/*" element={<BaseLayout />}>
                 </Route>
-                <Route path="/admin/*" element={<BaseLayout />}>
+                <Route path="/admin" element={<BaseLayout />}>
+                    {/* <Route index element={<Navigate to="dashboard" replace />} /> */}
+                    <Route path="dashboard" element={<AdminDashboard />} />
                 </Route>
             </Routes>
         </BrowserRouter>

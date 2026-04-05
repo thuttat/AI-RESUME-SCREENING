@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../axiosConfig.js";
 import { Button } from "../../components/common/Button.jsx";
 import "../../styles/auth.css";
 
@@ -39,7 +39,7 @@ function Register() {
                 fullname: formData.fullname, 
             };
 
-            const response = await axios.post("http://localhost:8080/api/auth/register", payloadToSend);
+            const response = await api.post("/auth/register", payloadToSend);
             
             if (response.status === 201 || response.status === 200) {
                 alert("Registration successful! Please log in.");

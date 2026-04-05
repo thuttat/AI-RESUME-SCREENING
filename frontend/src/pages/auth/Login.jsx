@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios"; 
+import { useNavigate } from "react-router-dom"; 
 import "../../styles/auth.css";
 import { Button } from "../../components/common/Button.jsx";
+import api from "../../axiosConfig.js";
 
 function Login() {
     const [formData, setFormData] = useState({
@@ -23,18 +23,18 @@ function Login() {
         e.preventDefault();
         try {
             const payloadToSend = {
-                username: formData.usernameOrEmail.trim(),
+                usernameOrEmail: formData.usernameOrEmail.trim(),
                 password: formData.password.trim(),
             };
             
            
-            const response = await axios.post("http://localhost:8080/api/auth/login", payloadToSend);
+            const response = await api.post("/auth/login", payloadToSend); 
             
             if (response.status === 200) {
               
-                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("accessToken", response.data.accessToken);
                 alert("Login successful!");
-                navigate("/"); 
+                navigate("/admin/dashboard"); 
             }
         } catch (error) {
             console.error("Lỗi đăng nhập:", error);

@@ -7,6 +7,7 @@ public record EmailTemplateResponse(
     String templateName,
     String subject,
     String body,
+    Boolean isActive,
     Instant createdAt,
     Instant updatedAt
 ) {}

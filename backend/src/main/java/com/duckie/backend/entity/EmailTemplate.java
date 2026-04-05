@@ -29,6 +29,9 @@ public class EmailTemplate extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String body;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
     public EmailTemplate() {}
 
     public Long getId() { 
@@ -56,6 +59,13 @@ public class EmailTemplate extends BaseEntity {
         this.body = body; 
     }
 
+    public Boolean getIsActive() { 
+        return isActive; 
+    }
+    public void setIsActive(Boolean isActive) { 
+        this.isActive = isActive; 
+    }
+
     public static EmailTemplateBuilder builder() { 
         return new EmailTemplateBuilder(); 
     }
@@ -67,6 +77,7 @@ public class EmailTemplate extends BaseEntity {
         private String body;
         private Instant createdAt;
         private Instant updatedAt;
+        private Boolean isActive;
 
         public EmailTemplateBuilder id(Long id) { 
             this.id = id; 
@@ -92,6 +103,10 @@ public class EmailTemplate extends BaseEntity {
             this.updatedAt = updatedAt; 
             return this; 
         }
+        public EmailTemplateBuilder isActive(Boolean isActive) { 
+            this.isActive = isActive; 
+            return this; 
+        }
 
         public EmailTemplate build() {
             EmailTemplate email = new EmailTemplate();
@@ -101,6 +116,7 @@ public class EmailTemplate extends BaseEntity {
             email.setBody(this.body);
             email.setCreatedAt(this.createdAt);
             email.setUpdatedAt(this.updatedAt);
+            email.setIsActive(this.isActive);
             return email;
         }
     }
