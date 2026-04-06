@@ -44,7 +44,7 @@ const CvUploadedChart = ({ data }) => {
             
             <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData} barSize={4}>
+                    <BarChart data={chartData} barSize={12}>
                         <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} dy={10} />
                         <Tooltip cursor={{ fill: '#f0f0f0' }} />
                        

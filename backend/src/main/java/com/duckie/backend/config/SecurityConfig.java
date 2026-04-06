@@ -17,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.util.UrlPathHelper;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.duckie.backend.security.CustomAccessDeniedHandler;
@@ -57,6 +56,7 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/job-templates/**").hasRole("ADMIN")
                 .requestMatchers("/api/email-templates/**").hasRole("ADMIN")
+                .requestMatchers("/api/admin/dashboard").hasRole("ADMIN")
                 
 
                 .anyRequest().authenticated()

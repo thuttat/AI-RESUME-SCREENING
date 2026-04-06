@@ -28,9 +28,13 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
 
 
     Long countByStatus(JobStatus status);  
-    @Query("SELECT j.createdBy.username AS username, COUNT(j) AS totalPosts " +
-           "FROM JobPosting j " +
-           "GROUP BY j.createdBy.username " +
-           "ORDER BY totalPosts DESC")
+    @Query("SELECT u.id AS id, " +
+           "u.fullname AS name, " + 
+           "u.role AS role, " +
+           "COUNT(j.id) AS activityCount, " +
+            "NULL AS avatar " +
+           "FROM JobPosting j JOIN j.createdBy u " + 
+           "GROUP BY u.id, u.fullname, u.role " +
+           "ORDER BY activityCount DESC")
     Page<TopUserProjection> findTopUsersByJobCount(Pageable pageable);
 }
