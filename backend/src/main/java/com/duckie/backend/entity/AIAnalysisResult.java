@@ -33,6 +33,9 @@ public class AIAnalysisResult extends BaseEntity {
     @Column(name = "years_of_experience")
     private Double yearsOfExperience;
 
+    @Column(columnDefinition = "TEXT")
+    private String critique; // a thêm trường này để hiển thị phần đánh giá chi tiết của AI
+
     @Column(name = "raw_json_response", columnDefinition = "TEXT")
     private String rawJsonResponse;
 
@@ -69,6 +72,8 @@ public class AIAnalysisResult extends BaseEntity {
     public void setYearsOfExperience(Double yearsOfExperience) { 
         this.yearsOfExperience = yearsOfExperience; 
     }
+    public String getCritique() { return critique; }
+    public void setCritique(String critique) { this.critique = critique; }
     public String getRawJsonResponse() { 
         return rawJsonResponse; 
     }
@@ -86,6 +91,7 @@ public class AIAnalysisResult extends BaseEntity {
         private Double matchScore;
         private String extractedSkills;
         private Double yearsOfExperience;
+        private String critique;
         private String rawJsonResponse;
         private Instant createdAt;
         private Instant updatedAt;
@@ -110,6 +116,10 @@ public class AIAnalysisResult extends BaseEntity {
             this.yearsOfExperience = yearsOfExperience; 
             return this; 
         }
+        public AIAnalysisResultBuilder critique(String critique) {
+            this.critique = critique;
+            return this;
+        }
         public AIAnalysisResultBuilder rawJsonResponse(String rawJsonResponse) { 
             this.rawJsonResponse = rawJsonResponse; 
             return this; 
@@ -130,6 +140,7 @@ public class AIAnalysisResult extends BaseEntity {
             result.setMatchScore(this.matchScore);
             result.setExtractedSkills(this.extractedSkills);
             result.setYearsOfExperience(this.yearsOfExperience);
+            result.setCritique(this.critique);
             result.setRawJsonResponse(this.rawJsonResponse);
             result.setCreatedAt(this.createdAt);
             result.setUpdatedAt(this.updatedAt);

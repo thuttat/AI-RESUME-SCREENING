@@ -5,5 +5,5 @@ public enum Status {
     HIRED,
     REJECT,
     SHORTLIST,
-
+    SUCCESS
 }

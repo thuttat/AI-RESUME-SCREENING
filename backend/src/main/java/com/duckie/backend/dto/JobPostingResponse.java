@@ -1,6 +1,7 @@
 package com.duckie.backend.dto;
 
 import java.time.Instant;
+import java.util.List;
 
 import com.duckie.backend.entity.JobStatus; 
 
@@ -12,5 +13,6 @@ public record JobPostingResponse(
     JobStatus status,
     Long createdById, 
     Instant createdAt,
-    Instant updatedAt
+    Instant updatedAt,
+    Integer applicationCount
 ) {}

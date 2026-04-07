@@ -1,20 +1,49 @@
 import { Bell, Search, User } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import "./../styles/Header.css";
 import {Button} from "./Button.jsx";
-
-const titles = {
-    "/recruiter/dashboard": "Dashboard",
-    "/recruiter/jobs": "Job Management",
-    "/recruiter/upload": "CV Upload",
-    "/recruiter/ranking": "Candidate Rankings",
-    "/recruiter/email": "Email Notifications",
-    "/recruiter/pipeline": "Pipeline Reports"
-};
+import {useEffect, useState} from "react";
+import AxiosClient from "../../api/AxiosClient.js";
+import {menuItems} from "../../utils/MenuConfig.js";
 
 export default function Header({ currentRole }) {
     const location = useLocation();
-    const title = titles[location.pathname] || "Dashboard";
+    const navigate = useNavigate();
+
+    const getPageTitle = () => {
+        const allMenu = [
+            ...menuItems.recruiter,
+            ...menuItems.admin,
+            ...menuItems.manager
+        ];
+        const activeItem = allMenu.find(item => location.pathname.endsWith(item.path));
+        return activeItem ? activeItem.label : "Dashboard";
+    }
+
+    const title = getPageTitle();
+
+    const [userInfo, setUserInfo] = useState({
+        fullname: "Loading...",
+        email: "",
+    });
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const response = await AxiosClient.get("/api/auth/me");
+                setUserInfo(response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchUserProfile();
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        navigate("/", { replace: true });
+    };
 
     return (
         <div className="header">
@@ -36,15 +65,15 @@ export default function Header({ currentRole }) {
 
                 <div className="user">
                     <div className="user-info">
-                        <h4>John Doe</h4>
-                        <span>{currentRole}</span>
+                        <h4>{userInfo.fullname || "User"}</h4>
+                        <span>{userInfo.email}</span>
                     </div>
                     <div className="avatar">
                         <User size={16} />
                     </div>
                 </div>
 
-                <Button variant="outline-danger" size="sm">
+                <Button variant="outline-danger" size="sm" onClick={handleLogout}>
                     Logout
                 </Button>
             </div>

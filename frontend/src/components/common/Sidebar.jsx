@@ -1,53 +1,17 @@
-import {
-    LayoutDashboard,
-    Briefcase,
-    Upload,
-    Users,
-    Mail,
-    BarChart3,
-    ChevronLeft,
-    ChevronRight,
-} from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import "../styles/Sidebar.css";
 import { Button } from "./Button.jsx";
-
-const createMenu = (role, items) =>
-    items.map(item => ({
-        ...item,
-        path: `/${role}${item.path}`
-    }));
-
-const menuItems = {
-    recruiter: createMenu("recruiter", [
-        { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-        { path: "/jobs", label: "Job Management", icon: Briefcase },
-        { path: "/upload", label: "CV Upload", icon: Upload },
-        { path: "/ranking", label: "Candidate Ranking", icon: Users },
-        { path: "/email", label: "Email Notifications", icon: Mail },
-        { path: "/pipeline", label: "Pipeline Report", icon: BarChart3 },
-    ]),
-    manager: createMenu("manager", [
-        { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-        { path: "/pipeline", label: "Candidate Pipeline", icon: Users },
-        { path: "/email-logs", label: "Email Tracking", icon: Mail },
-    ]),
-    admin: createMenu("admin", [
-        { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-        { path: "/users", label: "User Management", icon: Users },
-        { path: "/templates", label: "Template Management", icon: Briefcase },
-        { path: "/config", label: "AI Configuration", icon: Upload }
-    ]),
-};
+import { menuItems } from "../../utils/MenuConfig.js"; 
 
 export default function Sidebar({ currentRole, collapsed, onToggleCollapse }) {
-    const items = menuItems[currentRole] || [];
+    const roleKey = currentRole || "";
+    const items = menuItems[roleKey] || [];
 
     return (
         <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
             <div className="sidebar-header">
                 {!collapsed && <h1 className="logo">🤖 AI Resume</h1>}
-
                 <Button variant="ghost" size="sm" onClick={onToggleCollapse}>
                     {collapsed ? <ChevronRight /> : <ChevronLeft />}
                 </Button>
@@ -56,11 +20,12 @@ export default function Sidebar({ currentRole, collapsed, onToggleCollapse }) {
             <nav className="sidebar-menu">
                 {items.map((item) => {
                     const Icon = item.icon;
+                    const path = `/${roleKey}${item.path}`;
 
                     return (
                         <NavLink
-                            key={item.path}
-                            to={item.path}
+                            key={path}
+                            to={path}
                             className={({ isActive }) =>
                                 `menu-item ${isActive ? "active" : ""}`
                             }
