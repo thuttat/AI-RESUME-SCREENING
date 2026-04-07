@@ -9,7 +9,9 @@ import org.springframework.data.repository.query.Param;
 import com.duckie.backend.entity.JobTemplate;
 
 public interface JobTemplateRepository extends JpaRepository<JobTemplate, Long> {
-    @Query("SELECT jt FROM JobTemplate jt WHERE "+
-            ":search IS NULL OR LOWER(jt.title) LIKE LOWER(CONCAT('%', :search, '%'))")
+   @Query("SELECT jt FROM JobTemplate jt WHERE " +
+           "jt.isActive = true AND " + 
+           "(:search IS NULL OR LOWER(jt.title) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<JobTemplate> findAllBySearch(@Param("search") String search, Pageable pageable);
 }
+

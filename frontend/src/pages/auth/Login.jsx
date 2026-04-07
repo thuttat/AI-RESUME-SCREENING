@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios"; 
+import { useNavigate } from "react-router-dom"; 
 import "../../styles/auth.css";
 import { Button } from "../../components/common/Button.jsx";
+import api from "../../axiosConfig.js";
 
 function Login() {
     const [formData, setFormData] = useState({
@@ -27,11 +27,10 @@ function Login() {
                 password: formData.password.trim(),
             };
             
-           
-            const response = await axios.post("http://localhost:8080/api/auth/login", payloadToSend);
+            const response = await api.post("/auth/login", payloadToSend); 
             
             if (response.status === 200) {
-                localStorage.setItem("token", response.data.accessToken);
+                localStorage.setItem("accessToken", response.data.accessToken);
                 const userRole = response.data.user.role;
                 localStorage.setItem("role", userRole);
 
@@ -42,7 +41,7 @@ function Login() {
                     case "HIRING_MANAGER":
                         navigate("/manager/dashboard");
                         break;
-                    case "RECUITER":
+                    case "RECRUITER": 
                         navigate("/recruiter/dashboard");
                         break;
                     default:

@@ -16,6 +16,10 @@ import HiringManagerDashboard from "./pages/hiring-manager/HiringManagerDashboar
 import CandidatePipeline from "./pages/hiring-manager/CandidatePipeline.jsx";
 import EmailTracking from "./pages/hiring-manager/EmailTracking.jsx";
 
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+
+import "./App.css";
+
 export default function App() {
     return (
         <BrowserRouter>
@@ -23,7 +27,6 @@ export default function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 
-                {/* Recruiter Routes - Được bảo vệ bởi PrivateRoute */}
                 <Route
                     path="/recruiter/*"
                     element={
@@ -41,7 +44,6 @@ export default function App() {
                     <Route path="pipeline" element={<Pipeline />} />
                 </Route>
 
-                {/* Hiring Manager Routes - Được bảo vệ bởi PrivateRoute */}
                 <Route
                     path="/manager/*"
                     element={
@@ -56,7 +58,6 @@ export default function App() {
                     <Route path="email-logs" element={<EmailTracking />} />
                 </Route>
 
-                {/* Admin Routes */}
                 <Route
                     path="/admin/*"
                     element={
@@ -64,7 +65,11 @@ export default function App() {
                             <BaseLayout />
                         </PrivateRoute>
                     }
-                />
+                >
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="dashboard" element={<AdminDashboard />} />
+                </Route>
+
             </Routes>
         </BrowserRouter>
     );

@@ -16,7 +16,7 @@ public interface EmailTemplateRepository extends JpaRepository<EmailTemplate, Lo
     boolean existsByTemplateName(String templateName);
     boolean existsByTemplateNameAndIdNot(String templateName, Long id);
 
-    @Query("SELECT e FROM EmailTemplate e WHERE "+
-            ":search IS NULL OR LOWER(e.templateName) LIKE LOWER(CONCAT('%', :search, '%'))")
+    @Query("SELECT e FROM EmailTemplate e WHERE e.isActive = true AND " +
+           "(:search IS NULL OR LOWER(e.templateName) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<EmailTemplate> findAllBySearch(@Param("search") String search, Pageable pageable);
 }

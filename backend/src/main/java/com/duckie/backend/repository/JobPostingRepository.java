@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.duckie.backend.dto.TopUserProjection;
 import com.duckie.backend.entity.JobPosting;
 import com.duckie.backend.entity.JobStatus;
 
@@ -24,4 +25,16 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
     List<JobPosting> findByCreatedBy_Username(String username);
 
     Optional<JobPosting> findByIdAndCreatedBy_Username(Long id, String username);
+
+
+    Long countByStatus(JobStatus status);  
+    @Query("SELECT u.id AS id, " +
+           "u.fullname AS name, " + 
+           "u.role AS role, " +
+           "COUNT(j.id) AS activityCount, " +
+            "NULL AS avatar " +
+           "FROM JobPosting j JOIN j.createdBy u " + 
+           "GROUP BY u.id, u.fullname, u.role " +
+           "ORDER BY activityCount DESC")
+    Page<TopUserProjection> findTopUsersByJobCount(Pageable pageable);
 }
