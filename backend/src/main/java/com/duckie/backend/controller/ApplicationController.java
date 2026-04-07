@@ -27,14 +27,14 @@ public class ApplicationController {
     private final ApplicationMapper applicationMapper;
 
     @GetMapping("/{applicationId:\\d+}")
-    @PreAuthorize("hasAnyRole('RECUITER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('RECRUITER', 'ADMIN')")
     public ResponseEntity<ApplicationResponse> getDetail(@PathVariable Long applicationId) {
         Application app = applicationService.getApplicationById(applicationId);
         return ResponseEntity.ok(applicationMapper.toResponse(app));
     }
 
     @PatchMapping("/{applicationId}/status")
-    @PreAuthorize("hasAnyRole('HIRING_MANAGER', 'RECUITER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('HIRING_MANAGER', 'RECRUITER', 'ADMIN')")
     public ResponseEntity<ApplicationResponse> updateStatus(
             @PathVariable Long applicationId, 
             @Valid @RequestBody ApplicationStatusRequest request) {

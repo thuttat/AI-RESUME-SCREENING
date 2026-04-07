@@ -18,44 +18,44 @@
 | GET | /api/jobs/{job_id} | Xem chi tiết thông tin một job cụ thể |
 | GET | /api/jobs/history | Lấy danh sách các chiến dịch tuyển dụng đã đóng (Lịch sử tuyển dụng) |
 
-3. Applications & Shortlisted (Xem danh sách shortlisted)
+3. Applications & Shortlisted (Xem danh sách đơn ứng tuyển)
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/jobs/{job_id}/applications | Lấy danh sách ứng viên nộp vào 1 job. Hỗ trợ query params: ?status=shortlisted để lọc danh sách shortlisted |
-| GET | /api/applications/{application_id} | Xem chi tiết một hồ sơ ứng tuyển (trạng thái, ngày nộp,...) |
-| PATCH | /api/applications/{application_id}/status | Cập nhật luồng trạng thái của CV |
+| GET | /api/jobs/{job_id}/applications | Lấy danh sách ứng viên nộp vào 1 job. Hỗ trợ query params: ?status=SHORTLIST để lọc danh sách được chọn |
+| GET | /api/applications/{application_id} | Xem chi tiết một hồ sơ ứng tuyển (Kèm kết quả phân tích AI từ bảng AI_ANALYSIS_RESULT) |
+| PATCH | /api/applications/{application_id}/status | Cập nhật luồng trạng thái của đơn ứng tuyển (SHORTLIST, REJECT) |
 
 4. Candidates (Xem hồ sơ & So sánh)
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/candidates/{candidate_id} | Lấy thông tin cá nhân cơ bản của ứng viên (Tên, Email, Skills,...) |
-| GET | /api/candidates/{candidate_id}/resume | Tải xuống hoặc lấy link xem file CV/Resume của ứng viên |
-| GET | /api/candidates/compare | So sánh ứng viên side-by-side. Truyền query params: ?ids=id1,id2,id3 để lấy data so sánh |
+| GET | /api/candidates/{cv_id} | Lấy thông tin cá nhân ứng viên (Bảng CV) và kỹ năng (AI_ANALYSIS_RESULT) |
+| GET | /api/candidates/{cv_id}/resume | Lấy link xem file CV/Resume gốc từ Cloudinary |
+| GET | /api/candidates/compare | So sánh ứng viên side-by-side dựa trên match_score và extracted_skills |
 
 5. Evaluations (Đánh giá & Ghi Feedback phỏng vấn)
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/applications/{application_id}/evaluations | Lấy toàn bộ lịch sử đánh giá của hồ sơ (bao gồm cả điểm số, nhận xét, và người đánh giá) |
-| POST | /api/applications/{application_id}/evaluations | Tạo một bài đánh giá mới (Gửi lên cùng lúc cả score và feedback) |
-| PUT | /api/evaluations/{evaluation_id} | Cập nhật lại nội dung bài đánh giá (sửa điểm hoặc sửa nhận xét) của chính Hiring Manager đó |
-| DELETE | /api/evaluations/{evaluation_id} | Xóa một đánh giá bị sai |
+| GET | /api/applications/{application_id}/evaluations | Lấy toàn bộ lịch sử đánh giá của hồ sơ (Bảng EVALUATION) |
+| POST | /api/applications/{application_id}/evaluations | Tạo một bài đánh giá mới (Gửi rating từ 1-5 và feedback) |
+| PUT | /api/evaluations/{evaluation_id} | Cập nhật lại nội dung bài đánh giá của chính mình |
+| DELETE | /api/evaluations/{evaluation_id} | Xóa một đánh giá |
 
 6. Hiring Decisions (Quyết định tuyển dụng)
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| PATCH | /api/applications/{application_id}/status | Đưa ra quyết định chốt bằng cách cập nhật trạng thái hồ sơ thành HIRED (Nhận), REJECTED (Từ chối) hoặc KIV (Giữ lại xem xét sau). Có thể gửi kèm note (lý do, mức lương đề xuất) trong Request Body |
+| PATCH | /api/applications/{application_id}/status | Chốt quyết định cuối cùng: HIRED (Nhận) hoặc REJECT (Từ chối) |
 
 ## Recruiter
 1. Job Posting (JD)
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| POST | /api/jobs | Tạo job posting mới |
-| GET | /api/jobs | Lấy danh sách job của recruiter(có search, pagination) |
+| POST | /api/jobs | Tạo job posting mới (Dựa trên JOB_TEMPLATE) |
+| GET | /api/jobs | Lấy danh sách job của recruiter (Hỗ trợ tìm kiếm, phân trang) |
 | GET | /api/jobs/{id} | Lấy chi tiết một job |
 | PUT | /api/jobs/{id} | Cập nhật thông tin job |
 | DELETE | /api/jobs/{id} | Xóa job |
@@ -64,34 +64,34 @@
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| POST | /api/cvs/upload | Upload nhiều CV cho một job |
-| POST | /api/cvs/{id}/parse | Gửi CV vào hệ thống AI để phân tích(async) |
+| POST | /api/cvs/upload | Upload hàng loạt CV cho một job (Lưu vào bảng CV và APPLICATION) |
+| POST | /api/applications/{id}/parse | Kích hoạt AI bóc tách dữ liệu. Chuyển status PENDING -> SUCCESS |
 
 3. Candidate Ranking
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/jobs/{id}/candidates | Lấy danh sách ứng viên theo job, kèm ranking( score) |
-| GET | /api/candidates/{id} | Xem chi tiết một ứng viên |
+| GET | /api/jobs/{id}/candidates | Lấy danh sách ứng viên theo job, sắp xếp theo match_score |
+| GET | /api/candidates/{id} | Xem chi tiết ứng viên và kết quả phân tích kỹ năng của AI |
 
 4. Shortlist / Reject
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| PATCH | /api/candidates/{id}/status | Cập nhật trạng thái ứng viên( Shortlisted/ Rejected) |
+| PATCH | /api/applications/{id}/status | Cập nhật trạng thái ứng viên (SHORTLIST hoặc REJECT) |
 
 5. Email Notification
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| POST | /api/emails/send | Gửi email cho một hoặc nhiều ứng viên |
+| POST | /api/emails/send | Gửi email cho ứng viên (Dùng EMAIL_TEMPLATE, lưu vào EMAIL_LOG) |
 | GET | /api/emails/history | Lấy lịch sử email đã gửi |
 
 6. Pipeline Report
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/reports/pipeline | Thống kê tổng pipeline( CV, parsed, shortlisted, rejected) |
+| GET | /api/reports/pipeline | Thống kê tổng quan pipeline (CV, SUCCESS, SHORTLIST, REJECT) |
 | GET | /api/reports/jobs/{id} | Thống kê chi tiết theo từng job |
 
 
@@ -100,43 +100,43 @@
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/users | Lấy danh sách users |
-| POST | /api/users | Tạo user |
-| PUT | /api/users/{id} | Cập nhật user |
+| GET | /api/users | Lấy danh sách tất cả users (Bảng USERS) |
+| POST | /api/users | Tạo tài khoản user mới |
+| PUT | /api/users/{id} | Cập nhật thông tin user |
 | DELETE | /api/users/{id} | Xóa user |
-| PATCH | /api/users/{id}/status | Đổi trạng thái( Optional) |
-| GET | /api/users/export | Export users( trả file CSV hoặc Excel) |
+| PATCH | /api/users/{id}/status | Đổi trạng thái hoạt động (ACTIVE/UNACTIVE) |
+| GET | /api/users/export | Xuất danh sách users ra file CSV/Excel |
 
 2. Job Templates
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/job-templates | Lấy danh sách các mẫu tin tuyển dụng (có hỗ trợ phân trang, lọc, tìm kiếm) |
-| POST | /api/job-templates | Tạo mới một mẫu tin tuyển dụng (ví dụ: form chuẩn cho vị trí Frontend, Backend) |
-| PUT | /api/job-templates/{id} | Cập nhật toàn bộ nội dung của một mẫu tin tuyển dụng cụ thể |
-| PATCH | /api/job-templates/{id} | Cập nhật một phần thông tin (ví dụ: chỉ đổi tiêu đề hoặc đổi trạng thái active/inactive) |
-| DELETE | /api/job-templates/{id} | Xóa một mẫu tin tuyển dụng khỏi hệ thống |
+| GET | /api/job-templates | Lấy danh sách các mẫu tin tuyển dụng chuẩn |
+| POST | /api/job-templates | Tạo mới một mẫu tin tuyển dụng (Bảng JOB_TEMPLATE) |
+| PUT | /api/job-templates/{id} | Cập nhật toàn bộ nội dung của mẫu tin |
+| PATCH | /api/job-templates/{id} | Cập nhật trạng thái active/inactive của mẫu |
+| DELETE | /api/job-templates/{id} | Xóa mẫu tin tuyển dụng |
 
 3. Email Templates
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/email-templates | Lấy danh sách các mẫu email (mời phỏng vấn, báo kết quả đậu/rớt, gửi offer...) |
-| POST | /api/email-templates | Tạo mới một mẫu email với các biến động |
-| PUT | /api/email-templates/{id} | Cập nhật nội dung (subject, body) của một mẫu email cụ thể |
-| DELETE | /api/email-templates/{id} | Xóa mẫu email không còn sử dụng |
-| POST | /api/email-templates/{id}/preview | Xem trước (render) mẫu email với một dữ liệu giả định để kiểm tra các biến động có hoạt động đúng không |
+| GET | /api/email-templates | Lấy danh sách mẫu email (Offer, Reject, Interview...) |
+| POST | /api/email-templates | Tạo mới mẫu email (Bảng EMAIL_TEMPLATE) |
+| PUT | /api/email-templates/{id} | Cập nhật nội dung (subject, body) của mẫu |
+| DELETE | /api/email-templates/{id} | Xóa mẫu email |
+| POST | /api/email-templates/{id}/preview | Xem trước nội dung email với dữ liệu giả định |
 
 4. AI Configuration
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/ai-config | Lấy các thiết lập cấu hình AI hiện tại |
-| PUT | /api/ai-config | Cập nhật lại các thông số thiết lập cấu hình AI cho hệ thống |
-| POST | /api/ai-config/test | Chạy thử nghiệm cấu hình AI hiện tại với một file CV mẫu để kiểm tra độ chính xác trước khi áp dụng thực tế|
+| GET | /api/ai-config | Lấy thiết lập cấu hình AI hiện tại (Bảng AI_CONFIG) |
+| PUT | /api/ai-config | Cập nhật các thông số AI (API Key, Model gpt-4o-mini) |
+| POST | /api/ai-config/test | Chạy thử nghiệm AI với một file CV mẫu |
 
 5. Dashboard / Reports
 
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
-| GET | /api/dashboard | Lấy dữ liệu tổng hợp cho màn hình chính (tổng số ứng viên, số cuộc phỏng vấn sắp tới, tỷ lệ tuyển dụng thành công theo thời gian...) |
+| GET | /api/dashboard | Lấy dữ liệu tổng hợp (Tổng ứng viên, tỷ lệ HIRED, REJECT...) |

@@ -98,6 +98,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                         .subject("Chúc mừng! Thư mời làm việc - [JobTitle]")
                         .body("Chào [CandidateName],\n\nChúng tôi rất ấn tượng với hồ sơ của bạn...")
                         .createdAt(Instant.now())
+                        .isActive(true) 
                         .build();
                 emailTemplateRepository.save(offer);
 
@@ -106,6 +107,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                         .subject("Kết quả ứng tuyển - [JobTitle]")
                         .body("Chào [CandidateName],\n\nRất tiếc bạn chưa phù hợp...")
                         .createdAt(Instant.now())
+                        .isActive(true) 
                         .build();
                 emailTemplateRepository.save(reject);
                 System.out.println(">>> Email Templates Seeded!");

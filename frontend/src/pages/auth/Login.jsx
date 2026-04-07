@@ -21,37 +21,54 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("--- Bắt đầu gửi yêu cầu đăng nhập ---");
+        
         try {
             const payloadToSend = {
                 usernameOrEmail: formData.usernameOrEmail.trim(),
                 password: formData.password.trim(),
             };
-            
-            const response = await api.post("/auth/login", payloadToSend); 
-            
-            if (response.status === 200) {
-                localStorage.setItem("accessToken", response.data.accessToken);
-                const userRole = response.data.user.role;
-                localStorage.setItem("role", userRole);
 
-                switch (userRole) {
-                    case "ADMIN":
+            const response = await api.post("/auth/login", payloadToSend); 
+            console.log("Response Full:", response);
+            alert("Đăng nhập thành công! Status: " + response.status);
+
+            if (response.status === 200 || response.status === 201) {
+                const data = response.data;
+                console.log("Dữ liệu nhận được:", data);
+                if (data.accessToken) {
+                    localStorage.setItem("accessToken", data.accessToken);
+                    console.log("Đã lưu accessToken vào LocalStorage");
+                } else {
+                    alert("Cảnh báo: Server không trả về accessToken!");
+                }
+
+                const userRole = data.role || (data.user && data.user.role);
+                if (userRole) {
+                    localStorage.setItem("role", userRole);
+                    console.log("Đã lưu role:", userRole);
+
+
+                    const roleKey = userRole.toUpperCase();
+                    if (roleKey.includes("ADMIN")) {
                         navigate("/admin/dashboard");
-                        break;
-                    case "HIRING_MANAGER":
+                    } else if (roleKey.includes("MANAGER")) {
                         navigate("/manager/dashboard");
-                        break;
-                    case "RECRUITER": 
+                    } else if (roleKey.includes("RECRUITER")) {
                         navigate("/recruiter/dashboard");
-                        break;
-                    default:
+                    } else {
                         navigate("/");
-                        break;
+                    }
+                } else {
+                    alert("Lỗi: Không tìm thấy Role trong dữ liệu trả về!");
                 }
             }
         } catch (error) {
-            console.error("Lỗi đăng nhập:", error);
-            alert("Login failed. Please check your credentials and try again.");
+            console.error("Lỗi Axios:", error);
+            const errorMsg = error.response ? 
+                `Lỗi ${error.response.status}: ${JSON.stringify(error.response.data)}` : 
+                "Không kết nối được tới Backend (Network Error)";
+            alert(errorMsg);
         }
     };
 
@@ -93,15 +110,6 @@ function Login() {
 
                         <Button type="submit" variant="primary" size="md">Sign In</Button>
                     </form>
-
-                    <div className="login-footer">
-                        <p className="text-muted">
-                            Don't have an account?{" "}
-                            <a href="/register" className="link-primary">
-                                Sign up
-                            </a>
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>

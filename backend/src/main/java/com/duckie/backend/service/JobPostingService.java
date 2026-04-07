@@ -1,142 +1,117 @@
 package com.duckie.backend.service;
 
-import com.duckie.backend.dto.JobPostingRequest;
-import com.duckie.backend.dto.JobPostingResponse;
-import com.duckie.backend.exception.ResourceNotFoundException;
-// ĐÃ SỬA: Đổi toàn bộ sang .entity
-import com.duckie.backend.entity.JobPosting;
-import com.duckie.backend.entity.JobStatus;
-import com.duckie.backend.entity.Status;
-import com.duckie.backend.entity.User;
-import com.duckie.backend.repository.ApplicationRepository;
-import com.duckie.backend.repository.JobPostingRepository;
-import com.duckie.backend.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map; 
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.duckie.backend.dto.JobPostingRequest;
+import com.duckie.backend.dto.JobPostingResponse;
+import com.duckie.backend.entity.JobPosting;
+import com.duckie.backend.entity.JobStatus;
+import com.duckie.backend.entity.Status; 
+import com.duckie.backend.entity.User;
+import com.duckie.backend.exception.ResourceNotFoundException;
+import com.duckie.backend.repository.ApplicationRepository; 
+import com.duckie.backend.repository.JobPostingRepository;
+import com.duckie.backend.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class JobPostingService {
-    
+
     private final JobPostingRepository jobPostingRepository;
     private final UserRepository userRepository;
-    private final ApplicationRepository applicationRepository;
+    private final ApplicationRepository applicationRepository; 
+    private final JobMapper jobMapper;
 
     @Transactional
-    public JobPostingResponse createJobPosting(JobPostingRequest request, String username){
+    public JobPostingResponse createJobPosting(JobPostingRequest request, String username) {
         User recruiter = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
-
-        JobPosting newJob = JobPosting.builder()
-                .title(request.title())
-                .description(request.description())
-                .requiredSkills(request.requiredSkills())
-                .status(JobStatus.OPEN)
-                .createdBy(recruiter)
-                .build();
-        JobPosting savedJob = jobPostingRepository.save(newJob);
-
-        return new JobPostingResponse(
-                savedJob.getId(),
-                savedJob.getTitle(),
-                savedJob.getDescription(),
-                savedJob.getRequiredSkills(),
-                savedJob.getStatus(), 
-                recruiter.getId(),  
-                savedJob.getCreatedAt(),
-                savedJob.getUpdatedAt(),
-                savedJob.getApplications().size()
-        );    
-    }
-
-    public Page<JobPosting> getJobsByRecruiter(Long recruiterId, Pageable pageable) {
-        return jobPostingRepository.findByCreatedById(recruiterId, pageable);
-    }
-
-    public Map<String, Long> getJobPipelineReport(Long jobId) {
-        Map<String, Long> pipeline = new HashMap<>();
-
-        pipeline.put("PENDING", applicationRepository.countByJobPostingIdAndStatus(jobId, Status.PENDING));
-        pipeline.put("HIRED", applicationRepository.countByJobPostingIdAndStatus(jobId, Status.HIRED));
-        pipeline.put("SHORTLISTED", applicationRepository.countByJobPostingIdAndStatus(jobId, Status.SHORTLIST));
-        pipeline.put("REJECTED", applicationRepository.countByJobPostingIdAndStatus(jobId, Status.REJECT));
-
-        return pipeline;
+        JobPosting newJob = jobMapper.toEntity(request, recruiter);
+        return jobMapper.toResponse(jobPostingRepository.save(newJob));
     }
 
     @Transactional(readOnly = true)
-    public List<JobPostingResponse> getOwnRecruiterJobs(String username) {
-        List<JobPosting> jobs = jobPostingRepository.findByCreatedBy_Username(username);
-
-        return jobs.stream().map(job -> new JobPostingResponse(
-                job.getId(),
-                job.getTitle(),
-                job.getDescription(),
-                job.getRequiredSkills(),
-                job.getStatus(),
-                job.getCreatedBy().getId(),
-                job.getCreatedAt(),
-                job.getUpdatedAt(),
-                job.getApplications().size()
-        )).toList();
+    public List<JobPostingResponse> getJobsByRole(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+        List<JobPosting> jobs;
+        if (user.getRole().name().equals("RECRUITER")) {
+            jobs = jobPostingRepository.findByCreatedBy_Username(username);
+        } else {
+            jobs = jobPostingRepository.findByStatus(JobStatus.OPEN);
+        }
+        return jobs.stream().map(jobMapper::toResponse).toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<JobPostingResponse> getJobHistory() {
+        return jobPostingRepository.findByStatus(JobStatus.CLOSE)
+                .stream().map(jobMapper::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, Long> getJobPipelineReport(Long jobId) {
+        if (!jobPostingRepository.existsById(jobId)) {
+            throw new ResourceNotFoundException("Job not found!");
+        }
+
+        Map<String, Long> report = new HashMap<>();
+        report.put("PENDING", applicationRepository.countByJobPostingIdAndStatus(jobId, Status.PENDING));
+        report.put("SHORTLIST", applicationRepository.countByJobPostingIdAndStatus(jobId, Status.SHORTLIST));
+        report.put("REJECT", applicationRepository.countByJobPostingIdAndStatus(jobId, Status.REJECT));
+        report.put("HIRED", applicationRepository.countByJobPostingIdAndStatus(jobId, Status.HIRED));
+        report.put("SUCCESS", applicationRepository.countByJobPostingIdAndStatus(jobId, Status.SUCCESS));
+        
+        return report;
+    }
+
 
     @Transactional(readOnly = true)
     public JobPostingResponse getJobById(Long jobId, String username) {
-        JobPosting job = jobPostingRepository.findByIdAndCreatedBy_Username(jobId, username)
-                .orElseThrow(() -> new ResourceNotFoundException("Job posting not found!"));
-
-        return new JobPostingResponse(
-                job.getId(), job.getTitle(), job.getDescription(),
-                job.getRequiredSkills(), job.getStatus(), 
-                job.getCreatedBy().getId(), job.getCreatedAt(), job.getUpdatedAt(),
-                job.getApplications().size()
-        );
+        JobPosting job = jobPostingRepository.findById(jobId)
+                .orElseThrow(() -> new ResourceNotFoundException("Job not found!"));
+        return jobMapper.toResponse(job);
     }
 
     @Transactional
     public JobPostingResponse updateJob(Long jobId, JobPostingRequest request, String username) {
-        JobPosting job = jobPostingRepository.findByIdAndCreatedBy_Username(jobId, username)
-                .orElseThrow(() -> new ResourceNotFoundException("Job posting not found!"));
-
+        JobPosting job = getJobIfAuthorized(jobId, username);
         job.setTitle(request.title());
         job.setDescription(request.description());
         job.setRequiredSkills(request.requiredSkills());
-
-        JobPosting updatedJob = jobPostingRepository.save(job);
-
-        return new JobPostingResponse(
-                updatedJob.getId(), updatedJob.getTitle(), updatedJob.getDescription(),
-                updatedJob.getRequiredSkills(), updatedJob.getStatus(), 
-                updatedJob.getCreatedBy().getId(), updatedJob.getCreatedAt(), updatedJob.getUpdatedAt(),
-                updatedJob.getApplications().size()
-        );
+        return jobMapper.toResponse(jobPostingRepository.save(job));
     }
 
     @Transactional
     public void toggleJobStatus(Long jobId, String username) {
-        JobPosting job = jobPostingRepository.findByIdAndCreatedBy_Username(jobId, username)
-                .orElseThrow(() -> new ResourceNotFoundException("Job posting not found!"));
-
-        if (job.getStatus() == JobStatus.OPEN) {
-            job.setStatus(JobStatus.CLOSE);
-        } else {
-            job.setStatus(JobStatus.OPEN);
-        }
+        JobPosting job = getJobIfAuthorized(jobId, username);
+        job.setStatus(job.getStatus() == JobStatus.OPEN ? JobStatus.CLOSE : JobStatus.OPEN);
         jobPostingRepository.save(job);
     }
 
     @Transactional
     public void deleteJob(Long jobId, String username) {
-        JobPosting job = jobPostingRepository.findByIdAndCreatedBy_Username(jobId, username)
-                .orElseThrow(() -> new ResourceNotFoundException("Job posting not found!"));
+        JobPosting job = getJobIfAuthorized(jobId, username);
         jobPostingRepository.delete(job);
+    }
+
+    private JobPosting getJobIfAuthorized(Long jobId, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+        JobPosting job = jobPostingRepository.findById(jobId)
+                .orElseThrow(() -> new ResourceNotFoundException("Job not found!"));
+        boolean isAdmin = user.getRole().name().equals("ADMIN");
+        boolean isOwner = job.getCreatedBy().getUsername().equals(username);
+        if (!isAdmin && !isOwner) {
+            throw new ResourceNotFoundException("You do not have permission to modify this job!");
+        }
+        return job;
     }
 }

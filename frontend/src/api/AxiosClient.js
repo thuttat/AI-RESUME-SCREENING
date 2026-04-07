@@ -1,14 +1,14 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: '/api',
     headers: {
         "Content-Type": "application/json",
     }
 });
 
 axiosClient.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     if (token) {
         config.headers['Authorization'] = `Bearer ${token}`;
     }
@@ -23,9 +23,11 @@ axiosClient.interceptors.response.use(
     },
     (error) => {
         if (error.response && error.response.status === 401) {
-            console.error("Login session is expired! Please sign in again.");
-            localStorage.removeItem("token");
+            console.error("Phiên đăng nhập hết hạn hoặc không hợp lệ!");
+            
+            localStorage.removeItem("accessToken");
             localStorage.removeItem("role");
+            
             window.location.href = "/";
         }
 

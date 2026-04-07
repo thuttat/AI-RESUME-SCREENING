@@ -1,35 +1,51 @@
 package com.duckie.backend.service;
 
-import com.duckie.backend.exception.DuplicateResourceException;
-import com.duckie.backend.exception.ResourceNotFoundException;
-import com.duckie.backend.entity.*;
-import com.duckie.backend.repository.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.duckie.backend.entity.AIAnalysisResult;
+import com.duckie.backend.entity.Application;
+import com.duckie.backend.entity.CV;
+import com.duckie.backend.entity.JobPosting;
+import com.duckie.backend.entity.Status;
+import com.duckie.backend.entity.User;
+import com.duckie.backend.exception.DuplicateResourceException;
+import com.duckie.backend.exception.ResourceNotFoundException;
+import com.duckie.backend.repository.AIAnalysisResultRepository;
+import com.duckie.backend.repository.ApplicationRepository;
+import com.duckie.backend.repository.CVRepository;
+import com.duckie.backend.repository.JobPostingRepository;
+import com.duckie.backend.repository.UserRepository;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +58,11 @@ public class CVProcessingService {
     private final CloudinaryService cloudinaryService;
     private final AIAnalysisResultRepository aiAnalysisResultRepository;
 
+    private final RestTemplate restTemplate = new RestTemplate();
+
     @Value("${openai.api.key}")
     private String openAIApiKey;
+    
     private static final String OPEN_API_URL = "https://api.openai.com/v1/chat/completions";
 
     private static final List<String> NOISE_KEYWORDS = List.of(
@@ -76,7 +95,6 @@ public class CVProcessingService {
         private Double yearsOfExperience = 0.0;
     }
 
-    // Upload CVs
     @Transactional
     public List<Application> uploadBulkCVs(Long jobId, List<MultipartFile> files) {
         JobPosting jobPosting = getJobPostingById(jobId);
@@ -104,7 +122,6 @@ public class CVProcessingService {
         return savedApplications;
     }
 
-    // Parse CV = AI: extract text -> check duplicate -> call OpenAI -> save result
     @Transactional
     public AIAnalysisResult parseCVWithAI(Long applicationId) throws Exception {
         Application application = applicationRepository.findById(applicationId)
@@ -129,11 +146,9 @@ public class CVProcessingService {
         return updateAndSaveResult(parsedData, cv, application);
     }
 
-    // Ham trich xuat text tu pdf file
     public String extractTextFromPdfUrl(String pdfUrl) {
         try {
             URL url = new URI(pdfUrl).toURL();
-
             try (InputStream in = url.openStream();
                  PDDocument document = Loader.loadPDF(in.readAllBytes())) {
                 PDFTextStripper stripper = new PDFTextStripper();
@@ -176,7 +191,6 @@ public class CVProcessingService {
         }
 
         String trimmed = cleanedText.substring(0, endIndex).trim();
-
         return trimmed.length() > 2500 ? trimmed.substring(0, 2500) : trimmed;
     }
 
@@ -204,11 +218,8 @@ public class CVProcessingService {
         return applicationRepository.existsDuplicateByEmailForJob(email, jobId, currentCvId);
     }
 
-    // Ham ngan xu ly application trung lap
     private void preventDuplicateApplication(String extractedText, JobPosting jobPosting, CV cv, Application application) {
-        String emailRegex = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}";
-        Matcher matcher = Pattern.compile(emailRegex).matcher(extractedText);
-        String emailFromText = matcher.find() ? matcher.group() : null;
+        String emailFromText = extractEmailLocally(extractedText);
 
         if (emailFromText != null && checkDuplicateApplication(emailFromText, jobPosting.getId(), cv.getId())) {
             applicationRepository.delete(application);
@@ -222,11 +233,9 @@ public class CVProcessingService {
         String noLinks = rawText.replaceAll("https?://\\S+\\s?", "");
         String noExtraSpaces = noLinks.replaceAll("\\s+", " ");
         String cleaned = noExtraSpaces.replaceAll("[^\\p{L}\\p{N}\\p{Punct}\\s]", "");
-
         return cleaned.trim();
     }
 
-    // Ham goi API va parse JSON
     private AIResponseDTO fetchAndParseAIResult(String rawCvText, JobPosting jobPosting, String knownName, String knownEmail) throws Exception {
         String processedText = extractScoringContent(cleanCVText(rawCvText));
 
@@ -250,9 +259,6 @@ public class CVProcessingService {
                 jobPosting.getDescription(),
                 jobPosting.getRequiredSkills());
 
-        String userPrompt = "CV:\n" + processedText;
-
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(openAIApiKey);
@@ -260,11 +266,11 @@ public class CVProcessingService {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", "gpt-4o-mini");
         requestBody.put("temperature", 0.0);
-        requestBody.put("max_tokens", 300);
+        requestBody.put("max_tokens", 500); // Tăng nhẹ để critique không bị cắt ngang
         requestBody.put("response_format", Map.of("type", "json_object"));
         requestBody.put("messages", List.of(
                 Map.of("role", "system", "content", systemPrompt),
-                Map.of("role", "user", "content", userPrompt)
+                Map.of("role", "user", "content", "CV Content:\n" + processedText)
         ));
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
@@ -274,24 +280,17 @@ public class CVProcessingService {
             throw new RuntimeException("Error from OpenAI: " + response.getStatusCode());
 
         List<?> choices = (List<?>) response.getBody().get("choices");
-        if (choices == null || choices.isEmpty()) {
-            throw new RuntimeException("OpenAI returned empty choices.");
-        }
-
         Map<?, ?> message = (Map<?, ?>) ((Map<?, ?>) choices.get(0)).get("message");
         String jsonResponse = (String) message.get("content");
 
-        if (jsonResponse == null || jsonResponse.isBlank())
-            throw new RuntimeException("OpenAI returned empty content.");
-
         AIResponseDTO result = new ObjectMapper().readValue(jsonResponse, AIResponseDTO.class);
-        if (knownName != null) result.setCandidateName(knownName);
-        if (knownEmail != null) result.setCandidateEmail(knownEmail);
+
+        if (knownName != null && !knownName.isBlank()) result.setCandidateName(knownName);
+        if (knownEmail != null && !knownEmail.isBlank()) result.setCandidateEmail(knownEmail);
 
         return result;
     }
 
-    // Ham luu tru ket qua AI vao DB
     private AIAnalysisResult updateAndSaveResult(AIResponseDTO parsedData, CV cv, Application application) throws Exception {
         cv.setCandidateName(parsedData.getCandidateName());
         cv.setCandidateEmail(parsedData.getCandidateEmail());
@@ -302,7 +301,7 @@ public class CVProcessingService {
 
         List<String> skillList = new ArrayList<>();
         if (parsedData.getExtractedSkills() != null && !parsedData.getExtractedSkills().isBlank()) {
-            skillList = java.util.Arrays.stream(parsedData.getExtractedSkills().split(","))
+            skillList = Arrays.stream(parsedData.getExtractedSkills().split(","))
                     .map(String::trim)
                     .toList();
         }
