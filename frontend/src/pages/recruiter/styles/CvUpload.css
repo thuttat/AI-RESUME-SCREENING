@@ -4,10 +4,6 @@
     gap: 24px;
 }
 
-.page-header {
-    margin-bottom: 16px;
-}
-
 .subtitle {
     color: var(--muted-foreground);
     margin-top: 4px;

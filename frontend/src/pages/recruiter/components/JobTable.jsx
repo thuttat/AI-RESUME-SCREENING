@@ -3,7 +3,6 @@ import { Card, CardBody } from '../../../components/common/Card';
 import { Table, TableHeader, TableBody, TableRow, TableHead } from '../../../components/common/Table';
 import JobRow from "./JobRow.jsx";
 
-// 1. Thêm onEditJob và onViewJob vào đây
 const JobTable = ({ jobs, onToggleStatus, onDeleteJob, onEditJob, onViewJob }) => {
     return (
         <Card>

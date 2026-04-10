@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import UploadPanel from './components/UploadPanel';
 import ApplicationsList from './components/ApplicationsList';
 import './styles/CvUpload.css';
-import { JobService } from "../../api/JobService.js";
-import { CandidateService } from "../../api/CandidateService.js";
+import { JobService } from "../../apis/JobService.js";
+import { CandidateService } from "../../apis/CandidateService.js";
 
 export default function CvUpload() {
     const [jobs, setJobs] = useState([]);
@@ -95,9 +95,9 @@ export default function CvUpload() {
 
     return (
         <div className="cv-processor-wrapper p-6">
-             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900">Tải Hồ Sơ Ứng Viên</h1>
-                <p className="text-gray-500 text-sm">Upload và sử dụng AI để bóc tách dữ liệu CV tự động.</p>
+            <div>
+                <h1>Upload CVs</h1>
+                <p className="page-subtitle">Upload and Parse CVs with AI</p>
             </div>
 
             <UploadPanel

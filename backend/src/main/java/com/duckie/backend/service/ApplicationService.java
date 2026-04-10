@@ -1,5 +1,7 @@
 package com.duckie.backend.service;
 
+import com.duckie.backend.dto.RankedCandidateResponse;
+import com.duckie.backend.repository.JobPostingRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,9 +20,16 @@ public class ApplicationService {
     
     private final ApplicationRepository applicationRepository;
     private final EmailService emailService;
-    
-    public Page<Application> getRankedApplications(Long jobId, Pageable pageable) {
-        return applicationRepository.findRankedApplicationByJobId(jobId, pageable);
+    private final JobPostingRepository jobPostingRepository;
+    private final ApplicationMapper applicationMapper;
+
+    @Transactional(readOnly = true)
+    public Page<RankedCandidateResponse> getRankedApplications(Long jobId, Pageable pageable) {
+        if (!jobPostingRepository.existsById(jobId)) {
+            throw new ResourceNotFoundException("Job posting not found!");
+        }
+        Page<Application> applications = applicationRepository.findRankedApplicationByJobId(jobId, pageable);
+        return applications.map(applicationMapper::toRankedResponse);
     }
 
     @Transactional

@@ -4,7 +4,8 @@ import { Plus } from 'lucide-react';
 import JobTable from './components/JobTable';
 import JobFormModal from './components/JobFormModal';
 import './styles/JobManagement.css';
-import {JobService} from "../../api/JobService.js";
+import {JobService} from "../../apis/JobService.js";
+import Pagination from "./components/Pagination.jsx";
 
 
 export default function JobManagement() {
@@ -126,7 +127,7 @@ export default function JobManagement() {
         <div className="job-container">
             <div className="job-header">
                 <div>
-                    <h3>All Jobs</h3>
+                    <h1>All Jobs</h1>
                     <p className="page-subtitle">Manage job postings</p>
                 </div>
 
@@ -150,23 +151,7 @@ export default function JobManagement() {
 
             {jobs.length > 0 && (
                 <div className="pagination">
-                    <Button
-                        variant="outline"
-                        disabled={currentPage === 1}
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                    >
-                        Prev
-                    </Button>
-
-                    <span>Page {currentPage} / {totalPages}</span>
-
-                    <Button
-                        variant="primary"
-                        disabled={currentPage === totalPages}
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                    >
-                        Next
-                    </Button>
+                    <Pagination currentPage={currentPage - 1} setCurrentPage={setCurrentPage} totalPages={totalPages} />
                 </div>
             )}
 

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import { Modal } from '../../../components/common/Modal';
 import { Input } from '../../../components/common/Input';
 import { Button } from '../../../components/common/Button';
@@ -10,17 +10,25 @@ const JobFormModal = ({ isOpen, onClose, onSubmit, mode = 'create', initialData 
         skills: '',
     });
 
-    useEffect(() => {
-        if (initialData && (mode === 'edit' || mode === 'view')) {
-            setFormData({
-                title: initialData?.title || '',
-                description: initialData?.description || '',
-                skills: initialData?.requiredSkills || ''
-            });
-        } else {
-            setFormData({title: '', description: '', skills: ''});
+    const [prevIsOpen, setPrevIsOpen] = useState(false);
+    const [prevInitialData, setPrevInitialData] = useState(null);
+
+    if (isOpen !== prevIsOpen || initialData !== prevInitialData) {
+        setPrevIsOpen(isOpen);
+        setPrevInitialData(initialData);
+
+        if (isOpen) {
+            if (initialData && (mode === 'edit' || mode === 'view')) {
+                setFormData({
+                    title: initialData.title || '',
+                    description: initialData.description || '',
+                    skills: initialData.requiredSkills || ''
+                });
+            } else {
+                setFormData({ title: '', description: '', skills: '' });
+            }
         }
-    }, [initialData, mode]);
+    }
 
     const handleCloseModal = () => {
         setFormData({ title: '', description: '', skills: '' });
@@ -50,7 +58,7 @@ const JobFormModal = ({ isOpen, onClose, onSubmit, mode = 'create', initialData 
             title={modalTitle}
             footer={
                 <>
-                    <Button variant="outline" onClick={onClose}>
+                    <Button variant="outline" onClick={handleCloseModal}>
                         {isViewMode ? 'Close' : 'Cancel'}
                     </Button>
 
