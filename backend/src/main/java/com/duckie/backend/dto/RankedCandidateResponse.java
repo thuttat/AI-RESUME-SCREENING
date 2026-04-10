@@ -13,5 +13,6 @@ public record RankedCandidateResponse (
     Double matchScore,
     String extractedSkills,
     Double yearsOfExperience,
-    String critique
+    String critique,
+    Boolean hasSentEmail
 ) {}

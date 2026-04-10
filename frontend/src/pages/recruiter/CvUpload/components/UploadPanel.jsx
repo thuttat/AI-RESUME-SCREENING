@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from "../../../components/common/Button.jsx";
+import {Button} from "../../../../components/common/Button.jsx";
 
 const UploadPanel = ({
                          selectedFiles,

@@ -49,13 +49,13 @@ public class SecurityConfig {
                 
                 .requestMatchers("/h2-console/**").permitAll()
                 
-                .requestMatchers("/api/recruiter/**").hasAnyRole("RECUITER", "RECRUITER", "ADMIN")
+                .requestMatchers("/api/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")
                 
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN") 
 
                 .requestMatchers("/api/job-templates/**").hasRole("ADMIN")
-                .requestMatchers("/api/email-templates/**").hasRole("ADMIN")
+                .requestMatchers("/api/email-templates/**").hasAnyRole("RECRUITER", "ADMIN")
                 .requestMatchers("/api/admin/dashboard").hasRole("ADMIN")
                 
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import InfoRow from './InfoRow';
-import {Button} from "../../../components/common/Button.jsx";
+import InfoRow from './InfoRow.jsx';
+import {Button} from "../../../../components/common/Button.jsx";
 
 const ApplicationCard = ({ app, onParse, onRemove }) => {
     const s = app.status;

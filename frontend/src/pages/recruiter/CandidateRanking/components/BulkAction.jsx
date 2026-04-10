@@ -1,4 +1,4 @@
-import { Button } from '../../../components/common/Button';
+import { Button } from '../../../../components/common/Button.jsx';
 
 export default function BulkActions({ selected, setSelected, onAction }) {
 

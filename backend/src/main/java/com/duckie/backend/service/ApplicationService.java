@@ -1,8 +1,10 @@
 package com.duckie.backend.service;
 
+import com.duckie.backend.dto.EmailRecipientResponse;
 import com.duckie.backend.dto.RankedCandidateResponse;
 import com.duckie.backend.repository.JobPostingRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +15,8 @@ import com.duckie.backend.exception.ResourceNotFoundException;
 import com.duckie.backend.repository.ApplicationRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -52,5 +56,22 @@ public class ApplicationService {
     public Application getApplicationById(Long applicationId) {
         return applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Application not found!"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<EmailRecipientResponse> getEmailRecipients(Long jobId) {
+        Pageable pageable = PageRequest.of(0, 1000);
+
+        Page<Application> applications = applicationRepository.findByJobPostingIdAndStatus(jobId, null, pageable);
+
+        return applications.stream()
+                .map(app -> new EmailRecipientResponse(
+                        app.getId(),
+                        app.getCV() != null ? app.getCV().getCandidateName() : "N/A",
+                        app.getCV() != null ? app.getCV().getCandidateEmail() : "N/A",
+                        app.getStatus(),
+                        app.getEmailLogs() != null && !app.getEmailLogs().isEmpty()
+                ))
+                .toList();
     }
 }

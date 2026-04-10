@@ -1,6 +1,6 @@
 import React from 'react';
-import { TableRow, TableCell } from '../../../components/common/Table';
-import { Badge } from '../../../components/common/Badge';
+import { TableRow, TableCell } from '../../../../components/common/Table.jsx';
+import { Badge } from '../../../../components/common/Badge.jsx';
 import { Eye, Edit, Trash2 } from 'lucide-react';
 
 const JobRow = ({ job, onToggleStatus, onDeleteJob, onViewJob, onEditJob }) => {

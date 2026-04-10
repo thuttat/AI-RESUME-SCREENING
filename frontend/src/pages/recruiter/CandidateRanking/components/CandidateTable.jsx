@@ -1,5 +1,5 @@
-import {Table, TableHeader, TableBody, TableRow, TableHead} from '../../../components/common/Table';
-import CandidateRow from './CandidateRow';
+import {Table, TableHeader, TableBody, TableRow, TableHead} from '../../../../components/common/Table.jsx';
+import CandidateRow from './CandidateRow.jsx';
 
 export default function CandidateTable({
                                            loading,

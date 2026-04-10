@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardHeader, CardBody } from '../../components/common/Card.jsx';
-import { JobService } from "../../apis/JobService.js";
-import { CandidateService } from "../../apis/CandidateService.js";
+import { Card, CardHeader, CardBody } from '../../../components/common/Card.jsx';
+import { JobService } from "../../../apis/JobService.js";
+import { CandidateService } from "../../../apis/CandidateService.js";
 
-import JobSelector from './components/JobSelector';
-import CandidateTable from './components/CandidateTable';
-import BulkAction from './components/BulkAction';
-import Pagination from './components/Pagination';
+import JobSelector from './components/JobSelector.jsx';
+import CandidateTable from './components/CandidateTable.jsx';
+import BulkAction from './components/BulkAction.jsx';
+import Pagination from '../../../components/common/Pagination.jsx';
 
-import './styles/CandidateRanking.css';
-import {Button} from "../../components/common/Button.jsx";
+import './CandidateRanking.css';
+import {Button} from "../../../components/common/Button.jsx";
 import {Filter, Search} from "lucide-react";
 
 export default function CandidateRanking() {

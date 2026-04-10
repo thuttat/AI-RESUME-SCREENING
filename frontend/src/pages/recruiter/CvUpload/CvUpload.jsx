@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import UploadPanel from './components/UploadPanel';
-import ApplicationsList from './components/ApplicationsList';
-import './styles/CvUpload.css';
-import { JobService } from "../../apis/JobService.js";
-import { CandidateService } from "../../apis/CandidateService.js";
+import UploadPanel from './components/UploadPanel.jsx';
+import ApplicationsList from './components/ApplicationsList.jsx';
+import './CvUpload.css';
+import { JobService } from "../../../apis/JobService.js";
+import { CandidateService } from "../../../apis/CandidateService.js";
 
 export default function CvUpload() {
     const [jobs, setJobs] = useState([]);

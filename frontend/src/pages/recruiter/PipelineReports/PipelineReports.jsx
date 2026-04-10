@@ -1,4 +1,4 @@
-export default function Email() {
+export default function PipelineReports() {
     return (
         <div>
             <h1>Job Management</h1>

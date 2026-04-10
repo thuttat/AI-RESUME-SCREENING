@@ -1,4 +1,4 @@
-import { Button } from '../../../components/common/Button';
+import { Button } from './Button.jsx';
 
 export default function Pagination({ currentPage, totalPages, setCurrentPage }) {
 

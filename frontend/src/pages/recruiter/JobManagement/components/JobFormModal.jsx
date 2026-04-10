@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Modal } from '../../../components/common/Modal';
-import { Input } from '../../../components/common/Input';
-import { Button } from '../../../components/common/Button';
+import { Modal } from '../../../../components/common/Modal.jsx';
+import { Input } from '../../../../components/common/Input.jsx';
+import { Button } from '../../../../components/common/Button.jsx';
 
 const JobFormModal = ({ isOpen, onClose, onSubmit, mode = 'create', initialData = null }) => {
     const [formData, setFormData] = useState({

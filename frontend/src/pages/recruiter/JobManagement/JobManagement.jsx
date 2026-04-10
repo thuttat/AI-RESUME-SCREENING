@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import { Button } from '../../components/common/Button';
+import { Button } from '../../../components/common/Button.jsx';
 import { Plus } from 'lucide-react';
-import JobTable from './components/JobTable';
-import JobFormModal from './components/JobFormModal';
-import './styles/JobManagement.css';
-import {JobService} from "../../apis/JobService.js";
-import Pagination from "./components/Pagination.jsx";
+import JobTable from './components/JobTable.jsx';
+import JobFormModal from './components/JobFormModal.jsx';
+import './JobManagement.css';
+import {JobService} from "../../../apis/JobService.js";
+import Pagination from "../../../components/common/Pagination.jsx";
 
 
 export default function JobManagement() {

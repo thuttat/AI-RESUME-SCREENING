@@ -62,4 +62,30 @@ public class EmailService {
         return rawText.replace("[CandidateName]", application.getCV().getCandidateName())
                 .replace("[JobTitle]", application.getJobPosting().getTitle());
     }
+
+    public void sendCustomNotificationEmail(Application application, String rawSubject, String rawBody) {
+        String subject = fillTemplateVariables(rawSubject, application);
+        String body = fillTemplateVariables(rawBody, application);
+
+        EmailLog emailLog = EmailLog.builder()
+                .application(application)
+                .subject(subject)
+                .body(body)
+                .status(EmailStatus.PENDING)
+                .build();
+        emailLog = emailLogRepository.save(emailLog);
+
+        try {
+            rabbitTemplate.convertAndSend(
+                RabbitMQConfig.EMAIL_EXCHANGE,
+                RabbitMQConfig.EMAIL_ROUTING_KEY,
+                emailLog.getId()
+            );
+            log.info("Đã đưa email tùy chỉnh (Log ID: {}) vào hàng đợi", emailLog.getId());
+        } catch (Exception e) {
+            log.error("Lỗi khi đưa email tùy chỉnh vào RabbitMQ (Log ID: {})", emailLog.getId(), e);
+            emailLog.setStatus(EmailStatus.FAILED);
+            emailLogRepository.save(emailLog);
+        }
+    }
 }

@@ -5,12 +5,12 @@ import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import PrivateRoute from "./pages/auth/PrivateRoute.jsx"; 
 
-import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard.jsx";
-import JobManagement from "./pages/recruiter/JobManagement.jsx";
-import CvUpload from "./pages/recruiter/CvUpload.jsx";
-import CandidateRanking from "./pages/recruiter/CandidateRanking.jsx";
-import EmailNotifications from "./pages/recruiter/EmailNotifications.jsx";
-import Pipeline from "./pages/recruiter/Pipeline.jsx";
+import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard/RecruiterDashboard.jsx";
+import JobManagement from "./pages/recruiter/JobManagement/JobManagement.jsx";
+import CvUpload from "./pages/recruiter/CvUpload/CvUpload.jsx";
+import CandidateRanking from "./pages/recruiter/CandidateRanking/CandidateRanking.jsx";
+import EmailNotifications from "./pages/recruiter/EmailNotifications/EmailNotifications.jsx";
+import PipelineReports from "./pages/recruiter/PipelineReports/PipelineReports.jsx";
 
 import HiringManagerDashboard from "./pages/hiring-manager/HiringManagerDashboard.jsx";
 import CandidatePipeline from "./pages/hiring-manager/CandidatePipeline.jsx";
@@ -43,7 +43,7 @@ export default function App() {
                         <Route path="upload" element={<CvUpload />} />
                         <Route path="ranking" element={<CandidateRanking />} />
                         <Route path="email" element={<EmailNotifications />} />
-                        <Route path="pipeline" element={<Pipeline />} />
+                        <Route path="pipeline" element={<PipelineReports />} />
                     </Route>
 
                     <Route

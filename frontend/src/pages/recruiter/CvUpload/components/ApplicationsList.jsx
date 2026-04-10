@@ -1,6 +1,6 @@
 import React from 'react';
-import ApplicationCard from './ApplicationCard';
-import {Button} from "../../../components/common/Button.jsx";
+import ApplicationCard from './ApplicationCard.jsx';
+import {Button} from "../../../../components/common/Button.jsx";
 
 const ApplicationsList = ({ applications, onParse, onRemove, onParseAll }) => {
     return (

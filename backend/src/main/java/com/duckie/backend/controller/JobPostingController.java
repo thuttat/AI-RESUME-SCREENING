@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import com.duckie.backend.dto.EmailRecipientResponse;
 import com.duckie.backend.dto.RankedCandidateResponse;
 import com.duckie.backend.service.ApplicationService;
 import org.springframework.data.domain.Page;
@@ -93,5 +94,12 @@ public class JobPostingController {
         Pageable pageable = PageRequest.of(page, size);
         Page<RankedCandidateResponse> response = applicationService.getRankedApplications(id, pageable);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/emails-recipients")
+    @PreAuthorize("hasAnyRole('RECRUITER', 'ADMIN')")
+    public ResponseEntity<List<EmailRecipientResponse>> getEmailRecipients(
+            @PathVariable("id") Long jobId) {
+        return ResponseEntity.ok(applicationService.getEmailRecipients(jobId));
     }
 }

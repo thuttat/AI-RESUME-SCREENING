@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardBody } from '../../../components/common/Card';
-import { Table, TableHeader, TableBody, TableRow, TableHead } from '../../../components/common/Table';
+import { Card, CardBody } from '../../../../components/common/Card.jsx';
+import { Table, TableHeader, TableBody, TableRow, TableHead } from '../../../../components/common/Table.jsx';
 import JobRow from "./JobRow.jsx";
 
 const JobTable = ({ jobs, onToggleStatus, onDeleteJob, onEditJob, onViewJob }) => {

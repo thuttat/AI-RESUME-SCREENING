@@ -29,6 +29,8 @@ public class ApplicationMapper {
 
         AIAnalysisResult aiAnalysisResult = application.getCV() != null ? application.getCV().getAiAnalysisResult() : null;
 
+        boolean hasSentEmail = application.getEmailLogs() != null && !application.getEmailLogs().isEmpty();
+
         return new RankedCandidateResponse(
                 application.getId(),
                 application.getJobPosting() != null ? application.getJobPosting().getId() : null,
@@ -39,7 +41,8 @@ public class ApplicationMapper {
                 aiAnalysisResult != null ? aiAnalysisResult.getMatchScore() : null,
                 aiAnalysisResult != null ? aiAnalysisResult.getExtractedSkills() : null,
                 aiAnalysisResult != null ? aiAnalysisResult.getYearsOfExperience() : null,
-                aiAnalysisResult != null ? aiAnalysisResult.getCritique() : null
+                aiAnalysisResult != null ? aiAnalysisResult.getCritique() : null,
+                hasSentEmail
         );
     }
 }

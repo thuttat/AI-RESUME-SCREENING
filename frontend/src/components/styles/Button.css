@@ -58,6 +58,10 @@
     background: transparent;
 }
 
+.btn-muted {
+    background: var(--muted);
+}
+
 .btn:hover {
     opacity: 0.9;
 }

@@ -1,4 +1,4 @@
-import { Badge } from '../../../components/common/Badge';
+import { Badge } from '../../../../components/common/Badge.jsx';
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
 
 export default function CandidateRow({
