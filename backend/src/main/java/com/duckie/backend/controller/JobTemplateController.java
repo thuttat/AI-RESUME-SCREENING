@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,6 +32,7 @@ public class JobTemplateController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'HIRING_MANAGER', 'RECRUITER')")
     public ResponseEntity<PaginationResponse<JobTemplateResponse>>getAllTemplate(
         @RequestParam(required = false) String search,
         @RequestParam(defaultValue = "0") int page,
@@ -49,18 +51,21 @@ public class JobTemplateController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HIRING_MANAGER', 'RECRUITER')")
     public ResponseEntity<JobTemplateResponse> getTemplateById(@PathVariable Long id) {
         JobTemplateResponse response = jobTemplateService.findById(id);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     public ResponseEntity<JobTemplateResponse> createTemplate(@RequestBody JobTemplateRequest request) {
         JobTemplateResponse response = jobTemplateService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     public ResponseEntity<JobTemplateResponse> updateTemplate(
             @PathVariable Long id, 
             @RequestBody JobTemplateRequest request) {
@@ -69,6 +74,7 @@ public class JobTemplateController {
     }
     
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     public ResponseEntity<JobTemplateResponse> patchUpdateTemplate(
             @PathVariable Long id, 
             @RequestBody JobTemplateRequest request) {
@@ -77,6 +83,7 @@ public class JobTemplateController {
     }
     
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     public ResponseEntity<Void> deleteTemplate(@PathVariable Long id) {
         jobTemplateService.delete(id);
         return ResponseEntity.noContent().build();
