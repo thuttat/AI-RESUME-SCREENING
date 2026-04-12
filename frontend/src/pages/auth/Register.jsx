@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../axiosConfig.js";
+import api from "../../api/AxiosClient";
 import { Button } from "../../components/common/Button.jsx";
 import "../../styles/auth.css";
 

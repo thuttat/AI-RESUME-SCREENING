@@ -7,6 +7,14 @@ import { menuItems } from "../../utils/MenuConfig.js";
 export default function Sidebar({ currentRole, collapsed, onToggleCollapse }) {
     const roleKey = currentRole || "";
     const items = menuItems[roleKey] || [];
+    const getRoutePrefix = (role) => {
+        if (role === "HIRING_MANAGER") return "manager";
+        if (role === "RECRUITER") return "recruiter";
+        if (role === "ADMIN") return "admin";
+        return "";
+    };
+
+    const routePrefix = getRoutePrefix(roleKey);
 
     return (
         <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
@@ -20,7 +28,7 @@ export default function Sidebar({ currentRole, collapsed, onToggleCollapse }) {
             <nav className="sidebar-menu">
                 {items.map((item) => {
                     const Icon = item.icon;
-                    const path = `/${roleKey}${item.path}`;
+                    const path = `/${routePrefix}${item.path}`;
 
                     return (
                         <NavLink

@@ -1,6 +1,7 @@
 package com.duckie.backend.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,6 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
 
     @Query("SELECT AVG(e.rating) FROM Evaluation e WHERE e.application.id = :appId")
     Double getAverageRatingByApplication(Long appId);
+
+    Optional<Evaluation> findByApplicationIdAndEvaluatorId(Long applicationId, Long evaluatorId);
 }

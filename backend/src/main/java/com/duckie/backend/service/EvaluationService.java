@@ -41,28 +41,24 @@ public class EvaluationService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng: " + username)));
     }
 
-    @Transactional
-    public EvaluationResponse createEvaluation(Long applicationId, EvaluationRequest request) {
-        User evaluator = getCurrentUser();
+        @Transactional
+        public EvaluationResponse createEvaluation(Long applicationId, EvaluationRequest request) {
+            User evaluator = getCurrentUser();
+            Application application = applicationRepository.findById(applicationId)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy hồ sơ"));
 
-        Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy hồ sơ ứng viên ID: " + applicationId));
+            Evaluation evaluation = evaluationRepository
+                    .findByApplicationIdAndEvaluatorId(applicationId, evaluator.getId())
+                    .orElse(new Evaluation()); 
 
-        if (evaluationRepository.existsByApplicationIdAndEvaluatorId(applicationId, evaluator.getId())) {
-            throw new RuntimeException("Bạn đã thực hiện đánh giá cho ứng viên này rồi.");
+            evaluation.setApplication(application);
+            evaluation.setEvaluator(evaluator);
+            evaluation.setRating(request.rating());
+            evaluation.setFeedback(request.feedback());
+
+            Evaluation saved = evaluationRepository.save(evaluation);
+            return evaluationMapper.toResponse(saved);
         }
-
-        Evaluation evaluation = Evaluation.builder()
-                .application(application)
-                .evaluator(evaluator)
-                .rating(request.rating())
-                .feedback(request.feedback())
-                .build();
-
-        Evaluation saved = evaluationRepository.save(evaluation);
-
-        return evaluationMapper.toResponse(saved);
-    }
 
     @Transactional(readOnly = true)
     public List<EvaluationResponse> getEvaluationsByApplication(Long applicationId) {

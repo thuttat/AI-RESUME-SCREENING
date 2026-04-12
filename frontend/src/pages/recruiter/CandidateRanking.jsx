@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../../services/api";
+import api from "../../api/AxiosClient";
 
 // Import các Base Components của bạn
 import { Card } from "../../components/common/Card";

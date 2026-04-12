@@ -4,11 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,108 +16,88 @@ import com.duckie.backend.dto.EmailTemplateRequest;
 import com.duckie.backend.dto.EmailTemplateResponse;
 import com.duckie.backend.dto.PaginationResponse;
 import com.duckie.backend.entity.EmailTemplate;
+import com.duckie.backend.exception.ResourceNotFoundException;
+import com.duckie.backend.service.EmailTemplateMapper;
 import com.duckie.backend.repository.EmailTemplateRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
-public class EmailTemplateService implements IEmailTemplateService {
-    private static final Logger logger=LoggerFactory.getLogger(EmailTemplateService.class); 
+@RequiredArgsConstructor
+public class EmailTemplateService {
 
     private final EmailTemplateRepository emailTemplateRepository;
-
     private final EmailTemplateMapper emailTemplateMapper;
-
-    private final EmailRenderService emailRenderService;
-
-    public EmailTemplateService(EmailTemplateRepository emailTemplateRepository, EmailTemplateMapper emailTemplateMapper, EmailRenderService emailRenderService) {
-        this.emailTemplateRepository = emailTemplateRepository;
-        this.emailTemplateMapper = emailTemplateMapper;
-        this.emailRenderService = emailRenderService;
-    }
-
     @Transactional(readOnly = true)
     public PaginationResponse<EmailTemplateResponse> findAll(String search, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<EmailTemplate> pageResult = emailTemplateRepository.findAllBySearch(search, pageable);
-
-        List<EmailTemplateResponse> content = pageResult.getContent().stream()
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<EmailTemplate> templatePage = emailTemplateRepository.searchTemplates(search, pageable);
+        List<EmailTemplateResponse> content = templatePage.getContent().stream()
                 .map(emailTemplateMapper::toResponse)
                 .collect(Collectors.toList());
-
         return PaginationResponse.<EmailTemplateResponse>builder()
                 .content(content)
-                .pageNo(pageResult.getNumber())
-                .pageSize(pageResult.getSize())
-                .totalElements(pageResult.getTotalElements())
-                .totalPages(pageResult.getTotalPages())
-                .last(pageResult.isLast())
+                .pageNo(templatePage.getNumber())
+                .pageSize(templatePage.getSize())
+                .totalElements(templatePage.getTotalElements())
+                .totalPages(templatePage.getTotalPages())
+                .last(templatePage.isLast())
                 .build();
     }
 
     @Transactional
     public EmailTemplateResponse create(EmailTemplateRequest request) {
-        EmailTemplate template = EmailTemplate.builder()
-                .templateName(request.templateName())
-                .subject(request.subject())
-                .body(request.body())
-                .isActive(true)
-                .build();
-                
-        template = emailTemplateRepository.save(template);
-        logger.info("Created new email template with id: {}", template.getId());
-        return emailTemplateMapper.toResponse(template);
+        if (request.templateName() != null && !request.templateName().isBlank()) {
+            if (emailTemplateRepository.findByTemplateName(request.templateName()).isPresent()) {
+                throw new RuntimeException("Tên Template '" + request.templateName() + "' đã tồn tại!");
+            }
+        }
+
+        EmailTemplate template = emailTemplateMapper.toEntity(request);
+        EmailTemplate savedTemplate = emailTemplateRepository.save(template);
+        
+        return emailTemplateMapper.toResponse(savedTemplate);
     }
 
     @Transactional
     public EmailTemplateResponse update(Long id, EmailTemplateRequest request) {
         EmailTemplate template = emailTemplateRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Email template not found by Id: " + id));
-        template.setTemplateName(request.templateName());
-        template.setSubject(request.subject());
-        template.setBody(request.body());
-        
-        template = emailTemplateRepository.save(template);
-        logger.info("Updated email template with id: {}", template.getId());
-        return emailTemplateMapper.toResponse(template);
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy mẫu Email ID: " + id));
+
+        emailTemplateMapper.updateEntityFromRequest(request, template);
+
+        EmailTemplate updatedTemplate = emailTemplateRepository.save(template);
+        return emailTemplateMapper.toResponse(updatedTemplate);
     }
 
     @Transactional
     public void delete(Long id) {
-       EmailTemplate template = emailTemplateRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Email template not found by Id: " + id));
-        
-        template.setIsActive(false);
-        emailTemplateRepository.save(template);
-        logger.info("Deleted email template with id: {}", id);
+        if (!emailTemplateRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Không tìm thấy mẫu Email ID: " + id);
+        }
+        emailTemplateRepository.deleteById(id);
     }
-
     @Transactional(readOnly = true)
-    public EmailPreviewResponse preview(Long id, Map<String, String> variables) {
+    public EmailPreviewResponse preview(Long id, Map<String, String> mockData) {
         EmailTemplate template = emailTemplateRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Email template not found by Id: " + id));
-        String renderedSubject = emailRenderService.renderContent(template.getSubject(), variables);
-        String renderedBody = emailRenderService.renderContent(template.getBody(), variables);
-        return new EmailPreviewResponse(renderedSubject, renderedBody);
-    }    
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy mẫu Email ID: " + id));
 
+        String previewSubject = template.getSubject();
+        String previewBody = template.getBody();
 
-    @Override
-    public EmailTemplate createEmailTemplate(EmailTemplate emailTemplate) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (mockData != null && !mockData.isEmpty()) {
+            for (Map.Entry<String, String> entry : mockData.entrySet()) {
+                String placeholder = "[" + entry.getKey() + "]";
+                
+                if (previewSubject != null) {
+                    previewSubject = previewSubject.replace(placeholder, entry.getValue());
+                }
+                if (previewBody != null) {
+                    previewBody = previewBody.replace(placeholder, entry.getValue());
+                }
+            }
+        }
+
+        return new EmailPreviewResponse(previewSubject, previewBody);
     }
-
-    @Override
-    public EmailTemplate updateEmailTemplate(Long id, EmailTemplate emailTemplate) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void deleteEmailTemplate(Long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public PaginationResponse<EmailTemplateResponse> findAllEmailTemplate(String search, int page, int size) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
 }

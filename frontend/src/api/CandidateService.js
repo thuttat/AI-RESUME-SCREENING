@@ -9,7 +9,7 @@ export const CandidateService = {
             formdata.append('files', file);
         });
 
-        return axiosClient.post('/api/recruiter/upload', formdata, {
+        return axiosClient.post('/recruiter/upload', formdata, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -17,6 +17,6 @@ export const CandidateService = {
     },
 
     parseCv: (applicationId) => {
-        return axiosClient.post(`/api/recruiter/parse/${applicationId}`);
+        return axiosClient.post(`/recruiter/parse/${applicationId}`);
     }
 }

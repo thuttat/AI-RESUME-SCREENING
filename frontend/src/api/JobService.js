@@ -2,26 +2,26 @@ import axiosClient from "./AxiosClient.js";
 
 export const JobService = {
     getOwnJobs: () => {
-        return axiosClient.get('/api/recruiter/jobs');
+        return axiosClient.get('/jobs');
     },
 
     getJob: (id) => {
-        return axiosClient.get(`/api/recruiter/jobs/${id}`);
+        return axiosClient.get(`/jobs/${id}`);
     },
 
     createJob: (job) => {
-        return axiosClient.post('/api/recruiter/jobs', job);
+        return axiosClient.post('/jobs', job);
     },
 
     updateJob: (id, job) => {
-        return axiosClient.put(`/api/recruiter/jobs/${id}`, job);
+        return axiosClient.put(`/jobs/${id}`, job);
     },
 
     toggleStatus: (id) => {
-        return axiosClient.patch(`/api/recruiter/jobs/${id}/status`);
+        return axiosClient.patch(`/jobs/${id}/status`);
     },
 
     deleteJob: (id) => {
-        return axiosClient.delete(`/api/recruiter/jobs/${id}`);
+        return axiosClient.delete(`/jobs/${id}`);
     }
 }

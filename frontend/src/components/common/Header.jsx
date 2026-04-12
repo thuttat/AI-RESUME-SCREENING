@@ -30,7 +30,7 @@ export default function Header({ currentRole }) {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await AxiosClient.get("/api/auth/me");
+                const response = await AxiosClient.get("/auth/me");
                 setUserInfo(response.data);
             } catch (error) {
                 console.log(error);

@@ -1,38 +1,35 @@
 import axios from "axios";
 
-const axiosClient = axios.create({
-    baseURL: '/api',
+
+const API_BASE_URL = "http://localhost:8080/api";
+
+const api = axios.create({
+    baseURL: API_BASE_URL,
+    timeout: 10000,
     headers: {
         "Content-Type": "application/json",
     }
 });
 
-axiosClient.interceptors.request.use((config) => {
+api.interceptors.request.use((config) => {
     const token = localStorage.getItem("accessToken");
     if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
+        config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
-}, (err) => {
-    return Promise.reject(err);
-});
+}, (error) => Promise.reject(error));
 
-axiosClient.interceptors.response.use(
-    (response) => {
-        return response;
-    },
+api.interceptors.response.use(
+    (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
             console.error("Phiên đăng nhập hết hạn hoặc không hợp lệ!");
-            
             localStorage.removeItem("accessToken");
             localStorage.removeItem("role");
-            
             window.location.href = "/";
         }
-
         return Promise.reject(error);
     }
 );
 
-export default axiosClient;
+export default api;

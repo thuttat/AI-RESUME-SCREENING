@@ -14,8 +14,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
         boolean existsByCvIdAndJobPostingId(Long id, Long jobPostingId);
 
         @Query("SELECT a FROM Application a WHERE " +
-                        "a.jobPosting.id = :jobId AND " +
-                        "(:status IS NULL OR a.status = :status)")
+                "(:jobId IS NULL OR a.jobPosting.id = :jobId) AND " +
+                "(:status IS NULL OR a.status = :status)")
         Page<Application> findByJobPostingIdAndStatus(@Param("jobId") Long jobId, @Param("status") Status status,
                         Pageable pageable);
 
@@ -32,4 +32,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
         boolean existsDuplicateByEmailForJob(@Param("email") String email,
                         @Param("jobId") Long jobId,
                         @Param("currentCvId") Long currentCvId);
+        Page<Application> findByJobPostingId(Long jobId, Pageable pageable);
+
 }

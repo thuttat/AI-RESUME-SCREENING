@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
-import api from "../../services/api";
-
-// Import đúng bộ nhận diện thương hiệu của bạn
+import { useNavigate } from "react-router-dom"; // Thêm điều hướng
+import api from "../../api/AxiosClient";
 import { Card } from "../../components/common/Card";
-import { Table } from "../../components/common/Table";
 import { Badge } from "../../components/common/Badge";
 import { Button } from "../../components/common/Button";
 
-// Icons để trang trí cho "Sếp"
 import { 
     Users, 
     Clock, 
     UserCheck, 
     UserX, 
     TrendingUp, 
-    ArrowRight 
+    ArrowRight,
+    Pencil,
+    X
 } from "lucide-react";
 
 export default function HiringManagerDashboard() {
+    const navigate = useNavigate();
     const [stats, setStats] = useState({
         total: 0,
         pending: 0,
@@ -26,6 +26,8 @@ export default function HiringManagerDashboard() {
     });
     const [recentApps, setRecentApps] = useState([]);
     const [loading, setLoading] = useState(false);
+    
+    const [editingApp, setEditingApp] = useState(null);
 
     useEffect(() => {
         fetchDashboardData();
@@ -34,24 +36,35 @@ export default function HiringManagerDashboard() {
     const fetchDashboardData = async () => {
         try {
             setLoading(true);
-            // Giả sử bạn có endpoint tổng hợp hoặc lấy từ danh sách
             const response = await api.get("/applications");
-            const data = response.data.content || [];
-            
-            // Tính toán nhanh số liệu (Mock logic)
+            const data = response.data.content || response.data || [];
+
             setStats({
                 total: data.length,
                 pending: data.filter(a => a.status === 'PENDING').length,
                 hired: data.filter(a => a.status === 'HIRED').length,
                 rejected: data.filter(a => a.status === 'REJECT').length,
             });
-            
-            // Lấy 5 ứng viên mới nhất để hiện ở trang chủ
+
             setRecentApps(data.slice(0, 5));
         } catch (error) {
             console.error("Lỗi khi tải dữ liệu Dashboard:", error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const updateStatus = async (appId, newStatus) => {
+        try {
+            await api.patch(`/applications/${appId}/status`, { 
+                status: newStatus,
+                note: "Cập nhật nhanh từ Dashboard" 
+            });
+            alert("Cập nhật thành công!");
+            setEditingApp(null); 
+            fetchDashboardData(); 
+        } catch (error) {
+            alert("Lỗi khi cập nhật!");
         }
     };
 
@@ -63,7 +76,7 @@ export default function HiringManagerDashboard() {
                 <p className="text-gray-500 text-sm">Tổng quan tiến độ tuyển dụng và các hồ sơ cần phê duyệt.</p>
             </div>
 
-            {/* 2. Stats Grid - Dùng Card của bạn */}
+            {/* 2. Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <Card className="p-4 border-l-4 border-blue-500 shadow-sm">
                     <div className="flex items-center justify-between">
@@ -114,7 +127,7 @@ export default function HiringManagerDashboard() {
                 </Card>
             </div>
 
-            {/* 3. Main Content - Recent Activity Table */}
+            {/* 3. Main Content */}
             <div className="grid grid-cols-1 gap-6">
                 <Card className="p-0 overflow-hidden border-none shadow-lg">
                     <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white">
@@ -122,7 +135,12 @@ export default function HiringManagerDashboard() {
                             <TrendingUp size={18} className="text-blue-500" />
                             Ứng viên mới cần phản hồi
                         </h3>
-                        <Button variant="outline" size="sm" className="text-blue-600 border-blue-200">
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="text-blue-600 border-blue-200"
+                            onClick={() => navigate("/manager/pipeline?filter=ALL")}
+                        >
                             Xem tất cả <ArrowRight size={14} className="ml-1" />
                         </Button>
                     </div>
@@ -142,16 +160,20 @@ export default function HiringManagerDashboard() {
                                     <tr>
                                         <td colSpan="4" className="px-6 py-8 text-center text-gray-400">Đang tải dữ liệu...</td>
                                     </tr>
+                                ) : recentApps.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="4" className="px-6 py-8 text-center text-gray-400">Không có ứng viên nào.</td>
+                                    </tr>
                                 ) : recentApps.map((app) => (
                                     <tr key={app.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex flex-col">
-                                                <span className="font-medium text-gray-900">{app.cv?.candidateName}</span>
-                                                <span className="text-xs text-gray-500">{app.cv?.candidateEmail}</span>
+                                                <span className="font-medium text-gray-900">{app.candidateName}</span>
+                                                <span className="text-xs text-gray-500">{app.candidateEmail}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-600">
-                                            {app.jobPosting?.title}
+                                            {app.jobTitle}
                                         </td>
                                         <td className="px-6 py-4">
                                             <Badge variant={app.status?.toLowerCase()}>
@@ -159,8 +181,13 @@ export default function HiringManagerDashboard() {
                                             </Badge>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <Button variant="ghost" size="sm" className="text-blue-600">
-                                                Chi tiết
+                                            <Button 
+                                                variant="ghost" 
+                                                size="sm" 
+                                                className="text-blue-600" 
+                                                onClick={() => setEditingApp(app)}
+                                            >
+                                                <Pencil size={16} />
                                             </Button>
                                         </td>
                                     </tr>
@@ -170,6 +197,30 @@ export default function HiringManagerDashboard() {
                     </div>
                 </Card>
             </div>
+
+            {/* MODAL SỬA NHANH TRẠNG THÁI */}
+            {editingApp && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-xl shadow-xl w-80">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-bold">Đổi trạng thái nhanh</h3>
+                            <button onClick={() => setEditingApp(null)}><X size={18}/></button>
+                        </div>
+                        <p className="text-sm text-gray-500 mb-4 font-medium">{editingApp.candidateName}</p>
+                        <select 
+                            defaultValue={editingApp.status}
+                            onChange={(e) => updateStatus(editingApp.id, e.target.value)}
+                            className="w-full p-2 border rounded-lg mb-4 outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="PENDING">PENDING</option>
+                            <option value="SHORTLIST">SHORTLIST</option>
+                            <option value="HIRED">HIRED</option>
+                            <option value="REJECT">REJECT</option>
+                        </select>
+                        <Button fullWidth onClick={() => setEditingApp(null)} variant="outline">Hủy</Button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

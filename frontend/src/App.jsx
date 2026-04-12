@@ -15,8 +15,11 @@ import Pipeline from "./pages/recruiter/Pipeline.jsx";
 import HiringManagerDashboard from "./pages/hiring-manager/HiringManagerDashboard.jsx";
 import CandidatePipeline from "./pages/hiring-manager/CandidatePipeline.jsx";
 import EmailTracking from "./pages/hiring-manager/EmailTracking.jsx";
+import CandidateComparison from "./pages/hiring-manager/CandidateComparison.jsx";
 
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+// SỬA LỖI ĐƯỜNG DẪN Ở ĐÂY:
+import EmailTemplates from "./pages/hiring-manager/EmailTemplates.jsx";
 
 import "./App.css";
 
@@ -47,7 +50,7 @@ export default function App() {
                 <Route
                     path="/manager/*"
                     element={
-                        <PrivateRoute allowedRoles={["MANAGER"]}>
+                        <PrivateRoute allowedRoles={["HIRING_MANAGER"]}>
                             <BaseLayout />
                         </PrivateRoute>
                     }
@@ -56,6 +59,8 @@ export default function App() {
                     <Route path="dashboard" element={<HiringManagerDashboard />} />
                     <Route path="pipeline" element={<CandidatePipeline />} />
                     <Route path="email-logs" element={<EmailTracking />} />
+                    <Route path="comparison" element={<CandidateComparison />} />
+                    <Route path="email-templates" element={<EmailTemplates />} />
                 </Route>
 
                 <Route
@@ -69,7 +74,6 @@ export default function App() {
                     <Route index element={<AdminDashboard />} />
                     <Route path="dashboard" element={<AdminDashboard />} />
                 </Route>
-
             </Routes>
         </BrowserRouter>
     );

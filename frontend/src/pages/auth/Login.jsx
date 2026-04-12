@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import "../../styles/auth.css";
 import { Button } from "../../components/common/Button.jsx";
-import api from "../../axiosConfig.js";
+import api from "../../api/AxiosClient";
 
 function Login() {
     const [formData, setFormData] = useState({

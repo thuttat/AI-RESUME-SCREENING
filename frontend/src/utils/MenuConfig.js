@@ -1,4 +1,13 @@
-import { LayoutDashboard, Briefcase, Upload, Users, Mail, BarChart3 } from "lucide-react";import {NavLink} from "react-router-dom";
+import { 
+    LayoutDashboard, 
+    Briefcase, 
+    Upload, 
+    Users, 
+    Mail, 
+    BarChart3, 
+    Settings,
+    History 
+} from "lucide-react";
 
 const createMenu = (role, items) => {
     items.map(item => ({
@@ -18,15 +27,15 @@ export const menuItems = {
         { path: "/pipeline", label: "Pipeline Report", icon: BarChart3 },
     ]),
     manager: createMenu("manager", [
-        { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-        { path: "/shortlisted", label: "Shortlisted Candidates", icon: Users },
-        { path: "/history", label: "Hiring History", icon: BarChart3 },
-        { path: "/profile", label: "Candidate History", icon: BarChart3 },
+        { path: "manager/dashboard", label: "Dashboard", icon: LayoutDashboard },
+        { path: "manager/pipeline", label: "Shortlisted Candidates", icon: Users }, 
+        { path: "manager/email-logs", label: "Hiring History & Emails", icon: History }, 
+        {path: "manager//email-templates", label: "Email Template Config", icon: Settings}
     ]),
     admin: createMenu("admin", [
         { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
         { path: "/users", label: "User Management", icon: Users },
         { path: "/templates", label: "Template Management", icon: Briefcase },
-        { path: "/config", label: "AI Configuration", icon: Upload }
+        { path: "/config", label: "AI Configuration", icon: Settings }
     ]),
 };

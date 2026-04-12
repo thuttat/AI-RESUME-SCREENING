@@ -1,5 +1,8 @@
 package com.duckie.backend.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.duckie.backend.exception.ResourceNotFoundException;
 import com.duckie.backend.entity.Application;
 import com.duckie.backend.entity.EmailTemplate;
@@ -7,12 +10,15 @@ import com.duckie.backend.entity.EmailLog;
 import com.duckie.backend.entity.EmailStatus; 
 import com.duckie.backend.repository.EmailTemplateRepository;
 import com.duckie.backend.repository.EmailLogRepository;
+
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import com.duckie.backend.config.RabbitMQConfig;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import com.duckie.backend.dto.EmailLogResponse; 
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +29,7 @@ public class EmailService {
     private final EmailTemplateRepository emailTemplateRepository;
     private final EmailLogRepository emailLogRepository; 
     private final RabbitTemplate rabbitTemplate; 
+    private final EmailLogMapper emailLogMapper; 
 
     public void sendNotificationEmail(Application application, String templateName) {
         EmailTemplate template = getTemplateByName(templateName);
@@ -61,5 +68,13 @@ public class EmailService {
         if (rawText == null) return "";
         return rawText.replace("[CandidateName]", application.getCV().getCandidateName())
                 .replace("[JobTitle]", application.getJobPosting().getTitle());
+    }
+    
+    @Transactional(readOnly = true)
+    public List<EmailLogResponse> getAllEmailLogs() {
+        return emailLogRepository.findAllByOrderBySentAtDesc()
+                .stream()
+                .map(emailLogMapper::toResponse) 
+                .collect(Collectors.toList());
     }
 }
