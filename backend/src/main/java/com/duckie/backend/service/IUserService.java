@@ -16,4 +16,5 @@ public interface IUserService {
     ResponseEntity<UserResponse> patch(Long id, UserRequest request);
     ResponseEntity<UserResponse> patchUpdate(Long id, UserPatchRequest request);
     void delete(Long id);
+    byte[] exportUsersToCsv();
 }

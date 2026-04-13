@@ -1,5 +1,6 @@
 package com.duckie.backend.service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -105,6 +106,32 @@ public class UserService implements IUserService {
         .orElseThrow(() -> new RuntimeException("User not found by Id: " + id));
     user.setStatus(UserStatus.UNACTIVE); 
     userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] exportUsersToCsv() {
+        List<UserResponse> users = this.findAll();
+        StringBuilder csvBuilder = new StringBuilder();
+
+        csvBuilder.append("ID,Username,Họ và Tên,Email,Quyền hạn,Trạng thái\n");
+
+        for (UserResponse user : users) {
+            csvBuilder.append(user.id()).append(",")
+                      .append("\"").append(user.username() != null ? user.username() : "").append("\",")
+                      .append("\"").append(user.fullname() != null ? user.fullname() : "").append("\",")
+                      .append("\"").append(user.email() != null ? user.email() : "").append("\",")
+                      .append(user.role() != null ? user.role().name() : "").append(",")
+                      .append(user.status() != null ? user.status().name() : "").append("\n");
+        }
+
+        byte[] csvBytes = csvBuilder.toString().getBytes(StandardCharsets.UTF_8);
+        byte[] bom = {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
+        byte[] finalCsvData = new byte[bom.length + csvBytes.length];
+        
+        System.arraycopy(bom, 0, finalCsvData, 0, bom.length);
+        System.arraycopy(csvBytes, 0, finalCsvData, bom.length, csvBytes.length);
+
+        return finalCsvData;
     }
 
     @Override
