@@ -20,7 +20,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
                         Pageable pageable);
 
         @Query("SELECT a FROM Application a " +
-                        "LEFT JOIN AIAnalysisResult ai ON a.cv.id = ai.cv.id " +
+                        "JOIN a.cv c " +
+                        "JOIN c.aiAnalysisResult ai " +
                         "WHERE a.jobPosting.id = :jobId " +
                         "ORDER BY ai.matchScore DESC")
         Page<Application> findRankedApplicationByJobId(@Param("jobId") Long jobId, Pageable pageable);

@@ -2,8 +2,14 @@ package com.duckie.backend.controller;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map; 
+import java.util.Map;
 
+import com.duckie.backend.dto.EmailRecipientResponse;
+import com.duckie.backend.dto.RankedCandidateResponse;
+import com.duckie.backend.service.ApplicationService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize; 
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class JobPostingController {
 
     private final JobPostingService jobPostingService;
+    private final ApplicationService applicationService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('RECRUITER', 'ADMIN')")
@@ -72,9 +79,27 @@ public class JobPostingController {
     }
 
 
-    @GetMapping("/api/reports/jobs/{id}") 
+    @GetMapping("/reports/jobs/{id}")
     @PreAuthorize("hasAnyRole('HIRING_MANAGER', 'RECRUITER', 'ADMIN')")
     public ResponseEntity<Map<String, Long>> getJobReport(@PathVariable Long id) {
         return ResponseEntity.ok(jobPostingService.getJobPipelineReport(id));
+    }
+
+    @GetMapping("/{id}/candidates")
+    @PreAuthorize("hasAnyRole('RECRUITER', 'ADMIN')")
+    public ResponseEntity<Page<RankedCandidateResponse>> getRankedCandidates(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RankedCandidateResponse> response = applicationService.getRankedApplications(id, pageable);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/emails-recipients")
+    @PreAuthorize("hasAnyRole('RECRUITER', 'ADMIN')")
+    public ResponseEntity<List<EmailRecipientResponse>> getEmailRecipients(
+            @PathVariable("id") Long jobId) {
+        return ResponseEntity.ok(applicationService.getEmailRecipients(jobId));
     }
 }

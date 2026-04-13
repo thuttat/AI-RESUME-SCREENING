@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import "../../styles/auth.css";
 import { Button } from "../../components/common/Button.jsx";
-import api from "../../api/AxiosClient";
+import api from "../../apis/AxiosClient.js"; 
+import { useAuth } from "../../context/AuthContext.jsx";
 
 function Login() {
     const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ function Login() {
     });
 
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleChange = (e) => {
         setFormData({
@@ -21,33 +23,20 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("--- Bắt đầu gửi yêu cầu đăng nhập ---");
         
         try {
             const payloadToSend = {
                 usernameOrEmail: formData.usernameOrEmail.trim(),
                 password: formData.password.trim(),
             };
-
-            const response = await api.post("/auth/login", payloadToSend); 
-            console.log("Response Full:", response);
-            alert("Đăng nhập thành công! Status: " + response.status);
-
+            const response = await api.post("/auth/login", payloadToSend);
+            
             if (response.status === 200 || response.status === 201) {
                 const data = response.data;
-                console.log("Dữ liệu nhận được:", data);
-                if (data.accessToken) {
-                    localStorage.setItem("accessToken", data.accessToken);
-                    console.log("Đã lưu accessToken vào LocalStorage");
-                } else {
-                    alert("Cảnh báo: Server không trả về accessToken!");
-                }
-
                 const userRole = data.role || (data.user && data.user.role);
-                if (userRole) {
-                    localStorage.setItem("role", userRole);
-                    console.log("Đã lưu role:", userRole);
 
+                if (data.accessToken && userRole) {
+                    login(data.accessToken, userRole);
 
                     const roleKey = userRole.toUpperCase();
                     if (roleKey.includes("ADMIN")) {
@@ -64,9 +53,9 @@ function Login() {
                 }
             }
         } catch (error) {
-            console.error("Lỗi Axios:", error);
+            console.error("Lỗi đăng nhập:", error);
             const errorMsg = error.response ? 
-                `Lỗi ${error.response.status}: ${JSON.stringify(error.response.data)}` : 
+                `Lỗi ${error.response.status}: ${error.response.data.message || "Thông tin đăng nhập không chính xác"}` : 
                 "Không kết nối được tới Backend (Network Error)";
             alert(errorMsg);
         }

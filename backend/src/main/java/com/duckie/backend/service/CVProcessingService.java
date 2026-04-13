@@ -4,13 +4,13 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.duckie.backend.dto.AIResponse;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -39,12 +39,8 @@ import com.duckie.backend.repository.ApplicationRepository;
 import com.duckie.backend.repository.CVRepository;
 import com.duckie.backend.repository.JobPostingRepository;
 import com.duckie.backend.repository.UserRepository;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -57,6 +53,7 @@ public class CVProcessingService {
     private final ApplicationRepository applicationRepository;
     private final CloudinaryService cloudinaryService;
     private final AIAnalysisResultRepository aiAnalysisResultRepository;
+    private final AIAnalysisMapper aiAnalysisMapper;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -82,19 +79,6 @@ public class CVProcessingService {
             "thông tin bổ sung", "thông tin khác"
     );
 
-    @Data
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class AIResponseDTO {
-        private String candidateName;
-        private String candidateEmail;
-        private Double matchScore;
-        private String extractedSkills;
-        private String critique;
-
-        @JsonSetter(nulls = Nulls.SKIP)
-        private Double yearsOfExperience = 0.0;
-    }
-
     @Transactional
     public List<Application> uploadBulkCVs(Long jobId, List<MultipartFile> files) {
         JobPosting jobPosting = getJobPostingById(jobId);
@@ -105,12 +89,7 @@ public class CVProcessingService {
         for (MultipartFile file: files) {
             try {
                 String fileUrl = cloudinaryService.uploadFile(file);
-                CV cv = CV.builder()
-                        .uploadedBy(recruiter)
-                        .cvFileUrl(fileUrl)
-                        .candidateName("Waiting for update...")
-                        .candidateEmail("Waiting for update...")
-                        .build();
+                CV cv = aiAnalysisMapper.toNewCV(recruiter, fileUrl);
                 cv = cvRepository.save(cv);
 
                 Application application = createNewApplication(jobPosting, cv);
@@ -141,9 +120,9 @@ public class CVProcessingService {
 
         preventDuplicateApplication(extractedText, jobPosting, cv, application);
 
-        AIResponseDTO parsedData = fetchAndParseAIResult(extractedText, jobPosting, nameLocal, emailLocal);
+        AIResponse parsedData = fetchAndParseAIResult(extractedText, jobPosting);
 
-        return updateAndSaveResult(parsedData, cv, application);
+        return updateAndSaveResult(parsedData, cv, application, nameLocal, emailLocal);
     }
 
     public String extractTextFromPdfUrl(String pdfUrl) {
@@ -236,7 +215,7 @@ public class CVProcessingService {
         return cleaned.trim();
     }
 
-    private AIResponseDTO fetchAndParseAIResult(String rawCvText, JobPosting jobPosting, String knownName, String knownEmail) throws Exception {
+    private AIResponse fetchAndParseAIResult(String rawCvText, JobPosting jobPosting) throws Exception {
         String processedText = extractScoringContent(cleanCVText(rawCvText));
 
         String systemPrompt = String.format("""
@@ -283,45 +262,25 @@ public class CVProcessingService {
         Map<?, ?> message = (Map<?, ?>) ((Map<?, ?>) choices.get(0)).get("message");
         String jsonResponse = (String) message.get("content");
 
-        AIResponseDTO result = new ObjectMapper().readValue(jsonResponse, AIResponseDTO.class);
-
-        if (knownName != null && !knownName.isBlank()) result.setCandidateName(knownName);
-        if (knownEmail != null && !knownEmail.isBlank()) result.setCandidateEmail(knownEmail);
-
-        return result;
+        return new ObjectMapper().readValue(jsonResponse, AIResponse.class);
     }
 
-    private AIAnalysisResult updateAndSaveResult(AIResponseDTO parsedData, CV cv, Application application) throws Exception {
-        cv.setCandidateName(parsedData.getCandidateName());
-        cv.setCandidateEmail(parsedData.getCandidateEmail());
+    private AIAnalysisResult updateAndSaveResult(AIResponse parsedData, CV cv, Application application, String knownName, String knownEmail) throws Exception {
+        cv = aiAnalysisMapper.updateCvFromAI(cv, parsedData, knownName, knownEmail);
         cvRepository.save(cv);
 
         application.setStatus(Status.SUCCESS);
         applicationRepository.save(application);
 
-        List<String> skillList = new ArrayList<>();
-        if (parsedData.getExtractedSkills() != null && !parsedData.getExtractedSkills().isBlank()) {
-            skillList = Arrays.stream(parsedData.getExtractedSkills().split(","))
-                    .map(String::trim)
-                    .toList();
-        }
-
         Map<String, Object> rawJsonMap = new HashMap<>();
-        rawJsonMap.put("score", parsedData.getMatchScore());
-        rawJsonMap.put("skills", skillList);
-        rawJsonMap.put("critique", parsedData.getCritique());
+        rawJsonMap.put("score", parsedData.matchScore());
+        rawJsonMap.put("skills", parsedData.extractedSkills());
+        rawJsonMap.put("critique", parsedData.critique());
 
         ObjectMapper mapper = new ObjectMapper();
         String rawJsonString = mapper.writeValueAsString(rawJsonMap);
 
-        AIAnalysisResult result = AIAnalysisResult.builder()
-                .cv(cv)
-                .matchScore(parsedData.getMatchScore())
-                .extractedSkills(parsedData.getExtractedSkills())
-                .yearsOfExperience(parsedData.getYearsOfExperience())
-                .rawJsonResponse(rawJsonString)
-                .critique(parsedData.getCritique())
-                .build();
+        AIAnalysisResult result = aiAnalysisMapper.toEntity(parsedData, cv, rawJsonString);
 
         return aiAnalysisResultRepository.save(result);
     }

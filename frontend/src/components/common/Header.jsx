@@ -1,15 +1,16 @@
+import React, { useState, useEffect } from "react"; 
 import { Bell, Search, User } from "lucide-react";
-import {useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./../styles/Header.css";
-import {Button} from "./Button.jsx";
-import {useEffect, useState} from "react";
-import AxiosClient from "../../api/AxiosClient.js";
-import {menuItems} from "../../utils/MenuConfig.js";
+import { Button } from "./Button.jsx";
+import { menuItems } from "../../utils/MenuConfig.js";
+import { useAuth } from "../../context/AuthContext.jsx";
+import api from "../../apis/AxiosClient.js"; 
 
-export default function Header({ currentRole }) {
+export default function Header() {
     const location = useLocation();
     const navigate = useNavigate();
-
+    const { user, role, logout } = useAuth();
     const getPageTitle = () => {
         const allMenu = [
             ...menuItems.recruiter,
@@ -22,26 +23,8 @@ export default function Header({ currentRole }) {
 
     const title = getPageTitle();
 
-    const [userInfo, setUserInfo] = useState({
-        fullname: "Loading...",
-        email: "",
-    });
-
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const response = await AxiosClient.get("/auth/me");
-                setUserInfo(response.data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchUserProfile();
-    }, []);
-
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
+        logout();
         navigate("/", { replace: true });
     };
 
@@ -49,7 +32,7 @@ export default function Header({ currentRole }) {
         <div className="header">
             <div className="header-left">
                 <h2>{title}</h2>
-                <p>{currentRole.toUpperCase()} PANEL</p>
+                <p>{role ? role.toUpperCase() : "USER"} PANEL</p>
             </div>
 
             <div className="header-right">
@@ -65,8 +48,8 @@ export default function Header({ currentRole }) {
 
                 <div className="user">
                     <div className="user-info">
-                        <h4>{userInfo.fullname || "User"}</h4>
-                        <span>{userInfo.email}</span>
+                        <h4>{user ? (user.fullname || user.username) : "Loading..."}</h4>
+                        <span>{user ? user.email : ""}</span>
                     </div>
                     <div className="avatar">
                         <User size={16} />

@@ -39,34 +39,27 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            
             .cors(Customizer.withDefaults())
-            
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/public/**", "/api/auth/**", "/error").permitAll()
-                
                 .requestMatchers("/h2-console/**").permitAll()
                 
-                .requestMatchers("/api/recruiter/**").hasAnyRole("RECUITER", "RECRUITER", "ADMIN")
-                
+                .requestMatchers("/api/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN") 
 
                 .requestMatchers("/api/job-templates/**").hasRole("ADMIN")
-                .requestMatchers("/api/email-templates/**").hasAnyRole("ADMIN", "HIRING_MANAGER")
-                .requestMatchers("/api/admin/dashboard").hasRole("ADMIN")
+
+                .requestMatchers("/api/email-templates/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")
                 
+                .requestMatchers("/api/admin/dashboard").hasRole("ADMIN")
 
                 .anyRequest().authenticated()
             )
-            
-
             .exceptionHandling(exceptions -> exceptions
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(customAccessDeniedHandler))
-            
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
@@ -77,7 +70,6 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Cho phép Frontend Vite truy cập
         configuration.setAllowedOrigins(List.of("http://localhost:5173")); 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "x-auth-token"));

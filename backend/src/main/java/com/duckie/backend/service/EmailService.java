@@ -10,6 +10,7 @@ import com.duckie.backend.entity.EmailLog;
 import com.duckie.backend.entity.EmailStatus; 
 import com.duckie.backend.repository.EmailTemplateRepository;
 import com.duckie.backend.repository.EmailLogRepository;
+import com.duckie.backend.service.EmailLogMapper;
 
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,27 @@ public class EmailService {
         String subject = fillTemplateVariables(template.getSubject(), application);
         String body = fillTemplateVariables(template.getBody(), application);
 
+        createAndSendEmailLog(application, subject, body);
+    }
+
+
+    public void sendCustomNotificationEmail(Application application, String rawSubject, String rawBody) {
+        String subject = fillTemplateVariables(rawSubject, application);
+        String body = fillTemplateVariables(rawBody, application);
+
+        createAndSendEmailLog(application, subject, body);
+        log.info("Đã đưa email tùy chỉnh vào hàng đợi");
+    }
+
+    @Transactional(readOnly = true)
+    public List<EmailLogResponse> getAllEmailLogs() {
+        return emailLogRepository.findAllByOrderBySentAtDesc()
+                .stream()
+                .map(emailLogMapper::toResponse) 
+                .collect(Collectors.toList());
+    }
+
+    private void createAndSendEmailLog(Application application, String subject, String body) {
         EmailLog emailLog = EmailLog.builder()
                 .application(application)
                 .subject(subject)
@@ -68,13 +90,5 @@ public class EmailService {
         if (rawText == null) return "";
         return rawText.replace("[CandidateName]", application.getCV().getCandidateName())
                 .replace("[JobTitle]", application.getJobPosting().getTitle());
-    }
-    
-    @Transactional(readOnly = true)
-    public List<EmailLogResponse> getAllEmailLogs() {
-        return emailLogRepository.findAllByOrderBySentAtDesc()
-                .stream()
-                .map(emailLogMapper::toResponse) 
-                .collect(Collectors.toList());
     }
 }
