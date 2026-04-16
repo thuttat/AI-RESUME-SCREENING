@@ -1,4 +1,4 @@
-package com.duckie.backend.service;
+package com.duckie.backend.mapper;
 
 import com.duckie.backend.dto.EmailTemplateRequest;
 import com.duckie.backend.dto.EmailTemplateResponse;

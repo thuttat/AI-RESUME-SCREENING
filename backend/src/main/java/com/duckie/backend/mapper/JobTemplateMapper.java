@@ -1,4 +1,4 @@
-package com.duckie.backend.service;
+package com.duckie.backend.mapper;
 
 import org.springframework.stereotype.Component;
 

@@ -10,7 +10,7 @@ import com.duckie.backend.entity.EmailLog;
 import com.duckie.backend.entity.EmailStatus; 
 import com.duckie.backend.repository.EmailTemplateRepository;
 import com.duckie.backend.repository.EmailLogRepository;
-import com.duckie.backend.service.EmailLogMapper;
+import com.duckie.backend.mapper.EmailLogMapper;
 
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;

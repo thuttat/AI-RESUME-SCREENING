@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.duckie.backend.dto.ApplicationResponse;
 import com.duckie.backend.entity.Application;
-import com.duckie.backend.service.ApplicationMapper;
+import com.duckie.backend.mapper.ApplicationMapper;
 import com.duckie.backend.service.CVProcessingService;
 
 import lombok.RequiredArgsConstructor;

@@ -17,7 +17,7 @@ import com.duckie.backend.dto.EmailTemplateResponse;
 import com.duckie.backend.dto.PaginationResponse;
 import com.duckie.backend.entity.EmailTemplate;
 import com.duckie.backend.exception.ResourceNotFoundException;
-import com.duckie.backend.service.EmailTemplateMapper;
+import com.duckie.backend.mapper.EmailTemplateMapper;
 import com.duckie.backend.repository.EmailTemplateRepository;
 
 import lombok.RequiredArgsConstructor;

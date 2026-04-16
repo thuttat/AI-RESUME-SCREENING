@@ -3,6 +3,7 @@ package com.duckie.backend.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.duckie.backend.mapper.AIConfigMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class AIConfigService {
 
     private final AIConfigRepository aiConfigRepository;
-    private final AIConfigMapper aiConfigMapper; 
+    private final AIConfigMapper aiConfigMapper;
     private final UserRepository userRepository;
     private final AIService aiService;
 
