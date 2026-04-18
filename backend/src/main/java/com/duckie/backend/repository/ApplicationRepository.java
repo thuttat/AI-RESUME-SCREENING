@@ -28,6 +28,14 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
         long countByJobPostingIdAndStatus(Long jobPostingId, Status status);
 
+        long countByJobPostingId(Long jobPostingId);
+
+        @Query("SELECT COUNT(a) FROM Application a WHERE a.jobPosting.createdBy.username = :username")
+        long countByRecruiter(@Param("username") String username);
+
+        @Query("SELECT COUNT(a) FROM Application a WHERE a.jobPosting.createdBy.username = :username AND a.status = :status")
+        long countByRecruiterAndStatus(@Param("username") String username, @Param("status") Status status);
+
         @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END FROM Application a " +
                         "WHERE a.cv.candidateEmail = :email AND a.jobPosting.id = :jobId AND a.cv.id != :currentCvId")
         boolean existsDuplicateByEmailForJob(@Param("email") String email,

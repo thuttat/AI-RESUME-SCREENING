@@ -1,0 +1,126 @@
+.pipeline-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.pipeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.pipeline-header h1 {
+    margin: 0;
+}
+
+.job-selector {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    min-width: 200px;
+    background-color: var(--background);
+    color: var(--foreground);
+}
+
+.pipeline-loading {
+    display: flex;
+    justify-content: center;
+    padding: 50px;
+}
+
+/* TOP GRID LAYOUT (PIE CHART & STATS) */
+.pipeline-grid-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+
+.overview-chart-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: var(--muted-foreground);
+}
+
+.legend-item strong {
+    margin-left: 4px;
+    color: var(--foreground);
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    display: inline-block;
+}
+
+/* STATS COLUMN */
+.stats-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.mini-stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+}
+
+.mini-stat-card .icon {
+    padding: 12px;
+    border-radius: 8px;
+    width: 48px;
+    height: 48px;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary);
+}
+
+.mini-stat-card .icon.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+}
+
+.mini-stat-card p {
+    font-size: 14px;
+    color: var(--muted-foreground);
+    margin: 0 0 4px 0;
+}
+
+.mini-stat-card h3 {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--foreground);
+}
+
+.chart-container {
+    width: 100%;
+    height: 250px;
+}
+
+.chart-container-large {
+    width: 100%;
+    height: 300px;
+}
