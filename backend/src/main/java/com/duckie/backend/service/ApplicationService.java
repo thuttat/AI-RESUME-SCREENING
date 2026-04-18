@@ -15,6 +15,7 @@ import com.duckie.backend.dto.RankedCandidateResponse;
 import com.duckie.backend.entity.Application;
 import com.duckie.backend.entity.Status;
 import com.duckie.backend.exception.ResourceNotFoundException;
+import com.duckie.backend.mapper.ApplicationMapper;
 import com.duckie.backend.repository.ApplicationRepository;
 import com.duckie.backend.repository.JobPostingRepository;
 

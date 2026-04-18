@@ -44,15 +44,11 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/public/**", "/api/auth/**", "/error").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
-                
                 .requestMatchers("/api/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN") 
-
+                .requestMatchers("/api/users/**").authenticated()
                 .requestMatchers("/api/job-templates/**").hasRole("ADMIN")
-
                 .requestMatchers("/api/email-templates/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")
-                
                 .requestMatchers("/api/admin/dashboard").hasRole("ADMIN")
 
                 .anyRequest().authenticated()

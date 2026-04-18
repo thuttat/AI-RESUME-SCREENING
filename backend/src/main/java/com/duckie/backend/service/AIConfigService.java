@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.duckie.backend.dto.AIConfigRequest;
 import com.duckie.backend.dto.AIConfigResponse;
 import com.duckie.backend.entity.AIConfig;
+import com.duckie.backend.mapper.AIConfigMapper;
 import com.duckie.backend.repository.AIConfigRepository;
 import com.duckie.backend.repository.UserRepository;
 

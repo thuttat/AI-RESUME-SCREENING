@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.duckie.backend.dto.JobTemplateRequest;
 import com.duckie.backend.dto.JobTemplateResponse;
 import com.duckie.backend.entity.JobTemplate;
+import com.duckie.backend.exception.ResourceNotFoundException;
+import com.duckie.backend.mapper.JobTemplateMapper;
 import com.duckie.backend.repository.JobTemplateRepository;
 
 
@@ -99,33 +101,47 @@ public class JobTemplateService implements IJobTemplateService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<JobTemplate> getAllJobTemplates() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return jobTemplateRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<JobTemplate> searchTemplates(String keyword) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return jobTemplateRepository.findAllBySearch(keyword, Pageable.unpaged()).getContent();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public JobTemplate getJobTemplateById(Long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return jobTemplateRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Job template not found with id: " + id));
     }
 
     @Override
+    @Transactional
     public JobTemplate createJobTemplate(JobTemplate jobTemplate) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        jobTemplate.setIsActive(true);
+        return jobTemplateRepository.save(jobTemplate);
     }
 
     @Override
-    public JobTemplate updateJobTemplate(Long id, JobTemplate jobTemplate) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @Transactional
+    public JobTemplate updateJobTemplate(Long id, JobTemplate updatedData) {
+        JobTemplate existing = getJobTemplateById(id);
+        existing.setTitle(updatedData.getTitle());
+        existing.setDescription(updatedData.getDescription());
+        return jobTemplateRepository.save(existing);
     }
 
     @Override
+    @Transactional
     public void deleteJobTemplate(Long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        JobTemplate template = getJobTemplateById(id);
+        template.setIsActive(false);
+        jobTemplateRepository.save(template);
+        logger.info("Soft deleted job template with id: {}", id);
     }
 
     

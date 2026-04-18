@@ -1,0 +1,27 @@
+.templates-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.templates-workspace {
+    animation: fadeIn 0.4s ease-out;
+}
+
+.templates-editor .field-group input:focus, 
+.templates-editor .field-group textarea:focus {
+    background-color: white;
+    border-color: var(--primary);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1024px) {
+    .templates-layout {
+        grid-template-columns: 1fr;
+    }
+}

@@ -4,83 +4,83 @@ import "../../styles/auth.css";
 import { Button } from "../../components/common/Button.jsx";
 import api from "../../apis/AxiosClient.js"; 
 import { useAuth } from "../../context/AuthContext.jsx";
+import { Loader2 } from "lucide-react"; 
 
 function Login() {
     const [formData, setFormData] = useState({
         usernameOrEmail: "",
         password: "",
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
 
     const navigate = useNavigate();
     const { login } = useAuth();
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (errorMsg) setErrorMsg(""); 
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
+        setErrorMsg("");
         
         try {
-            const payloadToSend = {
+            const payload = {
                 usernameOrEmail: formData.usernameOrEmail.trim(),
                 password: formData.password.trim(),
             };
-            const response = await api.post("/auth/login", payloadToSend);
+            const response = await api.post("/auth/login", payload);
             
-            if (response.status === 200 || response.status === 201) {
-                const data = response.data;
-                const userRole = data.role || (data.user && data.user.role);
+            const { accessToken, role } = response.data;
+            const userRole = role || (response.data.user && response.data.user.role);
 
-                if (data.accessToken && userRole) {
-                    login(data.accessToken, userRole);
+            if (accessToken && userRole) {
+                await login(accessToken, userRole); 
 
-                    const roleKey = userRole.toUpperCase();
-                    if (roleKey.includes("ADMIN")) {
-                        navigate("/admin/dashboard");
-                    } else if (roleKey.includes("MANAGER")) {
-                        navigate("/manager/dashboard");
-                    } else if (roleKey.includes("RECRUITER")) {
-                        navigate("/recruiter/dashboard");
-                    } else {
-                        navigate("/");
-                    }
-                } else {
-                    alert("Lỗi: Không tìm thấy Role trong dữ liệu trả về!");
-                }
+                const roleKey = userRole.toUpperCase();
+                if (roleKey.includes("ADMIN")) navigate("/admin/dashboard");
+                else if (roleKey.includes("RECRUITER")) navigate("/recruiter/dashboard");
+                else if (roleKey.includes("MANAGER")) navigate("/manager/dashboard");
+                else navigate("/");
             }
         } catch (error) {
-            console.error("Lỗi đăng nhập:", error);
-            const errorMsg = error.response ? 
-                `Lỗi ${error.response.status}: ${error.response.data.message || "Thông tin đăng nhập không chính xác"}` : 
-                "Không kết nối được tới Backend (Network Error)";
-            alert(errorMsg);
+            console.error("Login Error:", error);
+            setErrorMsg(error.response?.data?.message || "Invalid username or password!");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
         <div className="login-page">
             <div className="login-container">
-                <div className="card login-card">
+                <div className="login-card">
                     <div className="login-header">
-                        <div className="login-icon">🔐</div>
-                        <h3>Welcome Back</h3>
+                        <div className="login-icon">🔑</div>
+                        <h1>Welcome Back</h1>
+                        <p className="text-muted">Login to the system</p>
                     </div>
+
+                    {errorMsg && (
+                        <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4 border border-red-100 animate-in fade-in">
+                            {errorMsg}
+                        </div>
+                    )}
 
                     <form className="login-form" onSubmit={handleSubmit}>
                         <div className="form-group">
-                            <label>Email or Username</label>
+                            <label>Username or Email</label>
                             <input
                                 type="text" 
                                 className="input"
-                                placeholder="you@example.com"
                                 name="usernameOrEmail" 
                                 value={formData.usernameOrEmail}
                                 onChange={handleChange}
                                 required
+                                disabled={isSubmitting}
                             />
                         </div>
 
@@ -89,15 +89,17 @@ function Login() {
                             <input
                                 type="password"
                                 className="input"
-                                placeholder="Enter your password"
                                 name="password"
                                 value={formData.password}
                                 onChange={handleChange}
                                 required
+                                disabled={isSubmitting}
                             />
                         </div>
 
-                        <Button type="submit" variant="primary" size="md">Sign In</Button>
+                        <Button type="submit" variant="primary" size="md" fullWidth disabled={isSubmitting}>
+                            {isSubmitting ? <Loader2 className="animate-spin mx-auto" size={20} /> : "Sign In"}
+                        </Button>
                     </form>
                 </div>
             </div>

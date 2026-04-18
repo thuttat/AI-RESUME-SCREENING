@@ -1,8 +1,9 @@
-package com.duckie.backend.service;
+package com.duckie.backend.mapper;
+
+import org.springframework.stereotype.Component;
 
 import com.duckie.backend.dto.EmailLogResponse;
 import com.duckie.backend.entity.EmailLog;
-import org.springframework.stereotype.Component;
 
 @Component
 public class EmailLogMapper {
@@ -28,7 +29,7 @@ public class EmailLogMapper {
             log.getSubject(),
             log.getBody(),
             log.getSentAt(),
-            log.getStatus() != null ? log.getStatus().name() : "UNKNOWN"
+            log.getStatus()
         );
     }
 }

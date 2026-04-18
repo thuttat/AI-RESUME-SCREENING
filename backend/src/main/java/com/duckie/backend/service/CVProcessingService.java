@@ -34,6 +34,7 @@ import com.duckie.backend.entity.Status;
 import com.duckie.backend.entity.User;
 import com.duckie.backend.exception.DuplicateResourceException;
 import com.duckie.backend.exception.ResourceNotFoundException;
+import com.duckie.backend.mapper.AIAnalysisMapper;
 import com.duckie.backend.repository.AIAnalysisResultRepository;
 import com.duckie.backend.repository.ApplicationRepository;
 import com.duckie.backend.repository.CVRepository;

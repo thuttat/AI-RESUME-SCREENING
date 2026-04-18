@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.duckie.backend.exception.ResourceNotFoundException;
+import com.duckie.backend.mapper.EmailLogMapper;
 import com.duckie.backend.entity.Application;
 import com.duckie.backend.entity.EmailTemplate;
 import com.duckie.backend.entity.EmailLog;
 import com.duckie.backend.entity.EmailStatus; 
 import com.duckie.backend.repository.EmailTemplateRepository;
 import com.duckie.backend.repository.EmailLogRepository;
-import com.duckie.backend.service.EmailLogMapper;
 
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;

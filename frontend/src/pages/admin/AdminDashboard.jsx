@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../../components/common/Card';
 import { Table } from '../../components/common/Table';
 import { Button } from '../../components/common/Button';
-import api from "../../api/AxiosClient";
+import api from "../../apis/AxiosClient";
 import CvUploadedChart from './components/CvUploadedChart';
 import TopUserWidget from './components/TopUserWidget';
 import JobStatsList from './components/JobStatsList';

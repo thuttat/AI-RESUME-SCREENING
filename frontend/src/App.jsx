@@ -1,12 +1,11 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import BaseLayout from "./layouts/BaseLayout";
 
-// Auth Components
+import { AuthProvider } from "./context/AuthContext.jsx";
+import PrivateRoute from "./pages/auth/PrivateRoute.jsx"; 
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
-import PrivateRoute from "./pages/auth/PrivateRoute.jsx"; 
-import { AuthProvider } from "./context/AuthContext.jsx";
 
 import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard/RecruiterDashboard.jsx";
 import JobManagement from "./pages/recruiter/JobManagement/JobManagement.jsx";
@@ -15,11 +14,11 @@ import CandidateRanking from "./pages/recruiter/CandidateRanking/CandidateRankin
 import EmailNotifications from "./pages/recruiter/EmailNotifications/EmailNotifications.jsx";
 import PipelineReports from "./pages/recruiter/PipelineReports/PipelineReports.jsx";
 
-import HiringManagerDashboard from "./pages/hiring-manager/HiringManagerDashboard.jsx";
-import CandidatePipeline from "./pages/hiring-manager/CandidatePipeline.jsx";
-import EmailTracking from "./pages/hiring-manager/EmailTracking.jsx";
-import CandidateComparison from "./pages/hiring-manager/CandidateComparison.jsx";
-import EmailTemplates from "./pages/hiring-manager/EmailTemplates.jsx";
+import HiringManagerDashboard from "./pages/hiring-manager/Dashboard/HiringManagerDashboard.jsx";
+import CandidatePipeline from "./pages/hiring-manager/CandidatePipeline/CandidatePipeline.jsx";
+import CandidateComparison from "./pages/hiring-manager/CandidateComparision/CandidateComparison.jsx";
+import EmailTemplates from "./pages/hiring-manager/EmailManagement/Templates/EmailTemplates.jsx";
+import EmailTracking from "./pages/hiring-manager/EmailManagement/Tracking/EmailTracking.jsx";
 
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 
@@ -30,11 +29,8 @@ export default function App() {
         <AuthProvider>
             <BrowserRouter>
                 <Routes>
-                    {/* Public Routes */}
                     <Route path="/" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-
-                    {/* Recruiter Routes */}
                     <Route
                         path="/recruiter/*"
                         element={
@@ -52,7 +48,6 @@ export default function App() {
                         <Route path="pipeline" element={<PipelineReports />} />
                     </Route>
 
-                    {/* Hiring Manager Routes */}
                     <Route
                         path="/manager/*"
                         element={
@@ -64,12 +59,11 @@ export default function App() {
                         <Route index element={<HiringManagerDashboard />} />
                         <Route path="dashboard" element={<HiringManagerDashboard />} />
                         <Route path="pipeline" element={<CandidatePipeline />} />
-                        <Route path="email-logs" element={<EmailTracking />} />
                         <Route path="comparison" element={<CandidateComparison />} />
                         <Route path="email-templates" element={<EmailTemplates />} />
+                        <Route path="email-logs" element={<EmailTracking />} />
                     </Route>
 
-                    {/* Admin Routes */}
                     <Route
                         path="/admin/*"
                         element={
@@ -81,6 +75,7 @@ export default function App() {
                         <Route index element={<AdminDashboard />} />
                         <Route path="dashboard" element={<AdminDashboard />} />
                     </Route>
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </BrowserRouter>
         </AuthProvider>

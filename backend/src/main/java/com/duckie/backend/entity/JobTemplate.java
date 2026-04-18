@@ -36,6 +36,9 @@ public class JobTemplate extends BaseEntity {
     @Column(name = "created_at_by_id")
     private Long createdById;
 
+    @Column(name ="required_skills", columnDefinition = "TEXT", nullable = false)
+    private String requiredSkills;
+
     public JobTemplate() {}
 
     public Long getId() { 
@@ -76,6 +79,12 @@ public class JobTemplate extends BaseEntity {
     public void setCreatedById(Long createdById) {
         this.createdById = createdById;
     }
+    public String getRequiredSkills() {
+        return requiredSkills;
+    }
+    public void setRequiredSkills(String requiredSkills) {
+        this.requiredSkills = requiredSkills;
+    }
 
 
     public static JobTemplateBuilder builder() { 
@@ -91,6 +100,7 @@ public class JobTemplate extends BaseEntity {
         private Instant createdAt;
         private Instant updatedAt;
         private Boolean isActive = true;
+        private String requiredSkills;
 
         public JobTemplateBuilder id(Long id) { 
             this.id = id; 
@@ -126,6 +136,10 @@ public class JobTemplate extends BaseEntity {
             this.createdById = createdById;
             return this;
         }
+        public JobTemplateBuilder requiredSkills(String requiredSkills) {
+            this.requiredSkills = requiredSkills;
+            return this;
+        }
 
         public JobTemplate build() {
             JobTemplate template = new JobTemplate();
@@ -137,6 +151,7 @@ public class JobTemplate extends BaseEntity {
             template.setUpdatedAt(this.updatedAt);
             template.setIsActive(this.isActive);
             template.setCreatedById(this.createdById);
+            template.setRequiredSkills(this.requiredSkills);
             return template;
         }
     }
