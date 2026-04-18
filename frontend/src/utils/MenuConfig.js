@@ -10,11 +10,10 @@ import {
 } from "lucide-react";
 
 const createMenu = (role, items) => {
-    items.map(item => ({
+    return items.map(item => ({
         ...item,
         path: `/${role}${item.path}`
     }));
-    return items;
 }
 
 export const menuItems = {
@@ -27,10 +26,10 @@ export const menuItems = {
         { path: "/pipeline", label: "Pipeline Report", icon: BarChart3 },
     ]),
     manager: createMenu("manager", [
-        { path: "manager/dashboard", label: "Dashboard", icon: LayoutDashboard },
-        { path: "manager/pipeline", label: "Shortlisted Candidates", icon: Users }, 
-        { path: "manager/email-logs", label: "Hiring History & Emails", icon: History }, 
-        {path: "manager//email-templates", label: "Email Template Config", icon: Settings}
+        { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+        { path: "/pipeline", label: "Shortlisted Candidates", icon: Users },
+        { path: "/memail-logs", label: "Hiring History & Emails", icon: History },
+        {path: "/email-templates", label: "Email Template Config", icon: Settings}
     ]),
     admin: createMenu("admin", [
         { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },

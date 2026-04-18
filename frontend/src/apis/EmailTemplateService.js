@@ -23,5 +23,13 @@ export const EmailTemplateService = {
 
     sendEmails: (payload) => {
         return axiosClient.post("/emails/send", payload);
+    },
+
+    getAllLogs: () => {
+        return axiosClient.get("/email-logs");
+    },
+
+    getAllEmailLogsByRecruiter: (page = 0, size = 10) => {
+        return axiosClient.get(`/email-logs/history?page=${page}&size=${size}`);
     }
 }

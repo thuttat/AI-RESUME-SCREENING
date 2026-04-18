@@ -23,5 +23,9 @@ export const JobService = {
 
     deleteJob: (id) => {
         return axiosClient.delete(`/jobs/${id}`);
+    },
+
+    getRankedCandidates: (id, page = 0, size = 10) => {
+        return axiosClient.get(`/jobs/${id}/candidates?page=${page}&size=${size}`);
     }
 }

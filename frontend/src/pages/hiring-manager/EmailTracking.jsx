@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../../api/AxiosClient";
+import api from "../../apis/AxiosClient";
 import { Card } from "../../components/common/Card";
 import { Badge } from "../../components/common/Badge";
 import { Mail, CheckCircle2, XCircle, Loader2, Clock } from "lucide-react";

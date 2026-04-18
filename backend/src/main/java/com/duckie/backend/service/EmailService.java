@@ -3,6 +3,7 @@ package com.duckie.backend.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.duckie.backend.dto.PaginationResponse;
 import com.duckie.backend.exception.ResourceNotFoundException;
 import com.duckie.backend.entity.Application;
 import com.duckie.backend.entity.EmailTemplate;
@@ -12,6 +13,9 @@ import com.duckie.backend.repository.EmailTemplateRepository;
 import com.duckie.backend.repository.EmailLogRepository;
 import com.duckie.backend.mapper.EmailLogMapper;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -56,6 +60,27 @@ public class EmailService {
                 .stream()
                 .map(emailLogMapper::toResponse) 
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public PaginationResponse<EmailLogResponse> getAllEmailLogsByRecruiter(String currentUsername, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<EmailLog> logPage = emailLogRepository
+                .findEmailLogsByRecruiter(currentUsername, pageable);
+
+        List<EmailLogResponse> content = logPage.getContent().stream()
+                .map(emailLogMapper::toResponse)
+                .collect(Collectors.toList());
+
+        return PaginationResponse.<EmailLogResponse>builder()
+                .content(content)
+                .pageNo(logPage.getNumber())
+                .pageSize(logPage.getSize())
+                .totalElements(logPage.getTotalElements())
+                .totalPages(logPage.getTotalPages())
+                .last(logPage.isLast())
+                .build();
     }
 
     private void createAndSendEmailLog(Application application, String subject, String body) {

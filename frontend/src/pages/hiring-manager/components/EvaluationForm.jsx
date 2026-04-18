@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card } from "../../../components/common/Card";
 import { Button } from "../../../components/common/Button";
 import { ThumbsDown, ThumbsUp, Star } from "lucide-react"; // Đã thêm Star vào đây
-import api from "../../../api/AxiosClient";
+import api from "../../../apis/AxiosClient";
 
 export default function EvaluationForm({ appId, candidateName, onClose }) {
     const [rating, setRating] = useState(0);

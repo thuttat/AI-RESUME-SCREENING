@@ -320,3 +320,99 @@
     align-items: center;
     gap: 7em;
 }
+
+.history-loading-state {
+    display: flex;
+    justify-content: center;
+    padding: 50px;
+    color: var(--primary);
+}
+
+.history-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.history-card-header {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+}
+
+.history-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 16px;
+}
+
+.history-card-body {
+    padding: 0;
+    overflow-y: auto;
+}
+
+.history-empty-msg {
+    text-align: center;
+    padding: 40px;
+    color: var(--muted-foreground);
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: left;
+}
+
+.history-table-header {
+    background-color: #f8fafc;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.history-table th,
+.history-table td {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.history-table th {
+    font-weight: 600;
+}
+
+.history-table-row {
+    transition: background-color 0.2s ease-in-out;
+}
+
+.history-table-row:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.history-candidate-cell {
+    display: flex;
+    flex-direction: column;
+}
+
+.history-candidate-name {
+    font-weight: 600;
+}
+
+.history-candidate-email {
+    font-size: 12px;
+    color: var(--muted-foreground);
+}
+
+.history-time-cell {
+    color: var(--muted-foreground);
+}
+
+.history-pagination-wrapper {
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid var(--border);
+    background-color: #fff;
+}

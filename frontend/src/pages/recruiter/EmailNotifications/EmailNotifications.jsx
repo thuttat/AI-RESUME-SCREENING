@@ -2,13 +2,14 @@ import React, {useEffect, useState} from 'react';
 import { Card, CardHeader, CardBody } from '../../../components/common/Card.jsx';
 import { Button } from '../../../components/common/Button.jsx';
 import { Badge } from '../../../components/common/Badge.jsx';
-import {Mail, Send, CheckCircle2, Users, FileText, Search, Loader2, MailCheck} from 'lucide-react';
+import {Mail, Send, CheckCircle2, Users, FileText, Search, Loader2, MailCheck, History} from 'lucide-react';
 import './EmailNotifications.css';
 import {EmailTemplateService} from "../../../apis/EmailTemplateService.js";
 import {JobService} from "../../../apis/JobService.js";
 import TemplateList from "./components/TemplateList.jsx";
 import RecipientList from "./components/RecipientList.jsx";
 import EmailEditor from "./components/EmailEditor.jsx";
+import EmailHistory from "./components/EmailHistory.jsx";
 
 
 export default function EmailNotifications() {
@@ -26,13 +27,40 @@ export default function EmailNotifications() {
     const [selectedRecipients, setSelectedRecipients] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
+    // State email logs
+    const [history, setHistory] = useState([]);
+    const [historyPage, setHistoryPage] = useState(0);
+    const [historyTotalPages, setHistoryTotalPages] = useState(0);
+    const [showHistory, setShowHistory] = useState(false);
+    const [loadingHistory, setLoadingHistory] = useState(false);
+
+    const fetchHistory = async (page = 0) => {
+        try {
+            setLoadingHistory(true);
+            const response = await EmailTemplateService.getAllEmailLogsByRecruiter(page, 10);
+            const data = response.data;
+
+            setHistory(data.content || []);
+            setHistoryTotalPages(data.totalPages || 0);
+            setHistoryPage(data.pageNo || 0);
+        } catch (error) {
+            console.error("Error fetching history:", error);
+        } finally {
+            setLoadingHistory(false);
+        }
+    };
+
+    useEffect(() => {
+        if (showHistory) fetchHistory(historyPage);
+    }, [historyPage, showHistory]);
+
     useEffect(() => {
         const fetchTemplates = async () => {
             try {
                 setLoadingTemplates(true);
                 const response = await EmailTemplateService.getAllTemplates("", 0, 50);
-                const activeTemplates = response.data.content.filter(t => t.isActive);
-                setTemplates(activeTemplates);
+                const templatesList = response.data.content;
+                setTemplates(templatesList);
             } catch (error) {
                 console.error("Error fetching templates: ", error);
             } finally {
@@ -119,7 +147,7 @@ export default function EmailNotifications() {
                 body: emailData.body,
             };
             await EmailTemplateService.sendEmails(payload);
-            alert(`Emails have been successfully sent to ${selectedRecipients.length} candidates!`);
+            alert(`${selectedRecipients.length} emails have been queued for sending. Please monitor their status in the History tab!`);
 
             setRecipients(prevRecipients =>
                 prevRecipients.map(candidate =>
@@ -132,6 +160,9 @@ export default function EmailNotifications() {
             setEmailData({ subject: '', body: '' });
             setActiveTemplate(null);
             setSelectedRecipients([]);
+
+            fetchHistory();
+            setShowHistory(true);
         } catch (error) {
             console.error("Error sending email template: ", error);
             alert("Failed to send emails. Please try again later!");
@@ -145,43 +176,60 @@ export default function EmailNotifications() {
                     <h1>Email Workspace</h1>
                     <p className="page-subtitle">Select a template, review recipients, and send bulk emails seamlessly.</p>
                 </div>
-                <Button onClick={handleSend} disabled={selectedRecipients.length === 0}>
-                    <Send size={16} />
-                    Send {selectedRecipients.length > 0 ? `(${selectedRecipients.length})` : ''} Emails
-                </Button>
-            </div>
-
-            <div className="workspace-grid">
-                <div className="config-panel">
-                    <TemplateList
-                        templates={templates}
-                        loading={loadingTemplates}
-                        activeTemplate={activeTemplate}
-                        onSelect={handleTemplateSelect}
-                    />
-
-                    <RecipientList
-                        jobs={jobs}
-                        selectedJobId={selectedJobId}
-                        setSelectedJobId={setSelectedJobId}
-                        recipients={recipients}
-                        loading={loadingRecipients}
-                        selectedRecipients={selectedRecipients}
-                        toggleRecipient={toggleRecipient}
-                        handleSelectAll={handleSelectAll}
-                        searchTerm={searchTerm}
-                        setSearchTerm={setSearchTerm}
-                    />
-
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <Button variant={showHistory ? "primary" : "outline"} onClick={() => setShowHistory(!showHistory)}>
+                        <History size={16} /> {showHistory ? "Back to Compose" : "View History"}
+                    </Button>
+                    {!showHistory && (
+                        <Button onClick={handleSend} disabled={selectedRecipients.length === 0}>
+                            <Send size={16} /> Send {selectedRecipients.length > 0 ? `(${selectedRecipients.length})` : ''} Emails
+                        </Button>
+                    )}
                 </div>
-
-                <EmailEditor
-                    recipients={recipients}
-                    selectedRecipients={selectedRecipients}
-                    emailData={emailData}
-                    setEmailData={setEmailData}
-                />
             </div>
+
+            {showHistory ? (
+                <div style={{ flex: 1, padding: '20px 0' }}>
+                    <EmailHistory
+                        history={history}
+                        loading={loadingHistory}
+                        currentPage={historyPage}
+                        totalPages={historyTotalPages}
+                        setCurrentPage={setHistoryPage}
+                    />
+                </div>
+            ) : (
+                <div className="workspace-grid">
+                    <div className="config-panel">
+                        <TemplateList
+                            templates={templates}
+                            loading={loadingTemplates}
+                            activeTemplate={activeTemplate}
+                            onSelect={handleTemplateSelect}
+                        />
+
+                        <RecipientList
+                            jobs={jobs}
+                            selectedJobId={selectedJobId}
+                            setSelectedJobId={setSelectedJobId}
+                            recipients={recipients}
+                            loading={loadingRecipients}
+                            selectedRecipients={selectedRecipients}
+                            toggleRecipient={toggleRecipient}
+                            handleSelectAll={handleSelectAll}
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                        />
+                    </div>
+
+                    <EmailEditor
+                        recipients={recipients}
+                        selectedRecipients={selectedRecipients}
+                        emailData={emailData}
+                        setEmailData={setEmailData}
+                    />
+                </div>
+            )}
         </div>
     );
 }

@@ -17,7 +17,7 @@ public class AIService {
     
     private final AIAnalysisResultRepository aiAnalysisResultRepository;
     private final RestTemplate restTemplate = new RestTemplate(); 
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new  ObjectMapper();
 
     public String testConnection(String apiKey, String model, String extractedText) {
         try {

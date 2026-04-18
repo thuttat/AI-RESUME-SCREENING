@@ -28,7 +28,7 @@ export default function Sidebar({ currentRole, collapsed, onToggleCollapse }) {
             <nav className="sidebar-menu">
                 {items.map((item) => {
                     const Icon = item.icon;
-                    const path = `/${routePrefix}${item.path}`;
+                    const path = item.path;
 
                     return (
                         <NavLink

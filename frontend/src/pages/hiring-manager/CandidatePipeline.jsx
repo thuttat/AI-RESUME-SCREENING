@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../api/AxiosClient";
+import api from "../../apis/AxiosClient";
 import { Card } from "../../components/common/Card";
 import { Badge } from "../../components/common/Badge";
 import { Button } from "../../components/common/Button";
