@@ -3,7 +3,7 @@ import BaseLayout from "./layouts/BaseLayout";
 
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
-import PrivateRoute from "./pages/auth/PrivateRoute.jsx"; 
+import PrivateRoute from "./pages/auth/PrivateRoute.jsx";
 
 import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard.jsx";
 import JobManagement from "./pages/recruiter/JobManagement.jsx";
@@ -17,8 +17,12 @@ import CandidatePipeline from "./pages/hiring-manager/CandidatePipeline.jsx";
 import EmailTracking from "./pages/hiring-manager/EmailTracking.jsx";
 
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-
 import "./App.css";
+import UsersManagement from "./pages/admin/UsersManagement.jsx";
+import JobTemplates from "./pages/admin/JobTemplates.jsx";  
+import EmailTemplates from "./pages/admin/EmailTemplates.jsx";
+import TemplateManagement from "./pages/admin/TemplateManagement.jsx";
+
 
 export default function App() {
     return (
@@ -68,6 +72,8 @@ export default function App() {
                 >
                     <Route index element={<AdminDashboard />} />
                     <Route path="dashboard" element={<AdminDashboard />} />
+                    <Route path="users" element={<UsersManagement />} />
+                    <Route path="templates" element={<TemplateManagement />} />
                 </Route>
 
             </Routes>

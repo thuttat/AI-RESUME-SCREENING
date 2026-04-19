@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.duckie.backend.dto.AIConfigRequest;
 import com.duckie.backend.dto.AIConfigResponse;
@@ -48,17 +47,5 @@ public class AIConfigService {
         return aiConfigMapper.toResponse(savedConfig);
     }
 
-    @Transactional(readOnly = true)
-    public String testAiConnection(MultipartFile file) {
-        String apiKey = aiConfigRepository.findByConfigKey("API_KEY")
-                .map(AIConfig::getConfigValue)
-                .orElseThrow(() -> new RuntimeException("Chưa cấu hình API Key!"));
-                
-        String model = aiConfigRepository.findByConfigKey("MODEL_NAME")
-                .map(AIConfig::getConfigValue)
-                .orElse("gpt-4o-mini"); 
-
-        String extractedText = "Giả lập nội dung trích xuất từ file: " + file.getOriginalFilename();
-        return aiService.testConnection(apiKey, model, extractedText);
-    }
+    
 }

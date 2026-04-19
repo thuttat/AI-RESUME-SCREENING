@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from '../../components/common/Card';
-import { Table } from '../../components/common/Table';
-import { Button } from '../../components/common/Button';
+
+
 import api from '../../axiosConfig';
-import CvUploadedChart from './components/CvUploadedChart';
-import TopUserWidget from './components/TopUserWidget';
-import JobStatsList from './components/JobStatsList';
-import KpiCard from './components/KpiCard';
-import SimpleListWidget from './components/SimpleListWidget';
+
 
 
 const AdminDashboard = () => {
@@ -53,37 +48,12 @@ const AdminDashboard = () => {
     <div className="flex flex-col gap-8 p-8 w-full bg-[#f8f9fa] min-h-screen overflow-y-auto">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-800">Dashboard</h2>
-        <Button variant="primary">Tải báo cáo</Button>
+       
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <KpiCard title="TOTAL JOB POSTING" value={dashboardData.totalJobPosting} />
-        <KpiCard title="TOTAL AI CV" value={dashboardData.totalAiCv} />
-        <KpiCard title="TOTAL NORMAL CV" value={dashboardData.totalNormalCv} />
-        <KpiCard title="ACTIVE USERS" value={dashboardData.activeUsers} />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-        <div className="lg:col-span-2 flex flex-col gap-8">
-          <div className="bg-white p-2 rounded-xl shadow-sm">
-            <CvUploadedChart data={dashboardData.chartData} />
-          </div>
-
-          <div className="w-full">
-            <JobStatsList />
-          </div>
-
-          <div className="w-full">
-            <TopUserWidget />
-          </div>
-        </div> 
       
-        <div className="lg:col-span-1 flex flex-col gap-8">
-          <SimpleListWidget title="Common Job Postings" items={jobListMock} />
-          <SimpleListWidget title="Famous Job Posting" items={jobListMock} />
-        </div>
-      </div>
+      
+      
     </div> 
   );
 };
