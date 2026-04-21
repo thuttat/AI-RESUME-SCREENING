@@ -21,14 +21,14 @@ public class EmailLogMapper {
         }
 
         return new EmailLogResponse(
-            log.getId(),
-            appId,
-            candidateName,
-            candidateEmail,
-            log.getSubject(),
-            log.getBody(),
-            log.getSentAt(),
-            log.getStatus() != null ? log.getStatus().name() : "UNKNOWN"
+                log.getId(),
+                appId,
+                candidateName,
+                candidateEmail,
+                log.getSubject(),
+                log.getBody(),
+                log.getSentAt(),
+                log.getStatus()
         );
     }
 }
