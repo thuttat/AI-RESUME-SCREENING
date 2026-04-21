@@ -24,18 +24,18 @@ public class ReportService {
     private final AIAnalysisResultRepository aiAnalysisResultRepository;
 
     public PipelineResponse getPipelineMetrics(String username) {
-        long totalApplications = applicationRepository.countByRecruiter(username);
-        long pendingCount = applicationRepository.countByRecruiterAndStatus(username, Status.PENDING);
+        long totalApplications = applicationRepository.countByRecruiterAndStatusNot(username, Status.PENDING);
         long aiProcessedCount = applicationRepository.countByRecruiterAndStatus(username, Status.SUCCESS);
         long shortlistedCount = applicationRepository.countByRecruiterAndStatus(username, Status.SHORTLIST);
         long rejectedCount = applicationRepository.countByRecruiterAndStatus(username, Status.REJECT);
+        long hiredCount = applicationRepository.countByRecruiterAndStatus(username, Status.HIRED);
 
         return new PipelineResponse(
             totalApplications,
-            pendingCount,
             aiProcessedCount,
             shortlistedCount,
-            rejectedCount
+            rejectedCount,
+            hiredCount
         );
     }
 

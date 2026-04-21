@@ -1,11 +1,12 @@
 import { Badge } from '../../../../components/common/Badge.jsx';
-import { ThumbsUp, ThumbsDown } from 'lucide-react';
+import {ThumbsUp, ThumbsDown, Eye} from 'lucide-react';
 
 export default function CandidateRow({
                                          c,
                                          selectedCandidates,
                                          setSelectedCandidates,
-                                         handleStatusChange
+                                         handleStatusChange,
+                                         onReview
                                      }) {
 
     const skillArray = c.extractedSkills
@@ -75,7 +76,9 @@ export default function CandidateRow({
                             ? 'success'
                             : c.status === 'REJECT'
                                 ? 'danger'
-                                : 'default'
+                            : c.status === 'HIRED'
+                                ? 'warning'
+                                    : 'default'
                     }
                 >
                     {c.status}
@@ -84,6 +87,12 @@ export default function CandidateRow({
 
             <td>
                 <div className="actions">
+                    <button
+                        className="btn-icon"
+                        onClick={() => onReview(c)}
+                    >
+                        <Eye size={16}/>
+                    </button>
                     <button
                         className="btn-icon success"
                         onClick={() => handleStatusChange(c.applicationId, 'SHORTLIST')}

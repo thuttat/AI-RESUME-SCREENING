@@ -1,6 +1,7 @@
 package com.duckie.backend.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -32,4 +33,10 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
            "(:search IS NULL OR LOWER(j.title) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
            "(:status IS NULL OR j.status = :status)")
     Page<JobPosting> findAllBySearchAndStatus(@Param("search") String search, @Param("status") JobStatus status, Pageable pageable);
+
+    long countByStatusAndCreatedByUsername(JobStatus status, String username);
+
+    @Query("SELECT j.status as status, COUNT(j) as count FROM JobPosting j " +
+            "WHERE j.createdBy.username = :username GROUP BY j.status")
+    List<Map<String, Object>> getJobStatusDistributionByRecruiter(@Param("username") String username);
 }

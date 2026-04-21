@@ -62,15 +62,6 @@
     color: var(--foreground);
 }
 
-.dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 8px;
-    display: inline-block;
-}
-
-/* STATS COLUMN */
 .stats-column {
     display: flex;
     flex-direction: column;

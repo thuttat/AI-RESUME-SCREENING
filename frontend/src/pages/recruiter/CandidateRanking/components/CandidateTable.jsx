@@ -6,7 +6,8 @@ export default function CandidateTable({
                                            candidates,
                                            selectedCandidates,
                                            setSelectedCandidates,
-                                           handleStatusChange
+                                           handleStatusChange,
+                                           onReview
                                        }) {
 
     if (loading) {
@@ -50,6 +51,7 @@ export default function CandidateTable({
                         selectedCandidates={selectedCandidates}
                         setSelectedCandidates={setSelectedCandidates}
                         handleStatusChange={handleStatusChange}
+                        onReview={onReview}
                     />
                 ))}
             </TableBody>

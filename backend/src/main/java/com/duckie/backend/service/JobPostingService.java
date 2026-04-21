@@ -49,7 +49,10 @@ public class JobPostingService {
         } else {
             jobs = jobPostingRepository.findByStatus(JobStatus.OPEN);
         }
-        return jobs.stream().map(jobMapper::toResponse).toList();
+        return jobs.stream().map(job -> {
+            long validApplicantsCount = applicationRepository.countByJobPostingIdAndStatusNot(job.getId(), Status.PENDING); // loại trừ application Pending
+            return jobMapper.toResponse(job, validApplicantsCount);
+        }).toList();
     }
 
     @Transactional(readOnly = true)

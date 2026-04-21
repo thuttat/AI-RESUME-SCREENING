@@ -3,13 +3,14 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Card, CardHeader, CardBody } from '../../../../components/common/Card.jsx';
 import { ChartPie } from 'lucide-react';
 
-const COLORS = ['#3b82f6', '#10b981', '#ef4444'];
+const COLORS = ['#3b82f6', '#10b981', "#ffcf00", '#ef4444' ];
 
 export default function OverviewChart({ globalStats }) {
     const pieData = [
-        { name: 'Pending', value: globalStats.pendingCount + globalStats.aiProcessedCount },
+        { name: 'Pending', value: globalStats.aiProcessedCount },
         { name: 'Shortlisted', value: globalStats.shortlistedCount },
-        { name: 'Rejected', value: globalStats.rejectedCount },
+        { name: 'Hired', value: globalStats.hiredCount },
+        { name: 'Rejected', value: globalStats.rejectedCount }
     ];
 
     return (

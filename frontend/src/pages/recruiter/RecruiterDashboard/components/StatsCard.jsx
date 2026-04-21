@@ -2,23 +2,25 @@ import React from 'react';
 import { Card, CardBody } from '../../../../components/common/Card.jsx';
 import { Briefcase, Users, CheckCircle, Clock } from 'lucide-react';
 
-const statsData = [
-    { label: 'Active Jobs', value: '24', icon: Briefcase },
-    { label: 'Total Candidates', value: '487', icon: Users },
-    { label: 'Shortlisted', value: '89', icon: CheckCircle },
-    { label: 'Pending Review', value: '156', icon: Clock },
-];
+const StatsCard = ({ stats }) => {
+    const safeStats = stats || {};
 
-const StatsCard = () => {
+    const displayData = [
+        { label: 'Active Jobs', value: safeStats.activeJobs || 0, icon: Briefcase, color: 'blue' },
+        { label: 'Total Candidates', value: safeStats.totalCandidates || 0, icon: Users, color: 'purple' },
+        { label: 'Shortlisted', value: safeStats.shortlistedCount || 0, icon: CheckCircle, color: 'green' },
+        { label: 'Pending Review', value: safeStats.pendingReviewCount || 0, icon: Clock, color: 'orange' },
+    ];
+
     return (
         <div className="grid-4">
-            {statsData.map((stat, index) => {
+            {displayData.map((stat, index) => {
                 const Icon = stat.icon;
 
                 return (
                     <Card key={index}>
                         <CardBody className="stats-card">
-                            <div className="icon-box">
+                            <div className={`icon-box icon-${stat.color}`}>
                                 <Icon size={22} />
                             </div>
                             <div>

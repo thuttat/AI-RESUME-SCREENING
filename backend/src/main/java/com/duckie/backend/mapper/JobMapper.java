@@ -38,4 +38,20 @@ public class JobMapper {
                 job.getApplications() != null ? job.getApplications().size() : 0
         );
     }
+
+    public JobPostingResponse toResponse(JobPosting job, long validApplicantCount) {
+        if (job == null) return null;
+
+        return new JobPostingResponse(
+                job.getId(),
+                job.getTitle(),
+                job.getDescription(),
+                job.getRequiredSkills(),
+                job.getStatus(),
+                job.getCreatedBy() != null ? job.getCreatedBy().getId() : null,
+                job.getCreatedAt(),
+                job.getUpdatedAt(),
+                (int) validApplicantCount
+        );
+    }
 }

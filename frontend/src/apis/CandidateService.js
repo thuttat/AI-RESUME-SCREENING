@@ -18,9 +18,5 @@ export const CandidateService = {
 
     parseCv: (applicationId) => {
         return api.post(`/applications/${applicationId}/parse`);
-    },
-
-    updateStatus: (applicationId, status) => {
-        return api.patch(`/applications/${applicationId}/status`, status);
     }
 }

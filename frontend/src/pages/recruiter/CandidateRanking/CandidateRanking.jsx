@@ -11,6 +11,8 @@ import Pagination from '../../../components/common/Pagination.jsx';
 import './CandidateRanking.css';
 import {Button} from "../../../components/common/Button.jsx";
 import {Filter, Search} from "lucide-react";
+import {ApplicationService} from "../../../apis/ApplicationService.js";
+import CandidateDetailModal from "./components/CandidateDetailModal.jsx";
 
 export default function CandidateRanking() {
     const [jobs, setJobs] = useState([]);
@@ -21,6 +23,7 @@ export default function CandidateRanking() {
     const [selectedCandidates, setSelectedCandidates] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
+    const [reviewCandidate, setReviewCandidate] = useState(null);
 
     useEffect(() => {
         const fetchJobs = async () => {
@@ -48,7 +51,7 @@ export default function CandidateRanking() {
     }, [selectedJobId, currentPage]);
 
     const handleStatusChange = async (id, status) => {
-        await CandidateService.updateStatus(id, { status, note: "" });
+        await ApplicationService.updateStatus(id, { status, note: "" });
         fetchCandidates();
     };
 
@@ -106,6 +109,7 @@ export default function CandidateRanking() {
                         selectedCandidates={selectedCandidates}
                         setSelectedCandidates={setSelectedCandidates}
                         handleStatusChange={handleStatusChange}
+                        onReview={setReviewCandidate}
                     />
 
                     <Pagination
@@ -115,6 +119,13 @@ export default function CandidateRanking() {
                     />
                 </CardBody>
             </Card>
+
+            {reviewCandidate && (
+                <CandidateDetailModal
+                    data={reviewCandidate}
+                    onClose={() => setReviewCandidate(null)}
+                />
+            )}
         </div>
     );
 }

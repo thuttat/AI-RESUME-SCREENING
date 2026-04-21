@@ -72,7 +72,6 @@
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
 | GET | /api/jobs/{id}/candidates | Lấy danh sách ứng viên theo job, sắp xếp theo match_score |
-| GET | /api/candidates/{id} | Xem chi tiết ứng viên và kết quả phân tích kỹ năng của AI |
 
 4. Shortlist / Reject
 
@@ -85,7 +84,7 @@
 | Method | Endpoint | Description (Mô tả) |
 |----------|------------|----------------------|
 | POST | /api/emails/send | Gửi email cho ứng viên (Dùng EMAIL_TEMPLATE, lưu vào EMAIL_LOG) |
-| GET | /api/emails/history | Lấy lịch sử email đã gửi |
+| GET | /api/email-logs/history | Lấy lịch sử email đã gửi |
 
 6. Pipeline Report
 
@@ -94,6 +93,11 @@
 | GET | /api/reports/pipeline | Thống kê tổng quan pipeline (CV, SUCCESS, SHORTLIST, REJECT) |
 | GET | /api/reports/jobs/{id} | Thống kê chi tiết theo từng job |
 
+7. Recruiter Dashboard
+
+| Method | Endpoint | Description (Mô tả) |
+|----------|------------|----------------------|
+| GET | /api/recruiter/dashboard | Thống kê tổng quan dữ liệu của Recruiter (tổng công việc, ứng viên, ...) |
 
 ## Admin
 1. Users Management

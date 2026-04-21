@@ -9,6 +9,9 @@ import org.springframework.data.repository.query.Param;
 import com.duckie.backend.entity.Application;
 import com.duckie.backend.entity.Status;
 
+import java.util.List;
+import java.util.Map;
+
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
         boolean existsByCvIdAndJobPostingId(Long id, Long jobPostingId);
@@ -30,9 +33,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
         long countByJobPostingId(Long jobPostingId);
 
-        @Query("SELECT COUNT(a) FROM Application a WHERE a.jobPosting.createdBy.username = :username")
-        long countByRecruiter(@Param("username") String username);
-
         @Query("SELECT COUNT(a) FROM Application a WHERE a.jobPosting.createdBy.username = :username AND a.status = :status")
         long countByRecruiterAndStatus(@Param("username") String username, @Param("status") Status status);
 
@@ -43,4 +43,17 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
                         @Param("currentCvId") Long currentCvId);
         Page<Application> findByJobPostingId(Long jobId, Pageable pageable);
 
+        @Query("SELECT FUNCTION('MONTHNAME', a.createdAt) as month, COUNT(a) as applications " +
+                "FROM Application a WHERE a.jobPosting.createdBy.username = :username " +
+                "GROUP BY FUNCTION('MONTHNAME', a.createdAt), MONTH(a.createdAt) " +
+                "ORDER BY MONTH(a.createdAt) ASC")
+        List<Map<String, Object>> findMonthlyStatsByRecruiter(@Param("username") String username);
+
+        List<Application> findTop5ByJobPostingCreatedByUsernameOrderByCreatedAtDesc(String username);
+
+        @Query("SELECT COUNT(a) FROM Application a WHERE a.jobPosting.createdBy.username = :username AND a.status != :status")
+        long countByRecruiterAndStatusNot(@Param("username") String username, @Param("status") Status status);
+
+        @Query("SELECT COUNT(a) FROM Application a WHERE a.jobPosting.id = :jobId AND a.status != :status")
+        long countByJobPostingIdAndStatusNot(@Param("jobId") Long jobId, @Param("status") Status status);
 }

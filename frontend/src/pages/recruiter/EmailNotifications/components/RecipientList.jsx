@@ -23,9 +23,10 @@ export default function RecipientList({
     );
 
     const statusPriority = {
-        SHORTLIST: 1,
-        REJECT: 2,
-        PENDING: 3
+        HIRED: 1,
+        SHORTLIST: 2,
+        REJECT: 3,
+        PENDING: 4
     };
 
     const availableStatus = [...new Set(filteredRecipients.map(r => r.status))]
