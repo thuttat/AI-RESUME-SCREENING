@@ -1,6 +1,5 @@
-/* eslint-disable react-refresh/only-export-components */
-import React, {createContext, useContext, useEffect, useState} from "react";
-import AxiosClient from "../apis/AxiosClient.js";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import api from "../apis/AxiosClient.js"; 
 
 export const AuthContext = createContext();
 
@@ -9,11 +8,20 @@ export const AuthProvider = ({ children }) => {
     const [role, setRole] = useState(localStorage.getItem("role") || null);
     const [loading, setLoading] = useState(true);
 
-    const login = (token, userRole) => {
+    const login = async (token, userRole) => {
         localStorage.setItem("accessToken", token);
         localStorage.setItem("role", userRole);
         setRole(userRole);
-        AxiosClient.get("/auth/me").then(res => setUser(res.data)).catch(console.log);
+        
+        try {
+            const res = await api.get("/auth/me");
+            setUser(res.data);
+            return res.data;
+        } catch (error) {
+            console.error("Failed to get user information:", error);
+            logout();
+            throw error;
+        }
     };
 
     const logout = () => {
@@ -21,6 +29,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("role");
         setUser(null);
         setRole(null);
+        window.location.href = "/"; 
     };
 
     useEffect(() => {
@@ -28,10 +37,10 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem("accessToken");
             if (token) {
                 try {
-                    const response = await AxiosClient('/auth/me');
+                    const response = await api.get('/auth/me');
                     setUser(response.data);
                 } catch (error) {
-                    console.log("Error token or expired: " + error);
+                    console.log("Token expired or invalid:", error);
                     logout();
                 }
             }
@@ -41,10 +50,14 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, role, loading, login, logout }}>
+        <AuthContext.Provider value={{ user, role, loading, login, logout, setUser }}>
             {!loading && children}
         </AuthContext.Provider>
     );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) throw new Error("useAuth must be used within an AuthProvider");
+    return context;
+};

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.duckie.backend.mapper.UserMapper;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,13 @@ import com.duckie.backend.entity.Role;
 import com.duckie.backend.entity.User;
 import com.duckie.backend.entity.UserStatus;
 import com.duckie.backend.exception.DuplicateResourceException;
+import com.duckie.backend.exception.ResourceNotFoundException;
+import com.duckie.backend.mapper.UserMapper;
 import com.duckie.backend.repository.UserRepository;
 
 @Service
 public class UserService implements IUserService {
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(UserService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -39,27 +42,27 @@ public class UserService implements IUserService {
     @Override
     @Transactional(readOnly = true)
     public List<UserResponse> findAll() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
+        return userRepository.findAll().stream()
                 .map(userMapper::toResponse)
                 .collect(Collectors.toList());
     }
-   
+
     @Transactional(readOnly = true)
     public Page<UserResponse> findAll(String search, Role role, Pageable pageable) {
-        String roleParam = role != null ? role.name() : null;
         Page<User> page = userRepository.findAllBySearchAndRole(search, role, pageable);
         return page.map(userMapper::toResponse);
     }
 
-    @Transactional
-    public UserResponse findById(Long id){
-        User user=userRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("User not found by Id: "+id));
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponse findById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         return userMapper.toResponse(user);
     }
 
-    @Transactional()
+    @Override
+    @Transactional
     public UserResponse create(UserRequest request) {
         if (userRepository.existsByUsername(request.username())) {
             throw new DuplicateResourceException("Username already exists");
@@ -74,47 +77,84 @@ public class UserService implements IUserService {
                 .fullname(request.fullname())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
-                .role(Role.USER)
+                .role(request.role() != null ? request.role() : Role.USER)
                 .status(UserStatus.ACTIVE)
                 .build();
+
         user = userRepository.save(user);
         logger.info("Created new user with id: {}", user.getId());
         return userMapper.toResponse(user);
     }
 
-    @Transactional()
-    public UserResponse patchUpdate(Long id, UserRequest request){
-        User user=userRepository.findById(id)
-            .orElseThrow(()->new RuntimeException("User not found  by Id:"+id));
+    @Override
+    @Transactional
+    public ResponseEntity<UserResponse> update(Long id, UserRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-        if (request.email() != null && !request.email().isBlank()) { 
-            user.setEmail(request.email());
+        if (userRepository.existsByEmailAndIdNot(request.email(), id)) {
+            throw new DuplicateResourceException("Email already exists: " + request.email());
         }
-        if (request.password() != null && !request.password().isBlank()) { 
+
+        user.setFullname(request.fullname());
+        user.setEmail(request.email());
+        user.setUsername(request.username());
+
+        if (request.password() != null && !request.password().isBlank()) {
             user.setPassword(passwordEncoder.encode(request.password()));
         }
+        
         if (request.role() != null) {
             user.setRole(request.role());
         }
 
-        user = userRepository.save(user);
-        return userMapper.toResponse(user);
+        User savedUser = userRepository.save(user);
+        return ResponseEntity.ok(userMapper.toResponse(savedUser));
     }
 
-    @Transactional()
+    @Override
+    @Transactional
+    public ResponseEntity<UserResponse> patchUpdate(Long id, UserPatchRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        if (request.username() != null) user.setUsername(request.username());
+        
+        if (request.email() != null) {
+            if (userRepository.existsByEmailAndIdNot(request.email(), id)) {
+                throw new DuplicateResourceException("Email already exists");
+            }
+            user.setEmail(request.email());
+        }
+        
+        if (request.password() != null && !request.password().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.password()));
+        }
+        
+        if (request.status() != null) user.setStatus(request.status());
+        if (request.role() != null) user.setRole(request.role());
+
+        User savedUser = userRepository.save(user);
+        return ResponseEntity.ok(userMapper.toResponse(savedUser));
+    }
+
+    @Override
+    @Transactional
     public void delete(Long id) {
-    User user = userRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("User not found by Id: " + id));
-    user.setStatus(UserStatus.UNACTIVE); 
-    userRepository.save(user);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        user.setStatus(UserStatus.UNACTIVE);
+        userRepository.save(user);
+        logger.info("User with id {} has been deactivated", id);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public byte[] exportUsersToCsv() {
         List<UserResponse> users = this.findAll();
         StringBuilder csvBuilder = new StringBuilder();
 
-        csvBuilder.append("ID,Username,Họ và Tên,Email,Quyền hạn,Trạng thái\n");
+        csvBuilder.append("ID,Username,Full Name,Email,Role,Status\n");
 
         for (UserResponse user : users) {
             csvBuilder.append(user.id()).append(",")
@@ -136,20 +176,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ResponseEntity<UserResponse> update(Long id, UserRequest request) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public ResponseEntity<UserResponse> patch(Long id, UserRequest request) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return update(id, request);
     }
-
-    @Override
-    public ResponseEntity<UserResponse> patchUpdate(Long id, UserPatchRequest request) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-
-    
 }

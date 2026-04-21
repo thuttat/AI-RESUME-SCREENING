@@ -11,53 +11,53 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.duckie.backend.dto.UserPatchRequest;
 import com.duckie.backend.dto.UserRequest;
 import com.duckie.backend.dto.UserResponse;
-import com.duckie.backend.service.UserService;
-
-
-
-
+import com.duckie.backend.service.IUserService;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    private final UserService userService;
+    private final IUserService userService;
 
-    public UserController(UserService userService) {
+    public UserController(IUserService userService) {
         this.userService = userService;
     }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponse>> findAllUser() {
-        List<UserResponse> users = userService.findAll(); 
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(userService.findAll());
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'HIRING_MANAGER', 'RECRUITER')")
     public ResponseEntity<UserResponse> findUserById(@PathVariable Long id) {
-        UserResponse user = userService.findById(id);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userService.findById(id));
     }
     
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest request) {
-        UserResponse user = userService.create(request);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userService.create(request));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest request) {
+        return userService.update(id, request);
     }
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> patchUser(@PathVariable Long id, @RequestBody UserRequest request) {
-        UserResponse user = userService.patchUpdate(id, request);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserResponse> patchUser(@PathVariable Long id, @RequestBody UserPatchRequest request) {
+        return userService.patchUpdate(id, request);
     }
 
     @DeleteMapping("/{id}")
@@ -74,7 +74,8 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=users_export.csv");
         headers.setContentType(MediaType.parseMediaType("text/csv"));
-        return ResponseEntity.ok().headers(headers).body(csvData);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(csvData);
     }
-
 }

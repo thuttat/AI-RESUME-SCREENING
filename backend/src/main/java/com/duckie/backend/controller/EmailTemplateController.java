@@ -19,6 +19,8 @@ import com.duckie.backend.dto.EmailPreviewResponse;
 import com.duckie.backend.dto.EmailTemplateRequest;
 import com.duckie.backend.dto.EmailTemplateResponse;
 import com.duckie.backend.dto.PaginationResponse;
+import com.duckie.backend.entity.EmailTemplate;
+import com.duckie.backend.mapper.EmailTemplateMapper;
 import com.duckie.backend.service.EmailTemplateService;
 
 import jakarta.validation.Valid;
@@ -29,12 +31,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor 
 public class EmailTemplateController {
     
-    private final EmailTemplateService emailTemplateService;    
+    private final EmailTemplateService emailTemplateService;
+    private final EmailTemplateMapper emailTemplateMapper;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER', 'HIRING_MANAGER')")
     public ResponseEntity<PaginationResponse<EmailTemplateResponse>> getAllTemplates(
-            @RequestParam(required = false) String search, 
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
             
@@ -44,7 +47,9 @@ public class EmailTemplateController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     public ResponseEntity<EmailTemplateResponse> createEmailTemplate(@Valid @RequestBody EmailTemplateRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(emailTemplateService.create(request));
+        EmailTemplate template = emailTemplateMapper.toEntity(request);
+        EmailTemplateResponse saved = emailTemplateService.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PutMapping("/{id}")
@@ -67,7 +72,6 @@ public class EmailTemplateController {
     public ResponseEntity<EmailPreviewResponse> previewTemplate(
             @PathVariable Long id,
             @RequestBody Map<String, String> mockData) {
-            
         return ResponseEntity.ok(emailTemplateService.preview(id, mockData));
     }
 }

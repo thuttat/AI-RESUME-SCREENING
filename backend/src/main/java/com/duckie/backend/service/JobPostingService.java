@@ -15,6 +15,7 @@ import com.duckie.backend.entity.JobStatus;
 import com.duckie.backend.entity.Status; 
 import com.duckie.backend.entity.User;
 import com.duckie.backend.exception.ResourceNotFoundException;
+import com.duckie.backend.mapper.JobMapper;
 import com.duckie.backend.repository.ApplicationRepository; 
 import com.duckie.backend.repository.JobPostingRepository;
 import com.duckie.backend.repository.UserRepository;

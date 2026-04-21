@@ -22,6 +22,7 @@ import com.duckie.backend.entity.User;
 import com.duckie.backend.entity.UserStatus;
 import com.duckie.backend.exception.DuplicateResourceException;
 import com.duckie.backend.exception.ResourceNotFoundException;
+import com.duckie.backend.mapper.UserMapper;
 import com.duckie.backend.repository.UserRepository;
 import com.duckie.backend.security.JwtService;
 

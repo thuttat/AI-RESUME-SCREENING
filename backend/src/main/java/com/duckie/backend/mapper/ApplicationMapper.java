@@ -1,4 +1,4 @@
-package com.duckie.backend.mapper;
+package com.duckie.backend.mapper; 
 
 import com.duckie.backend.dto.RankedCandidateResponse;
 import com.duckie.backend.entity.AIAnalysisResult;

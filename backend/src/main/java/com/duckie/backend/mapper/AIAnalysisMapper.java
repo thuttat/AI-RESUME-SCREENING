@@ -1,8 +1,14 @@
 package com.duckie.backend.mapper;
 
-import com.duckie.backend.dto.AIResponse;
-import com.duckie.backend.entity.*;
 import org.springframework.stereotype.Component;
+
+import com.duckie.backend.dto.AIResponse;
+import com.duckie.backend.entity.AIAnalysisResult;
+import com.duckie.backend.entity.Application;
+import com.duckie.backend.entity.CV;
+import com.duckie.backend.entity.JobPosting;
+import com.duckie.backend.entity.Status;
+import com.duckie.backend.entity.User;
 
 @Component
 public class AIAnalysisMapper {

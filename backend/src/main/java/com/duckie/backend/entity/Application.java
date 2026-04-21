@@ -47,6 +47,9 @@ public class Application extends BaseEntity {
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EmailLog> emailLogs;
 
+    @Column(name="note", columnDefinition = "TEXT")
+    private String note;
+
     public Application(){}
 
     public Long getId(){ 
@@ -91,6 +94,12 @@ public class Application extends BaseEntity {
     public static ApplicationBuilder builder() { 
         return new ApplicationBuilder(); 
     }
+    public String getNote() {
+        return note;
+    }
+    public void setNote(String note) {
+        this.note = note;
+    }
 
     public static final class ApplicationBuilder{
         private Long id;
@@ -101,6 +110,7 @@ public class Application extends BaseEntity {
         private Instant updatedAt;
         private List<Evaluation> evaluations;
         private List<EmailLog> emailLogs; 
+        private String note;
 
         public ApplicationBuilder id(Long id){ 
             this.id = id; 
@@ -130,6 +140,10 @@ public class Application extends BaseEntity {
         public ApplicationBuilder emailLogs(List<EmailLog> emailLogs){ 
             this.emailLogs = emailLogs; 
             return this; }
+        public ApplicationBuilder note(String note) {
+            this.note = note;
+            return this;
+        }
 
         public Application build(){
             Application application = new Application();
@@ -140,7 +154,8 @@ public class Application extends BaseEntity {
             application.setCreatedAt(this.createdAt);
             application.setUpdatedAt(this.updatedAt);
             application.setEvaluations(this.evaluations);
-            application.setEmailLogs(this.emailLogs); 
+            application.setEmailLogs(this.emailLogs);
+            application.setNote(this.note); 
             return application;
         }
     }
