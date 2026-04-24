@@ -3,10 +3,9 @@ package com.duckie.backend.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.duckie.backend.mapper.AIConfigMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartFile; 
 
 import com.duckie.backend.dto.AIConfigRequest;
 import com.duckie.backend.dto.AIConfigResponse;
@@ -33,7 +32,6 @@ public class AIConfigService {
                 .collect(Collectors.toList());
     }
 
-   
     @Transactional
     public AIConfigResponse updateConfig(AIConfigRequest request, String username) {
         AIConfig config = aiConfigRepository.findByConfigKey(request.configKey())
@@ -53,13 +51,14 @@ public class AIConfigService {
     public String testAiConnection(MultipartFile file) {
         String apiKey = aiConfigRepository.findByConfigKey("API_KEY")
                 .map(AIConfig::getConfigValue)
-                .orElseThrow(() -> new RuntimeException("Chưa cấu hình API Key!"));
+                .orElseThrow(() -> new RuntimeException("Chưa cấu hình API Key trong hệ thống!"));
                 
         String model = aiConfigRepository.findByConfigKey("MODEL_NAME")
                 .map(AIConfig::getConfigValue)
                 .orElse("gpt-4o-mini"); 
 
-        String extractedText = "Giả lập nội dung trích xuất từ file: " + file.getOriginalFilename();
+        String extractedText = "Pls check your connection: " + file.getOriginalFilename();
+        
         return aiService.testConnection(apiKey, model, extractedText);
     }
 }
