@@ -2,22 +2,22 @@ package com.duckie.backend.service;
 
 import java.time.Year;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.duckie.backend.dto.RecruiterDashboardResponse;
+import com.duckie.backend.dto.*;
 import com.duckie.backend.entity.JobStatus;
 import com.duckie.backend.entity.Status;
 import com.duckie.backend.repository.ApplicationRepository;
+import com.duckie.backend.mapper.ApplicationMapper; // Đảm bảo có mapper này
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.duckie.backend.dto.DashboardResponse;
-import com.duckie.backend.dto.MonthlyCVProjection;
-import com.duckie.backend.dto.TopUserProjection;
 import com.duckie.backend.repository.CVRepository;
 import com.duckie.backend.repository.JobPostingRepository;
-import com.duckie.backend.repository.UserRepository; 
+import com.duckie.backend.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,14 +29,15 @@ public class DashboardService {
     private final CVRepository cvRepository;
     private final UserRepository userRepository;
     private final ApplicationRepository applicationRepository;
+    private final ApplicationMapper applicationMapper;
 
     @Transactional(readOnly = true)
     public DashboardResponse getDashboardMetrics() {
         long totalJobs = jobPostingRepository.count();
         long totalCvs = cvRepository.count();
         long totalAiCvs = cvRepository.countByAiAnalysisResultIsNotNull();
-        long totalNormalCvs = totalCvs - totalAiCvs; 
-        long activeUsers = userRepository.count(); 
+        long totalNormalCvs = totalCvs - totalAiCvs;
+        long activeUsers = userRepository.count();
 
         int currentYear = Year.now().getValue();
         List<MonthlyCVProjection> chartData = cvRepository.getMonthlyCvStatistics(currentYear);
@@ -45,20 +46,21 @@ public class DashboardService {
         List<TopUserProjection> topUsers = jobPostingRepository.findTopUsersByJobCount(topFive).getContent();
 
         return new DashboardResponse(
-            totalJobs,
-            totalAiCvs,
-            totalNormalCvs, 
-            activeUsers,   
-            chartData,
-            topUsers
+                totalJobs,
+                totalAiCvs,
+                totalNormalCvs,
+                activeUsers,
+                chartData,
+                topUsers
         );
     }
 
+    @Transactional(readOnly = true)
     public RecruiterDashboardResponse getRecruiterDashboardStats(String username) {
         long activeJobs = jobPostingRepository.countByStatusAndCreatedByUsername(JobStatus.OPEN, username);
         long totalCandidates = applicationRepository.countByRecruiterAndStatusNot(username, Status.PENDING);
         long shortlisted = applicationRepository.countByRecruiterAndStatus(username, Status.SHORTLIST);
-        long pending = applicationRepository.countByRecruiterAndStatus(username, Status.SUCCESS);
+        long success = applicationRepository.countByRecruiterAndStatus(username, Status.SUCCESS);
 
         List<RecruiterDashboardResponse.MonthlyData> monthlyData = applicationRepository.findMonthlyStatsByRecruiter(username)
                 .stream()
@@ -83,6 +85,29 @@ public class DashboardService {
                 ))
                 .toList();
 
-        return new RecruiterDashboardResponse(activeJobs, totalCandidates, shortlisted, pending, monthlyData, pieData, activities);
+        return new RecruiterDashboardResponse(activeJobs, totalCandidates, shortlisted, success, monthlyData, pieData, activities);
+    }
+
+    @Transactional(readOnly = true)
+    public ManagerDashboardResponse getManagerDashboardStats() {
+        List<ApplicationResponse> recentApps = applicationRepository.findTop5ByOrderByCreatedAtDesc()
+                .stream()
+                .map(applicationMapper::toResponse)
+                .collect(Collectors.toList());
+
+        Map<String, Long> chartData = applicationRepository.countApplicationsByJobTitle()
+                .stream()
+                .collect(Collectors.toMap(
+                        obj -> (String) obj[0],
+                        obj -> (Long) obj[1]
+                ));
+        return ManagerDashboardResponse.builder()
+                .totalJobsManaged(jobPostingRepository.count())
+                .pendingEvaluations(applicationRepository.countByStatus(Status.PENDING))
+                .shortlistedCount(applicationRepository.countByStatus(Status.SHORTLIST))
+                .hiredCount(applicationRepository.countByStatus(Status.HIRED))
+                .recentActivities(recentApps)
+                .statsChart(chartData)
+                .build();
     }
 }

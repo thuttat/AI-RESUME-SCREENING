@@ -1,20 +1,20 @@
 import React from "react";
 import { Card, CardBody } from "../../../../components/common/Card";
-import { Users, Clock, UserCheck, UserX } from "lucide-react";
+import { Briefcase, Clock, UserCheck, Users } from "lucide-react";
 
 export default function StatCards({ stats }) {
     const cards = [
-        { label: "Total Applicants", value: stats.total, icon: <Users />, color: "indigo" },
-        { label: "Pending Review", value: stats.pending, icon: <Clock />, color: "amber" },
-        { label: "Hired", value: stats.hired, icon: <UserCheck />, color: "emerald" },
-        { label: "Rejected", value: stats.rejected, icon: <UserX />, color: "rose" }
+        { label: "Total Jobs Managed", value: stats.total, icon: <Briefcase />, color: "indigo" },
+        { label: "Pending Evaluations", value: stats.pending, icon: <Clock />, color: "amber" },
+        { label: "Shortlisted", value: stats.shortlisted, icon: <Users />, color: "blue" },
+        { label: "Hired", value: stats.hired, icon: <UserCheck />, color: "emerald" }
     ];
 
     const colorClasses = {
         indigo: "bg-indigo-50 text-indigo-600",
         amber: "bg-amber-50 text-amber-600",
         emerald: "bg-emerald-50 text-emerald-600",
-        rose: "bg-rose-50 text-rose-600"
+        blue: "bg-blue-50 text-blue-600"
     };
 
     return (
@@ -27,7 +27,7 @@ export default function StatCards({ stats }) {
                         </div>
                         <div>
                             <p className="text-3xl font-bold text-gray-900 leading-tight">{card.value}</p>
-                            <p className="text-gray-500 text-sm font-semibold tracking-wide">{card.label}</p>
+                            <p className="text-sm font-medium text-gray-500 mt-1">{card.label}</p>
                         </div>
                     </CardBody>
                 </Card>

@@ -9,5 +9,5 @@ public record ApplicationResponse(
     Status status,
     String candidateName,
     String candidateEmail,
-    String cvFileUrl
-) {}
+    String cvFileUrl,
+    java.time.Instant createdAt) {}
