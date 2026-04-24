@@ -50,7 +50,15 @@ public class SecurityConfig {
                 .requestMatchers("/api/job-templates/**").hasRole("ADMIN")
                 .requestMatchers("/api/email-templates/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")
                 .requestMatchers("/api/admin/dashboard").hasRole("ADMIN")
-
+                .requestMatchers("/api/reports/**").hasRole("RECRUITER")
+                .requestMatchers("/api/email-logs/**").hasAnyRole("RECRUITER, ADMIN")
+                .requestMatchers("/api/emails/send").hasAnyRole("RECRUITER, ADMIN")
+                .requestMatchers("/api/email-templates/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")
+                .requestMatchers("/api/jobs/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")
+                .requestMatchers("/api/cvs/upload").hasAnyRole("ADMIN", "RECRUITER")
+                .requestMatchers("/api/applications/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")
+                .requestMatchers("/api/ai-config/**").hasRole("ADMIN")
+                .requestMatchers("/api/evaluations/**").hasAnyRole("HIRING_MANAGER", "ADMIN")
                 .anyRequest().authenticated()
             )
             .exceptionHandling(exceptions -> exceptions
