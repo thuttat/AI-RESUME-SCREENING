@@ -1,7 +1,7 @@
-import axiosClient from "./AxiosClient.js";
+import api from "./AxiosClient.js";
 
 export const DashboardService = {
     getRecruiterStats: () => {
-        return axiosClient.get("/recruiter/dashboard");
+        return api.get("/recruiter/dashboard");
     }
 };

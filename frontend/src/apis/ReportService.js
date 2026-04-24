@@ -1,6 +1,6 @@
-import axiosClient from "./AxiosClient.js";
+import api from "./AxiosClient.js";
 
 export const ReportService = {
-    getOverviewPipeline: () => axiosClient.get("/reports/pipeline"),
-    getJobDetail: (jobId) => axiosClient.get(`/reports/jobs/${jobId}`),
+    getOverviewPipeline: () => api.get("/reports/pipeline"),
+    getJobDetail: (jobId) => api.get(`/reports/jobs/${jobId}`),
 };
