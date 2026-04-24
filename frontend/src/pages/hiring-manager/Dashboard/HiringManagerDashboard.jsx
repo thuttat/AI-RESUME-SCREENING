@@ -6,47 +6,46 @@ import { Button } from "../../../components/common/Button";
 
 import StatCards from "./components/StatCards";
 import RecentApplications from "./components/RecentApplication";
+import DashboardChart from "./components/DashboardChart";
 
 import "./HiringManagerDashboard.css";
 
 export default function HiringManagerDashboard() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const [stats, setStats] = useState({ total: 0, pending: 0, hired: 0, rejected: 0 });
-    const [recentApps, setRecentApps] = useState([]);
+
+    const [dashboardData, setDashboardData] = useState({
+        totalJobsManaged: 0,
+        pendingEvaluations: 0,
+        shortlistedCount: 0,
+        hiredCount: 0,
+        recentActivities: [],
+        statsChart: {}
+    });
 
     useEffect(() => {
-        fetchData();
+        fetchDashboardData();
     }, []);
 
-    const fetchData = async () => {
+    const fetchDashboardData = async () => {
         try {
             setLoading(true);
-            const response = await api.get("/applications");
-            const data = response.data.content || response.data || [];
-
-            setStats({
-                total: data.length,
-                pending: data.filter(a => a.status === 'PENDING').length,
-                hired: data.filter(a => a.status === 'HIRED').length,
-                rejected: data.filter(a => a.status === 'REJECT').length
-            });
-
-            const sorted = [...data].sort((a, b) => b.id - a.id);
-            setRecentApps(sorted.slice(0, 5));
+            const response = await api.get("/manager/dashboard");
+            setDashboardData(response.data);
         } catch (error) {
-            console.error("Dashboard Load Error:", error);
+            console.error("invalid dashboard data:", error);
+            alert("cannot upload dashboard data!");
         } finally {
             setLoading(false);
         }
     };
-
     const handleUpdateStatus = async (appId, newStatus) => {
         try {
             await api.patch(`/applications/${appId}/status`, { status: newStatus });
-            fetchData(); 
+            fetchDashboardData();
         } catch (error) {
-            alert("Update failed!");
+            console.error("Update error:", error);
+            alert("Cannot update!");
         }
     };
 
@@ -57,6 +56,13 @@ export default function HiringManagerDashboard() {
             </div>
         );
     }
+
+    const statsProps = {
+        total: dashboardData.totalJobsManaged,
+        pending: dashboardData.pendingEvaluations,
+        hired: dashboardData.hiredCount,
+        shortlisted: dashboardData.shortlistedCount
+    };
 
     return (
         <div className="hm-dashboard-container">
@@ -72,13 +78,21 @@ export default function HiringManagerDashboard() {
                 </Button>
             </header>
 
-            <StatCards stats={stats} />
+            <StatCards stats={statsProps} />
 
-            <RecentApplications 
-                applications={recentApps} 
-                onUpdateStatus={handleUpdateStatus}
-                onViewAll={() => navigate("/manager/pipeline")}
-            />
+            <div className="dashboard-main-grid grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+
+                <div className="lg:col-span-1">
+                    <DashboardChart chartData={dashboardData.statsChart} />
+                </div>
+                <div className="lg:col-span-2">
+                    <RecentApplications
+                        applications={dashboardData.recentActivities}
+                        onUpdateStatus={handleUpdateStatus}
+                        onViewAll={() => navigate("/manager/pipeline")}
+                    />
+                </div>
+            </div>
         </div>
     );
 }
