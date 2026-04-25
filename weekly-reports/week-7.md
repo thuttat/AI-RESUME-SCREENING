@@ -34,11 +34,11 @@
 
 ## 3. Kế hoạch tuần tới (Tuần 8 - Finalization & Deployment)
 
-| Thành viên | Công việc dự kiến |
-| :--- | :--- |
-| **Trịnh Thị Anh Thư** | Viết tài liệu hướng dẫn sử dụng (User Manual) và tổng hợp file báo cáo cuối kỳ. Kiểm tra lại luồng đánh giá của Manager. |
-| **Lê Hoàng Bảo Trân** | Kiểm thử hiệu năng (Stress test) khi upload file PDF dung lượng lớn. Tối ưu hóa giao diện mobile/responsive cho các bảng dữ liệu. |
-| **Nguyễn Triệu Duy** | Đóng gói ứng dụng bằng **Docker** (Dockerfile cho Spring Boot và React). Thiết lập Docker Compose để chạy đồng bộ MySQL, RabbitMQ và Application. |
+| Thành viên | Công việc dự kiến                                                                                                                                              |
+| :--- |:----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Trịnh Thị Anh Thư** | Viết tài liệu hướng dẫn sử dụng (User Manual) và tổng hợp file báo cáo cuối kỳ. Kiểm tra lại luồng đánh giá của Manager.                                        |
+| **Lê Hoàng Bảo Trân** | Kiểm thử hiệu năng (Stress test) khi upload file PDF dung lượng lớn. Tối ưu hóa giao diện mobile/responsive cho các bảng dữ liệu, test role recruiter           |
+| **Nguyễn Triệu Duy** | Đóng gói ứng dụng bằng **Docker** (Dockerfile cho Spring Boot và React). Thiết lập Docker Compose để chạy đồng bộ MySQL, RabbitMQ và Application, test role admin |
 
 ---
 

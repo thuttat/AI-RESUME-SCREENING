@@ -17,10 +17,12 @@ import PipelineReports from "./pages/recruiter/PipelineReports/PipelineReports.j
 import HiringManagerDashboard from "./pages/hiring-manager/Dashboard/HiringManagerDashboard.jsx";
 import CandidatePipeline from "./pages/hiring-manager/CandidatePipeline/CandidatePipeline.jsx";
 import CandidateComparison from "./pages/hiring-manager/CandidateComparision/CandidateComparison.jsx";
-import EmailTemplates from "./pages/hiring-manager/EmailManagement/Templates/EmailTemplates.jsx";
+import EmailTemplatesManager from "./pages/hiring-manager/EmailManagement/Templates/EmailTemplates.jsx";
 import EmailTracking from "./pages/hiring-manager/EmailManagement/Tracking/EmailTracking.jsx";
 
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import UsersManagement from "./pages/admin/UsersManagement.jsx";
+import TemplateManagement from "./pages/admin/TemplateManagement.jsx";
 
 import "./App.css";
 
@@ -60,7 +62,7 @@ export default function App() {
                         <Route path="dashboard" element={<HiringManagerDashboard />} />
                         <Route path="pipeline" element={<CandidatePipeline />} />
                         <Route path="comparison" element={<CandidateComparison />} />
-                        <Route path="email-templates" element={<EmailTemplates />} />
+                        <Route path="email-templates" element={<EmailTemplatesManager />} />
                         <Route path="email-logs" element={<EmailTracking />} />
                     </Route>
 
@@ -74,7 +76,10 @@ export default function App() {
                     >
                         <Route index element={<AdminDashboard />} />
                         <Route path="dashboard" element={<AdminDashboard />} />
+                        <Route path="users" element={<UsersManagement />} />
+                        <Route path="templates" element={<TemplateManagement />} />
                     </Route>
+
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </BrowserRouter>
