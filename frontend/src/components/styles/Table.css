@@ -1,10 +1,13 @@
 .table-wrapper {
     overflow-x: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 600px;
 }
 
 .table-header {
@@ -21,6 +24,7 @@
     font-size: 14px;
     font-weight: 500;
     color: #6b7280;
+    white-space: nowrap;
 }
 
 .table-body tr {
@@ -44,4 +48,13 @@
     text-align: center;
     padding: 24px;
     color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+    .table-head, .table-cell {
+        padding: 12px 12px;
+    }
+    .hide-on-mobile {
+        display: none !important;
+    }
 }

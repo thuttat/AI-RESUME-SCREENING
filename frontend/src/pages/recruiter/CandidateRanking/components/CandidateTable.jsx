@@ -36,8 +36,8 @@ export default function CandidateTable({
                     </TableHead>
                     <TableHead>Candidate</TableHead>
                     <TableHead>Score</TableHead>
-                    <TableHead>Skills</TableHead>
-                    <TableHead>Experience</TableHead>
+                    <TableHead className="hide-on-mobile">Skills</TableHead>
+                    <TableHead className="hide-on-mobile">Experience</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Actions</TableHead>
                 </TableRow>
