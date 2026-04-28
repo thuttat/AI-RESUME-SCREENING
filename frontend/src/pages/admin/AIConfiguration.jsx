@@ -30,9 +30,22 @@ export default function AIConfiguration() {
   }, []);
 
   const handleSaveConfig = async () => {
+    if (!config.apiKey || config.apiKey.trim() === '') {
+      alert('Please enter your API Key before saving!');
+      return; 
+    }
     setIsLoading(true);
     try {
-      await api.put('/ai-config', config);
+      // await api.put('/ai-config', { 
+      //     configKey: 'MODEL', 
+      //     configValue: config.provider 
+      // });
+
+      await api.put('/ai-config', { 
+          configKey: 'API_KEY', 
+          configValue: config.apiKey 
+      });
+      
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 3000);
       alert('AI Configuration saved successfully!');
@@ -71,7 +84,11 @@ export default function AIConfiguration() {
     formData.append('file', uploadedFile);
 
     try {
-      const response = await api.post('/ai-config/test', formData);
+     const response = await api.post('/ai-config/test', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       setTestResult({
         status: 'success',
         data: response.data

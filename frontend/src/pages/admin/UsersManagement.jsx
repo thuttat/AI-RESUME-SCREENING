@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from "../../api/AxiosClient.js";
+import api from "../../api/AxiosClient";
 import UsersHeader from './users/UsersHeader';
 import UsersTable from './users/UsersTable';
 import UserModal from './users/UserModal';
@@ -50,23 +50,28 @@ export default function UsersManagement() {
   const handleSaveUser = async () => {
     try {
       let finalAvatarUrl = formData.avatar;
-      
+
       if (formData.avatarFile) {
         const uploadData = new FormData();
         uploadData.append('file', formData.avatarFile);
-        const uploadRes = await api.post('/users/upload-avatar', uploadData);
+       
+        const uploadRes = await api.post('/users/upload-avatar', uploadData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
         finalAvatarUrl = uploadRes.data;
       }
-      
+
       const userToSave = { ...formData, avatar: finalAvatarUrl };
       delete userToSave.avatarFile;
-   
+
       if (editingUser) {
         await api.put(`/users/${editingUser.id}`, userToSave);
       } else {
         await api.post('/users', userToSave);
       }
-      
+
       fetchUsers();
       setIsModalOpen(false);
     } catch (error) {
@@ -106,7 +111,7 @@ export default function UsersManagement() {
       const response = await api.get('/users/export', {
         responseType: 'blob',
       });
-      
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;

@@ -1,7 +1,9 @@
 import { Users, MoreVertical, Award } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useNavigate } from 'react-router-dom';
 
 export default function RecentJobsTable({ users }) {
+    const navigate = useNavigate();
     return (
         <div className="!bg-white !rounded-2xl !p-7 !shadow-sm !border !border-gray-100 !overflow-x-auto">
             <div className="!flex !items-center !justify-between !mb-6">
@@ -9,9 +11,12 @@ export default function RecentJobsTable({ users }) {
                     <h3 className="!text-lg !font-bold !text-gray-900 !m-0">Top Active Recruiters</h3>
                     <p className="!text-sm !text-gray-500 !mt-1.5 !m-0">Recruiters with most job postings</p>
                 </div>
-                <button className="!text-sm !font-semibold !text-[#4F46E5] hover:!text-[#4338CA] !transition-colors">
+                {/* <button
+                    onClick={() => navigate('/admin/users')}
+                    className="text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer bg-transparent border-none p-0"
+                >
                     View All
-                </button>
+                </button> */}
             </div>
 
             <table className="!w-full">
