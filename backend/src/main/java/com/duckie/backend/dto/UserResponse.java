@@ -8,11 +8,13 @@ public record UserResponse(
     Long id,
     String fullname,
     String username,
+    String avatar,
     String email,
     Role role,
     UserStatus status,
     String createdAt,
     String updatedAt
+   
 ){
 
 }

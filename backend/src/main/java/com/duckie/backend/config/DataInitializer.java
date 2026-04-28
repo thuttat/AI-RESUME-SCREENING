@@ -18,9 +18,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (!emailTemplateRepository.existsByTemplateName("OFFER_TEMPLATE")) {
+        if (!emailTemplateRepository.existsByType("OFFER_TEMPLATE")) {
             EmailTemplate offerTemplate = EmailTemplate.builder()
-                    .templateName("OFFER_TEMPLATE")
+                    .type("OFFER_TEMPLATE")
                     .subject("Chúc mừng! Thư mời làm việc cho vị trí [JobTitle]")
                     .body("Chào [CandidateName],\n\nChúng tôi rất ấn tượng...")
                     .createdAt(Instant.now())
@@ -29,9 +29,9 @@ public class DataInitializer implements CommandLineRunner {
             emailTemplateRepository.save(offerTemplate);
         }
 
-        if (!emailTemplateRepository.existsByTemplateName("REJECTION_TEMPLATE")) {
+        if (!emailTemplateRepository.existsByType("REJECTION_TEMPLATE")) {
             EmailTemplate rejectionTemplate = EmailTemplate.builder()
-                    .templateName("REJECTION_TEMPLATE")
+                    .type("REJECTION_TEMPLATE")
                     .subject("Thông báo kết quả ứng tuyển vị trí [JobTitle]")
                     .body("Chào [CandidateName],\n\nRất tiếc...")
                     .createdAt(Instant.now())

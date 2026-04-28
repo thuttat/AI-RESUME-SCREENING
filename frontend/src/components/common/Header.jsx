@@ -5,7 +5,7 @@ import "./../styles/Header.css";
 import { Button } from "./Button.jsx";
 import { menuItems } from "../../utils/MenuConfig.js";
 import { useAuth } from "../../context/AuthContext.jsx";
-import api from "../../apis/AxiosClient.js"; 
+import AxiosClient from "../../apis/AxiosClient.js";
 
 export default function Header() {
     const location = useLocation();
@@ -22,6 +22,23 @@ export default function Header() {
     }
 
     const title = getPageTitle();
+
+    const [userInfo, setUserInfo] = useState({
+        fullname: "Loading...",
+        email: "",
+    });
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const response = await AxiosClient().get("/auth/me");
+                setUserInfo(response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchUserProfile();
+    }, []);
 
     const handleLogout = () => {
         logout();

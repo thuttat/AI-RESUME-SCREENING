@@ -31,13 +31,13 @@ public class JobTemplateService implements IJobTemplateService {
     }
 
     @Transactional(readOnly = true)
-    public List<JobTemplateResponse> findAll() {  
+    public List<JobTemplateResponse> findAll() {
         List<JobTemplate> templates = jobTemplateRepository.findAll();
         return templates.stream()
                 .map(jobTemplateMapper::toResponse)
                 .collect(Collectors.toList());
     }
-    
+
     @Transactional(readOnly = true)
     public Page<JobTemplateResponse> findAll(String search, Pageable pageable) {
         Page<JobTemplate> page = jobTemplateRepository.findAllBySearch(search, pageable);
@@ -58,7 +58,7 @@ public class JobTemplateService implements IJobTemplateService {
                 .description(request.description())
                 .isActive(true)
                 .build();
-                
+
         template = jobTemplateRepository.save(template);
         logger.info("Created new job template with id: {}", template.getId());
         return jobTemplateMapper.toResponse(template);
@@ -67,7 +67,7 @@ public class JobTemplateService implements IJobTemplateService {
     @Transactional
     public JobTemplateResponse update(Long id, JobTemplateRequest request) {
         JobTemplate template = jobTemplateRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Job template not found by Id: " + id));
+                .orElseThrow(() -> new RuntimeException("Job template not found by Id: " + id));
 
         template.setTitle(request.title());
         template.setDescription(request.description());
@@ -79,12 +79,12 @@ public class JobTemplateService implements IJobTemplateService {
     @Transactional()
     public JobTemplateResponse patchUpdate(Long id, JobTemplateRequest request){
         JobTemplate template = jobTemplateRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Job template not found by Id: " + id));
+                .orElseThrow(() -> new RuntimeException("Job template not found by Id: " + id));
 
-        if (request.title() != null && !request.title().isBlank()) { 
+        if (request.title() != null && !request.title().isBlank()) {
             template.setTitle(request.title());
         }
-        if (request.description() != null && !request.description().isBlank()) { 
+        if (request.description() != null && !request.description().isBlank()) {
             template.setDescription(request.description());
         }
 
@@ -95,7 +95,7 @@ public class JobTemplateService implements IJobTemplateService {
     @Transactional()
     public void delete(Long id) {
         JobTemplate template = jobTemplateRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Job template not found by Id: " + id));        
+                .orElseThrow(() -> new RuntimeException("Job template not found by Id: " + id));
         template.setIsActive(false);
         jobTemplateRepository.save(template);
         logger.info("Soft deleted job template with id: {}", id);
@@ -145,5 +145,5 @@ public class JobTemplateService implements IJobTemplateService {
         logger.info("Soft deleted job template with id: {}", id);
     }
 
-    
+
 }

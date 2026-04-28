@@ -13,8 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.duckie.backend.dto.UserPatchRequest;
 import com.duckie.backend.dto.UserRequest;
 import com.duckie.backend.dto.UserResponse;
 import com.duckie.backend.entity.Role;
@@ -32,11 +32,16 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    private final CloudinaryService cloudinaryService; 
+    
+    public UserService(UserRepository userRepository, 
+                       UserMapper userMapper, 
+                       PasswordEncoder passwordEncoder,
+                       CloudinaryService cloudinaryService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @Override
@@ -60,14 +65,38 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         return userMapper.toResponse(user);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UserResponse> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(userMapper::toResponse);
+    }
 
+    
+    @Override
+    public String uploadAvatar(MultipartFile file) {
+        try {
+            return cloudinaryService.uploadFile(file); 
+        } catch (Exception e) {
+            throw new RuntimeException("Could not upload avatar: " + e.getMessage());
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse findById(Long id){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found by Id: " + id));
+        return userMapper.toResponse(user);
+    }
+
+   
     @Override
     @Transactional
     public UserResponse create(UserRequest request) {
         if (userRepository.existsByUsername(request.username())) {
             throw new DuplicateResourceException("Username already exists");
         }
-
         if (userRepository.existsByEmail(request.email())) {
             throw new DuplicateResourceException("Email already exists");
         }
@@ -76,6 +105,7 @@ public class UserService implements IUserService {
                 .username(request.username())
                 .fullname(request.fullname())
                 .email(request.email())
+                .avatar(request.avatar())
                 .password(passwordEncoder.encode(request.password()))
                 .role(request.role() != null ? request.role() : Role.USER)
                 .status(UserStatus.ACTIVE)
@@ -102,53 +132,68 @@ public class UserService implements IUserService {
 
         if (request.password() != null && !request.password().isBlank()) {
             user.setPassword(passwordEncoder.encode(request.password()));
-        }
-        
-        if (request.role() != null) {
-            user.setRole(request.role());
-        }
-
-        User savedUser = userRepository.save(user);
-        return ResponseEntity.ok(userMapper.toResponse(savedUser));
+                .role(request.role() != null ? request.role() : Role.RECRUITER)
+                .status(UserStatus.ACTIVE)
+                .build();
+                
+        return userMapper.toResponse(userRepository.save(user));
     }
 
+  
     @Override
     @Transactional
-    public ResponseEntity<UserResponse> patchUpdate(Long id, UserPatchRequest request) {
+    public UserResponse update(Long id, UserRequest request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("User not found by Id: " + id));
 
-        if (request.username() != null) user.setUsername(request.username());
-        
-        if (request.email() != null) {
-            if (userRepository.existsByEmailAndIdNot(request.email(), id)) {
-                throw new DuplicateResourceException("Email already exists");
-            }
-            user.setEmail(request.email());
-        }
-        
+        user.setFullname(request.fullname());
+        user.setEmail(request.email());
+        user.setRole(request.role());
+        user.setAvatar(request.avatar()); 
+
         if (request.password() != null && !request.password().isBlank()) {
             user.setPassword(passwordEncoder.encode(request.password()));
         }
-        
-        if (request.status() != null) user.setStatus(request.status());
-        if (request.role() != null) user.setRole(request.role());
 
-        User savedUser = userRepository.save(user);
-        return ResponseEntity.ok(userMapper.toResponse(savedUser));
+        return userMapper.toResponse(userRepository.save(user));
     }
 
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-        user.setStatus(UserStatus.UNACTIVE);
-        userRepository.save(user);
-        logger.info("User with id {} has been deactivated", id);
-    }
+        @Override
+        @Transactional
+        public ResponseEntity<UserResponse> patchUpdate(Long id, UserPatchRequest request) {
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-    @Override
+            if (request.username() != null) user.setUsername(request.username());
+
+            if (request.email() != null) {
+                if (userRepository.existsByEmailAndIdNot(request.email(), id)) {
+                    throw new DuplicateResourceException("Email already exists");
+                }
+                user.setEmail(request.email());
+            }
+
+            if (request.password() != null && !request.password().isBlank()) {
+                user.setPassword(passwordEncoder.encode(request.password()));
+            }
+
+            if (request.status() != null) user.setStatus(request.status());
+            if (request.role() != null) user.setRole(request.role());
+
+            User savedUser = userRepository.save(user);
+            return ResponseEntity.ok(userMapper.toResponse(savedUser));
+        }
+
+        @Override
+        @Transactional
+        public void delete(Long id) {
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+            user.setStatus(UserStatus.UNACTIVE);
+            userRepository.save(user);
+            logger.info("User with id {} has been deactivated", id);
+        }
+   
     @Transactional(readOnly = true)
     public byte[] exportUsersToCsv() {
         List<UserResponse> users = this.findAll();
@@ -168,10 +213,8 @@ public class UserService implements IUserService {
         byte[] csvBytes = csvBuilder.toString().getBytes(StandardCharsets.UTF_8);
         byte[] bom = {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
         byte[] finalCsvData = new byte[bom.length + csvBytes.length];
-        
         System.arraycopy(bom, 0, finalCsvData, 0, bom.length);
         System.arraycopy(csvBytes, 0, finalCsvData, bom.length, csvBytes.length);
-
         return finalCsvData;
     }
 

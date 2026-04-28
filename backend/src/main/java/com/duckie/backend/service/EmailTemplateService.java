@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,17 +26,23 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class EmailTemplateService {
+public class EmailTemplateService implements IEmailTemplateService {
+    private static final Logger logger = LoggerFactory.getLogger(EmailTemplateService.class);
 
     private final EmailTemplateRepository emailTemplateRepository;
     private final EmailTemplateMapper emailTemplateMapper;
+    private final EmailRenderService emailRenderService;
+
+    @Override
     @Transactional(readOnly = true)
     public PaginationResponse<EmailTemplateResponse> findAll(String search, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<EmailTemplate> templatePage = emailTemplateRepository.searchTemplates(search, pageable);
+
         List<EmailTemplateResponse> content = templatePage.getContent().stream()
                 .map(emailTemplateMapper::toResponse)
                 .collect(Collectors.toList());
+
         return PaginationResponse.<EmailTemplateResponse>builder()
                 .content(content)
                 .pageNo(templatePage.getNumber())
@@ -45,59 +53,83 @@ public class EmailTemplateService {
                 .build();
     }
 
+    @Override
     @Transactional
     public EmailTemplateResponse create(EmailTemplateRequest request) {
-        if (request.templateName() != null && !request.templateName().isBlank()) {
-            if (emailTemplateRepository.findByTemplateName(request.templateName()).isPresent()) {
-                throw new RuntimeException("Tên Template '" + request.templateName() + "' đã tồn tại!");
+        if (request.type() != null && !request.type().isBlank()) {
+            if (emailTemplateRepository.existsByType(request.type())) {
+                throw new RuntimeException("Loại Template '" + request.type() + "' đã tồn tại!");
             }
         }
 
         EmailTemplate template = emailTemplateMapper.toEntity(request);
+        template.setIsActive(true);
         EmailTemplate savedTemplate = emailTemplateRepository.save(template);
-        
+
+        logger.info("Created new email template with id: {} and type: {}", savedTemplate.getId(), savedTemplate.getType());
         return emailTemplateMapper.toResponse(savedTemplate);
     }
 
+    @Override
     @Transactional
     public EmailTemplateResponse update(Long id, EmailTemplateRequest request) {
         EmailTemplate template = emailTemplateRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy mẫu Email ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Email ID: " + id));
+
+        if (!template.getType().equals(request.type()) && emailTemplateRepository.existsByType(request.type())) {
+            throw new RuntimeException("Email template with type '" + request.type() + "' already exists.");
+        }
 
         emailTemplateMapper.updateEntityFromRequest(request, template);
-
         EmailTemplate updatedTemplate = emailTemplateRepository.save(template);
+
+        logger.info("Updated email template with id: {}", updatedTemplate.getId());
         return emailTemplateMapper.toResponse(updatedTemplate);
     }
 
+    @Override
     @Transactional
     public void delete(Long id) {
-        if (!emailTemplateRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Không tìm thấy mẫu Email ID: " + id);
-        }
-        emailTemplateRepository.deleteById(id);
-    }
-    @Transactional(readOnly = true)
-    public EmailPreviewResponse preview(Long id, Map<String, String> mockData) {
         EmailTemplate template = emailTemplateRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy mẫu Email ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Email ID: " + id));
 
-        String previewSubject = template.getSubject();
-        String previewBody = template.getBody();
+        template.setIsActive(false);
+        emailTemplateRepository.save(template);
+        logger.info("Soft deleted email template with id: {}", id);
+    }
 
-        if (mockData != null && !mockData.isEmpty()) {
-            for (Map.Entry<String, String> entry : mockData.entrySet()) {
-                String placeholder = "[" + entry.getKey() + "]";
-                
-                if (previewSubject != null) {
-                    previewSubject = previewSubject.replace(placeholder, entry.getValue());
-                }
-                if (previewBody != null) {
-                    previewBody = previewBody.replace(placeholder, entry.getValue());
-                }
-            }
+    @Override
+    @Transactional(readOnly = true)
+    public EmailPreviewResponse preview(Long id, Map<String, String> variables) {
+        EmailTemplate template = emailTemplateRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Email ID: " + id));
+
+        String renderedSubject = emailRenderService.renderContent(template.getSubject(), variables);
+        String renderedBody = emailRenderService.renderContent(template.getBody(), variables);
+
+        return new EmailPreviewResponse(renderedSubject, renderedBody);
+    }
+
+    @Override
+    @Transactional
+    public EmailTemplate createEmailTemplate(EmailTemplate emailTemplate) {
+        if (emailTemplate.getIsActive() == null) {
+            emailTemplate.setIsActive(true);
         }
+        return emailTemplateRepository.save(emailTemplate);
+    }
 
-        return new EmailPreviewResponse(previewSubject, previewBody);
+    @Override
+    @Transactional
+    public EmailTemplate updateEmailTemplate(Long id, EmailTemplate emailTemplate) {
+        EmailTemplate existing = emailTemplateRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Email ID: " + id));
+
+        existing.setType(emailTemplate.getType());
+        existing.setSubject(emailTemplate.getSubject());
+        existing.setBody(emailTemplate.getBody());
+        existing.setIsActive(emailTemplate.getIsActive());
+
+        return emailTemplateRepository.save(existing);
     }
 }

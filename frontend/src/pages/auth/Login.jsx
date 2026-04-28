@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import "../../styles/auth.css";
 import { Button } from "../../components/common/Button.jsx";
-import api from "../../apis/AxiosClient.js"; 
+import api from "../../apis/AxiosClient.js";
 import { useAuth } from "../../context/AuthContext.jsx";
-import { Loader2 } from "lucide-react"; 
+import { Loader2 } from "lucide-react";
 
 function Login() {
     const [formData, setFormData] = useState({
@@ -19,26 +19,26 @@ function Login() {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-        if (errorMsg) setErrorMsg(""); 
+        if (errorMsg) setErrorMsg("");
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         setErrorMsg("");
-        
+
         try {
             const payload = {
                 usernameOrEmail: formData.usernameOrEmail.trim(),
                 password: formData.password.trim(),
             };
             const response = await api.post("/auth/login", payload);
-            
+
             const { accessToken, role } = response.data;
             const userRole = role || (response.data.user && response.data.user.role);
 
             if (accessToken && userRole) {
-                await login(accessToken, userRole); 
+                await login(accessToken, userRole);
 
                 const roleKey = userRole.toUpperCase();
                 if (roleKey.includes("ADMIN")) navigate("/admin/dashboard");
@@ -74,9 +74,9 @@ function Login() {
                         <div className="form-group">
                             <label>Username or Email</label>
                             <input
-                                type="text" 
+                                type="text"
                                 className="input"
-                                name="usernameOrEmail" 
+                                name="usernameOrEmail"
                                 value={formData.usernameOrEmail}
                                 onChange={handleChange}
                                 required

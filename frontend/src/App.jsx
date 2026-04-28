@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import BaseLayout from "./layouts/BaseLayout";
 
 import { AuthProvider } from "./context/AuthContext.jsx";
-import PrivateRoute from "./pages/auth/PrivateRoute.jsx"; 
+import PrivateRoute from "./pages/auth/PrivateRoute.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 
@@ -23,6 +23,7 @@ import EmailTracking from "./pages/hiring-manager/EmailManagement/Tracking/Email
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import UsersManagement from "./pages/admin/UsersManagement.jsx";
 import TemplateManagement from "./pages/admin/TemplateManagement.jsx";
+import AIConfiguration from "./pages/admin/AIConfiguration.jsx";
 
 import "./App.css";
 
@@ -78,8 +79,8 @@ export default function App() {
                         <Route path="dashboard" element={<AdminDashboard />} />
                         <Route path="users" element={<UsersManagement />} />
                         <Route path="templates" element={<TemplateManagement />} />
+                        <Route path="config" element={<AIConfiguration />} />
                     </Route>
-
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </BrowserRouter>

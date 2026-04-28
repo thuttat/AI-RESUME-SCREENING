@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.duckie.backend.dto.UserPatchRequest;
 import com.duckie.backend.dto.UserRequest;
@@ -24,6 +26,7 @@ import com.duckie.backend.service.IUserService;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
     private final IUserService userService;
 
     public UserController(IUserService userService) {
@@ -41,7 +44,7 @@ public class UserController {
     public ResponseEntity<UserResponse> findUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findById(id));
     }
-    
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest request) {
@@ -60,6 +63,13 @@ public class UserController {
         return userService.patchUpdate(id, request);
     }
 
+    @PostMapping(value = "/upload-avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
+        String avatarUrl = userService.uploadAvatar(file);
+        return ResponseEntity.ok(avatarUrl);
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
@@ -68,7 +78,7 @@ public class UserController {
     }
 
     @GetMapping("/export")
-    @PreAuthorize("hasRole('ADMIN')") 
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<byte[]> exportUsers() {
         byte[] csvData = userService.exportUsersToCsv();
         HttpHeaders headers = new HttpHeaders();

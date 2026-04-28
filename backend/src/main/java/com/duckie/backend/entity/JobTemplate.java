@@ -39,6 +39,12 @@ public class JobTemplate extends BaseEntity {
     @Column(name ="required_skills", columnDefinition = "TEXT", nullable = false)
     private String requiredSkills;
 
+    @Column(name = "department", updatable = false)
+    private String department;
+
+    @Column(name = "requirements", updatable = false)
+    private String requirements;
+
     public JobTemplate() {}
 
     public Long getId() { 
@@ -86,6 +92,20 @@ public class JobTemplate extends BaseEntity {
         this.requiredSkills = requiredSkills;
     }
 
+    public String getDepartment() {
+        return department;
+    }
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getRequirements() {
+        return requirements;
+    }
+    public void setRequirements(String requirements) {
+        this.requirements = requirements;
+    }   
+
 
     public static JobTemplateBuilder builder() { 
         return new JobTemplateBuilder(); 
@@ -101,6 +121,8 @@ public class JobTemplate extends BaseEntity {
         private Instant updatedAt;
         private Boolean isActive = true;
         private String requiredSkills;
+        private String department;
+        private String requirements;
 
         public JobTemplateBuilder id(Long id) { 
             this.id = id; 
@@ -132,12 +154,21 @@ public class JobTemplate extends BaseEntity {
             return this;
         }
 
+        public JobTemplateBuilder department(String department) {
+            this.department = department;
+            return this;
+        }
+
         public JobTemplateBuilder createdById(Long createdById) {
             this.createdById = createdById;
             return this;
         }
+
         public JobTemplateBuilder requiredSkills(String requiredSkills) {
             this.requiredSkills = requiredSkills;
+
+        public JobTemplateBuilder requirements(String requirements) {
+            this.requirements = requirements;
             return this;
         }
 
@@ -152,6 +183,8 @@ public class JobTemplate extends BaseEntity {
             template.setIsActive(this.isActive);
             template.setCreatedById(this.createdById);
             template.setRequiredSkills(this.requiredSkills);
+            template.setDepartment(this.department);
+            template.setRequirements(this.requirements);
             return template;
         }
     }

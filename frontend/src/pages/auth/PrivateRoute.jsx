@@ -33,7 +33,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
 
     if (!hasAccess) {
         console.warn(`[Security] Access Denied for Role: ${userRole}. Required: ${allowedRoles}`);
-        
+
         let redirectPath = "/";
         if (userRole === "ADMIN") {
             redirectPath = "/admin/dashboard";
@@ -42,7 +42,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
         } else if (userRole === "HIRING_MANAGER") {
             redirectPath = "/manager/dashboard";
         }
-        
+
         return <Navigate to={redirectPath} replace />;
     }
 
