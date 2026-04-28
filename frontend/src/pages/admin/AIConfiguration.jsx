@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "../../api/AxiosClient.js";
 import { Play } from 'lucide-react';
 import Button from './components/Button.jsx';
 import ConfigSettingsCard from './aiconfiguration/ConfigSettingsCard.jsx';
@@ -14,31 +14,25 @@ export default function AIConfiguration() {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const API_BASE_URL = 'http://localhost:8080/api';
-  const token = localStorage.getItem('accessToken');
 
   useEffect(() => {
     const fetchAIConfig = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/ai-config`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (response.data) {
-          setConfig(response.data);
+        const response = await api.get('/ai-config');
+        if (response.data && response.data.length > 0) {
+          setConfig(response.data[0]);
         }
       } catch (error) {
         console.error("Error fetching AI config:", error);
       }
     };
     fetchAIConfig();
-  }, [token]);
+  }, []);
 
   const handleSaveConfig = async () => {
     setIsLoading(true);
     try {
-      await axios.post(`${API_BASE_URL}/ai-config`, config, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.put('/ai-config', config);
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 3000);
       alert('AI Configuration saved successfully!');
@@ -77,13 +71,7 @@ export default function AIConfiguration() {
     formData.append('file', uploadedFile);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/ai-config`, formData, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data' 
-        }
-      });
-
+      const response = await api.post('/ai-config/test', formData);
       setTestResult({
         status: 'success',
         data: response.data
@@ -100,12 +88,12 @@ export default function AIConfiguration() {
     <div className="!flex !flex-col !gap-6 !p-8 !w-full !bg-[#f8f9fa] !min-h-screen !overflow-y-auto">
       <h1 className="!text-2xl !font-bold !text-slate-800 !m-0">AI Configuration</h1>
 
-      <ConfigSettingsCard 
-        config={config} 
-        setConfig={setConfig} 
-        onSave={handleSaveConfig} 
-        isLoading={isLoading} 
-        isSaved={isSaved} 
+      <ConfigSettingsCard
+        config={config}
+        setConfig={setConfig}
+        onSave={handleSaveConfig}
+        isLoading={isLoading}
+        isSaved={isSaved}
       />
 
       <div className="!bg-white !border !border-slate-200 !rounded-2xl !p-7 !shadow-sm">
@@ -113,7 +101,7 @@ export default function AIConfiguration() {
           AI Testing Sandbox
         </h2>
         <div className="!space-y-6">
-          <FileUploadZone 
+          <FileUploadZone
             onFileUpload={handleFileUpload}
             uploadedFile={uploadedFile}
             isDragging={isDragging}

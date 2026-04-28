@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "../../api/AxiosClient.js";
 import UsersHeader from './users/UsersHeader';
 import UsersTable from './users/UsersTable';
 import UserModal from './users/UserModal';
@@ -13,12 +13,10 @@ export default function UsersManagement() {
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:8080/api/users', {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await api.get('/users', {
         params: { size: 100 }
       });
-      console.log("Dữ liệu từ BE:", response.data);// debug log
+      console.log("Dữ liệu từ BE:", response.data); // debug log
       setUsers(response.data);
       setIsLoading(false);
     } catch (error) {
@@ -51,27 +49,24 @@ export default function UsersManagement() {
 
   const handleSaveUser = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
-      const config = { headers: { Authorization: `Bearer ${token}` } };
       let finalAvatarUrl = formData.avatar;
+      
       if (formData.avatarFile) {
         const uploadData = new FormData();
         uploadData.append('file', formData.avatarFile);
-        const uploadRes = await axios.post('http://localhost:8080/api/users/upload-avatar', uploadData, {
-          headers: {
-            ...config.headers,
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        const uploadRes = await api.post('/users/upload-avatar', uploadData);
         finalAvatarUrl = uploadRes.data;
       }
+      
       const userToSave = { ...formData, avatar: finalAvatarUrl };
       delete userToSave.avatarFile;
+   
       if (editingUser) {
-        await axios.put(`http://localhost:8080/api/users/${editingUser.id}`, userToSave, config);
+        await api.put(`/users/${editingUser.id}`, userToSave);
       } else {
-        await axios.post('http://localhost:8080/api/users', userToSave, config);
+        await api.post('/users', userToSave);
       }
+      
       fetchUsers();
       setIsModalOpen(false);
     } catch (error) {
@@ -82,10 +77,7 @@ export default function UsersManagement() {
   const handleDeleteUser = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        const token = localStorage.getItem('accessToken');
-        await axios.delete(`http://localhost:8080/api/users/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.delete(`/users/${id}`);
         alert('User deleted successfully!');
         fetchUsers();
       } catch (error) {
@@ -97,13 +89,10 @@ export default function UsersManagement() {
 
   const handleToggleStatus = async (user) => {
     try {
-      const token = localStorage.getItem('accessToken');
       const newStatus = user.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
-      await axios.put(`http://localhost:8080/api/users/${user.id}`, {
+      await api.put(`/users/${user.id}`, {
         ...user,
         status: newStatus
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
 
       fetchUsers();
@@ -114,11 +103,10 @@ export default function UsersManagement() {
 
   const handleExport = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:8080/api/users/export', {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await api.get('/users/export', {
         responseType: 'blob',
       });
+      
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;

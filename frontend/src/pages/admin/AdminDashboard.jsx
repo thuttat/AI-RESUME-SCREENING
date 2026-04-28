@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "../../api/AxiosClient.js";
 import DashboardMetrics from './dashboard/DashboardMetrics.jsx'
 import ApplicationTrend from './dashboard/ApplicationTrend.jsx';
 import CandidatesByStage from './dashboard/CandidatesByStage.jsx';
@@ -12,12 +12,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
-        const response = await axios.get('http://localhost:8080/api/admin/dashboard', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        const response = await api.get('/admin/dashboard');
         setDashboardData(response.data);
         setIsLoading(false);
       } catch (error) {

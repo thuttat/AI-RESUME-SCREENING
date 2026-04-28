@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "../../../api/AxiosClient.js";
 import JobHeader from './job-templates/JobHeader.jsx';
 import JobGrid from './job-templates/JobGrid.jsx';
 import JobModal from './job-templates/JobModal.jsx';
@@ -17,17 +17,9 @@ export default function JobTemplates() {
   const [templates, setTemplates] = useState([]);
 
   const fetchTemplates = async () => {
-    setIsLoading(true); 
+    setIsLoading(true);
     try {
-      const token = localStorage.getItem('accessToken');
-      if (!token) {
-        console.error("No access token found");
-        setIsLoading(false);
-        return;
-      }
-      const response = await axios.get('http://localhost:8080/api/job-templates', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/job-templates');
       if (response.data && response.data.content) {
         setTemplates(response.data.content);
       } else {
@@ -39,6 +31,7 @@ export default function JobTemplates() {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     fetchTemplates();
   }, []);
@@ -62,15 +55,10 @@ export default function JobTemplates() {
 
   const handleSaveTemplate = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
       if (editingTemplate) {
-        await axios.put(`http://localhost:8080/api/job-templates/${editingTemplate.id}`, formData, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.put(`/job-templates/${editingTemplate.id}`, formData);
       } else {
-        await axios.post('http://localhost:8080/api/job-templates', formData, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.post('/job-templates', formData);
       }
       await fetchTemplates();
       setIsModalOpen(false);
@@ -79,30 +67,22 @@ export default function JobTemplates() {
     }
   };
 
-
   const handleToggleActive = async (id) => {
     try {
-      const token = localStorage.getItem('accessToken');
       const target = templates.find(t => t.id === id);
       if (!target) return;
-      await axios.patch(`http://localhost:8080/api/job-templates/${id}`,
-        { isActive: !target.isActive },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+
+      await api.patch(`/job-templates/${id}`, { isActive: !target.isActive });
       await fetchTemplates();
     } catch (error) {
       alert("Error updating status!");
     }
   };
 
-
   const handleDeleteTemplate = async (id) => {
     if (window.confirm('Are you sure you want to delete this template?')) {
       try {
-        const token = localStorage.getItem('accessToken');
-        await axios.delete(`http://localhost:8080/api/job-templates/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.delete(`/job-templates/${id}`);
         await fetchTemplates();
       } catch (error) {
         alert("Error deleting template!");

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "../../../api/AxiosClient.js";
 import EmailHeader from './email-templates/EmailHeader';
 import EmailTable from './email-templates/EmailTable';
 import EmailModal from './email-templates/EmailModal';
@@ -18,10 +18,7 @@ export default function EmailTemplates() {
   const fetchEmailTemplates = async () => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:8080/api/email-templates', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/email-templates');
       setTemplates(response.data.content || []);
     } catch (error) {
       console.error("Error fetching email templates:", error);
@@ -37,15 +34,10 @@ export default function EmailTemplates() {
  
   const handleSaveTemplate = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
       if (editingTemplate) {
-        await axios.put(`http://localhost:8080/api/email-templates/${editingTemplate.id}`, formData, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.put(`/email-templates/${editingTemplate.id}`, formData);
       } else {
-        await axios.post('http://localhost:8080/api/email-templates', formData, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.post('/email-templates', formData);
       }
       fetchEmailTemplates();
       setIsModalOpen(false);
@@ -53,19 +45,16 @@ export default function EmailTemplates() {
       alert("Error saving email template!");
     }
   };
-
  
   const handlePreview = async (template) => {
     try {
-      const token = localStorage.getItem('accessToken');
       const mockData = {
         applicant_name: 'Nguyễn Văn An',
         job_title: 'Senior Frontend Developer',
         company_name: 'Duckie AI Tech'
       };
-      const response = await axios.post(`http://localhost:8080/api/email-templates/${template.id}/preview`, mockData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      
+      const response = await api.post(`/email-templates/${template.id}/preview`, mockData);
       setPreviewTemplate(response.data);
       setIsPreviewOpen(true);
     } catch (error) {
@@ -76,10 +65,7 @@ export default function EmailTemplates() {
   const handleDeleteTemplate = async (id) => {
     if (window.confirm('Delete this template?')) {
       try {
-        const token = localStorage.getItem('accessToken');
-        await axios.delete(`http://localhost:8080/api/email-templates/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.delete(`/email-templates/${id}`);
         fetchEmailTemplates();
       } catch (error) {
         alert("Error deleting template!");

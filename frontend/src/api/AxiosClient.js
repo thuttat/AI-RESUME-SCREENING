@@ -1,10 +1,11 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-    baseURL: '/api',
+    baseURL: 'http://localhost:8080/api', 
     headers: {
         "Content-Type": "application/json",
-    }
+    },
+    timeout: 10000, 
 });
 
 axiosClient.interceptors.request.use((config) => {
@@ -23,7 +24,7 @@ axiosClient.interceptors.response.use(
     },
     (error) => {
         if (error.response && error.response.status === 401) {
-            console.error("Phiên đăng nhập hết hạn hoặc không hợp lệ!");
+            console.error("The login session has expired or is invalid!");
             
             localStorage.removeItem("accessToken");
             localStorage.removeItem("role");
