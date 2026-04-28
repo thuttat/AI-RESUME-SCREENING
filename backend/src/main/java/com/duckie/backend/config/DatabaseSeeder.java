@@ -2,6 +2,7 @@ package com.duckie.backend.config;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import com.duckie.backend.entity.EmailTemplate;
 import com.duckie.backend.entity.Evaluation;
 import com.duckie.backend.entity.JobPosting;
 import com.duckie.backend.entity.JobStatus;
+import com.duckie.backend.entity.JobTemplate;
 import com.duckie.backend.entity.Role;
 import com.duckie.backend.entity.Status;
 import com.duckie.backend.entity.User;
@@ -24,6 +26,7 @@ import com.duckie.backend.repository.CVRepository;
 import com.duckie.backend.repository.EmailTemplateRepository;
 import com.duckie.backend.repository.EvaluationRepository;
 import com.duckie.backend.repository.JobPostingRepository;
+import com.duckie.backend.repository.JobTemplateRepository;
 import com.duckie.backend.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -38,7 +41,8 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final ApplicationRepository applicationRepository;
     private final EmailTemplateRepository emailTemplateRepository;
     private final AIAnalysisResultRepository aiAnalysisResultRepository;
-    private final EvaluationRepository evaluationRepository; // Đã thêm
+    private final EvaluationRepository evaluationRepository;
+    private final JobTemplateRepository jobTemplateRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -52,7 +56,24 @@ public class DatabaseSeeder implements CommandLineRunner {
             User recruiter1 = User.builder().username("recruiter_test").email("hr@duckie.com").fullname("John Smith").password(passwordEncoder.encode("123456")).role(Role.RECRUITER).status(UserStatus.ACTIVE).build();
             userRepository.save(recruiter1);
 
-            User manager = User.builder().username("manager_test").email("manager@duckie.com").fullname("Hiring Manager").password(passwordEncoder.encode("123456")).role(Role.HIRING_MANAGER).status(UserStatus.ACTIVE).build();
+            User recruiter2 = User.builder()
+                    .username("recruiter_2")
+                    .email("rec2@duckie.com")
+                    .fullname("Sarah Connor")
+                    .password(passwordEncoder.encode("123456"))
+                    .role(Role.RECRUITER)
+                    .status(UserStatus.ACTIVE)
+                    .build();
+            userRepository.save(recruiter2);
+
+            User manager = User.builder()
+                    .username("manager_test")
+                    .email("manager@duckie.com")
+                    .fullname("Hiring Manager")
+                    .password(passwordEncoder.encode("123456"))
+                    .role(Role.HIRING_MANAGER)
+                    .status(UserStatus.ACTIVE)
+                    .build();
             userRepository.save(manager);
 
             JobPosting primaryJob = null;
@@ -68,31 +89,114 @@ public class DatabaseSeeder implements CommandLineRunner {
                 if (i == 1) primaryJob = job;
             }
 
-            Instant now = Instant.now();
-            
-            Application app1 = createMockCVAndApp("Nguyen Van A", 92.5, now, recruiter1, primaryJob, Status.SHORTLIST); // Đã lọt vòng trong
-            Application app2 = createMockCVAndApp("Tran Thi B", 70.0, now.minus(5, ChronoUnit.DAYS), recruiter1, primaryJob, Status.PENDING); // Đang chờ
-            Application app3 = createMockCVAndApp("Le Van C", 95.0, now.minus(10, ChronoUnit.DAYS), recruiter1, primaryJob, Status.HIRED); // Đã tuyển
-            Application app4 = createMockCVAndApp("Hoang Thi D", 45.0, now.minus(2, ChronoUnit.DAYS), recruiter1, primaryJob, Status.REJECT); // Bị loại
-
-            Evaluation eval = Evaluation.builder()
-                    .application(app1)
-                    .evaluator(manager)
-                    .rating(4)
-                    .feedback("Kỹ năng Spring Boot rất cứng, thái độ phỏng vấn tốt. Có thể offer mức lương chuẩn.")
+            JobPosting frontendJob = JobPosting.builder()
+                    .title("Senior React Developer")
+                    .description("Xây dựng giao diện Dashboard cho hệ thống AI")
+                    .requiredSkills("React, Tailwind CSS, TypeScript")
+                    .status(JobStatus.OPEN)
+                    .createdBy(recruiter2)
                     .build();
-            evaluationRepository.save(eval);
+            jobPostingRepository.save(frontendJob);
+            JobPosting aiJob = JobPosting.builder()
+                    .title("Python AI Engineer")
+                    .description("Nghiên cứu và triển khai các model NLP cho phân tích CV")
+                    .requiredSkills("Python, PyTorch, LangChain")
+                    .status(JobStatus.OPEN)
+                    .createdBy(recruiter2)
+                    .build();
+            jobPostingRepository.save(aiJob);
+
+            Instant now = Instant.now();
+            Application app1 = createMockCVAndApp("Nguyen Van A", 92.5, now, recruiter1, primaryJob, Status.SHORTLIST);
+            createMockCVAndApp("Tran Thi B", 70.0, now.minus(5, ChronoUnit.DAYS), recruiter1, primaryJob, Status.PENDING);
+            createMockCVAndApp("Le Van C", 95.0, now.minus(10, ChronoUnit.DAYS), recruiter1, primaryJob, Status.HIRED);
+            createMockCVAndApp("Hoang Thi D", 45.0, now.minus(2, ChronoUnit.DAYS), recruiter1, primaryJob, Status.REJECT);
+            createMockCVAndApp("Hoang Frontend", 92.0, now, recruiter2, frontendJob, Status.REJECT);
+            createMockCVAndApp("Hoang AI", 88.0, now, recruiter2, aiJob, Status.REVIEWING);
+
+            // --- M3
+            Instant march = now.minus(30, ChronoUnit.DAYS);
+            createMockCVAndApp("Candidate March 1", 78.0, march, recruiter1, primaryJob, Status.REJECT);
+            createMockCVAndApp("Candidate March 2", 82.5, march.minus(5, ChronoUnit.DAYS), recruiter1, frontendJob, Status.SHORTLIST);
+            createMockCVAndApp("Candidate March 3", 88.0, march.minus(10, ChronoUnit.DAYS), recruiter2, aiJob, Status.ACCEPTED);
+            createMockCVAndApp("Candidate March 4", 55.0, march.minus(15, ChronoUnit.DAYS), recruiter2, primaryJob, Status.REVIEWING);
+
+            // --- M2
+            Instant feb = now.minus(60, ChronoUnit.DAYS);
+            createMockCVAndApp("Candidate Feb 1", 91.0, feb, recruiter1, primaryJob, Status.ACCEPTED);
+            createMockCVAndApp("Candidate Feb 2", 45.0, feb.minus(10, ChronoUnit.DAYS), recruiter2, aiJob, Status.REJECT);
+            createMockCVAndApp("Candidate Feb 3", 66.5, feb.minus(20, ChronoUnit.DAYS), recruiter1, frontendJob, Status.PENDING);
+
+            // --- M1
+            Instant jan = now.minus(90, ChronoUnit.DAYS);
+            createMockCVAndApp("Candidate Jan 1", 80.0, jan, recruiter2, aiJob, Status.ACCEPTED);
+            createMockCVAndApp("Candidate Jan 2", 72.0, jan.minus(15, ChronoUnit.DAYS), recruiter1, primaryJob, Status.SHORTLIST);
+
+            if(app1 != null) {
+                Evaluation eval = Evaluation.builder()
+                        .application(app1)
+                        .evaluator(manager)
+                        .rating(4)
+                        .feedback("Kỹ năng Spring Boot rất cứng, thái độ phỏng vấn tốt. Có thể offer mức lương chuẩn.")
+                        .build();
+                evaluationRepository.save(eval);
+            }
 
             if (emailTemplateRepository.count() == 0) {
-                EmailTemplate offer = EmailTemplate.builder().templateName("OFFER_TEMPLATE").subject("Chúc mừng! Thư mời làm việc - [JobTitle]").body("Chào [CandidateName],\n\nChúng tôi rất ấn tượng với hồ sơ của bạn...").createdAt(now).isActive(true).build();
+                EmailTemplate offer = EmailTemplate.builder()
+                        .type("Offer")
+                        .templateName("OFFER_TEMPLATE")
+                        .subject("Chúc mừng! Thư mời làm việc - [JobTitle]")
+                        .body("Chào [CandidateName],\n\nChúng tôi rất ấn tượng với hồ sơ của bạn...")
+                        .createdAt(Instant.now())
+                        .isActive(true)
+                        .build();
                 emailTemplateRepository.save(offer);
 
-                EmailTemplate reject = EmailTemplate.builder().templateName("REJECTION_TEMPLATE").subject("Kết quả ứng tuyển - [JobTitle]").body("Chào [CandidateName],\n\nRất tiếc bạn chưa phù hợp...").createdAt(now).isActive(true).build();
+                EmailTemplate reject = EmailTemplate.builder()
+                        .type("Reject")
+                        .templateName("REJECTION_TEMPLATE")
+                        .subject("Kết quả ứng tuyển - [JobTitle]")
+                        .body("Chào [CandidateName],\n\nRất tiếc bạn chưa phù hợp...")
+                        .createdAt(Instant.now())
+                        .isActive(true)
+                        .build();
                 emailTemplateRepository.save(reject);
                 System.out.println(">>> Email Templates Seeded!");
             }
 
             System.out.println(">>> All Systems Go! Seeding Completed Successfully!");
+        }
+
+        if (jobTemplateRepository.count() == 0) {
+            System.out.println(">>> Seeding Job Templates...");
+
+            List<JobTemplate> templates = List.of(
+                    JobTemplate.builder()
+                            .title("Senior Frontend Developer")
+                            .department("Engineering")
+                            .description("Chịu trách nhiệm xây dựng giao diện người dùng cho hệ thống AI Screening.")
+                            .requirements("React, TypeScript, Tailwind CSS, 5+ years experience")
+                            .isActive(true)
+                            .build(),
+                    JobTemplate.builder()
+                            .title("Backend Engineer")
+                            .department("Engineering")
+                            .description("Thiết kế và triển khai các API hiệu suất cao và tích hợp mô hình AI.")
+                            .requirements("Java, Spring Boot, PostgreSQL, Microservices")
+                            .isActive(true)
+                            .build(),
+                    JobTemplate.builder()
+                            .title("UX Designer")
+                            .department("Design")
+                            .description("Nghiên cứu và thiết kế trải nghiệm người dùng tối ưu cho quy trình tuyển dụng.")
+                            .requirements("Figma, Adobe XD, Portfolio required")
+                            .isActive(false)
+                            .build()
+            );
+
+            jobTemplateRepository.saveAll(templates);
+            System.out.println(">>> Job Templates Seeded!");
         }
     }
 
@@ -110,11 +214,11 @@ public class DatabaseSeeder implements CommandLineRunner {
                 .cv(cv)
                 .matchScore(score)
                 .extractedSkills("Java, Spring Boot, SQL")
-                .yearsOfExperience(3.5) 
+                .yearsOfExperience(3.5)
                 .critique("Ứng viên có kỹ năng tốt, phù hợp với yêu cầu dự án.")
                 .build();
         aiAnalysisResultRepository.save(aiResult);
-        
+
         if (job != null) {
             Application app = Application.builder()
                     .jobPosting(job)

@@ -12,7 +12,9 @@ public class JobTemplateMapper {
         return new JobTemplateResponse(
             template.getId(),
             template.getTitle(),
+            template.getDepartment(),
             template.getDescription(),
+            template.getRequirements(),
             template.getIsActive(),
             template.getCreatedById(),
             template.getCreatedAt(),

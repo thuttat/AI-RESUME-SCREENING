@@ -39,31 +39,38 @@ public class JobTemplate extends BaseEntity {
     @Column(name ="required_skills", columnDefinition = "TEXT", nullable = false)
     private String requiredSkills;
 
+    @Column(name = "department", updatable = false)
+    private String department;
+
+    @Column(name = "requirements", updatable = false)
+    private String requirements;
+
+
     public JobTemplate() {}
 
-    public Long getId() { 
-        return id; 
+    public Long getId() {
+        return id;
     }
-    public void setId(Long id) { 
-        this.id = id; 
+    public void setId(Long id) {
+        this.id = id;
     }
-    public String getTitle() { 
-        return title; 
+    public String getTitle() {
+        return title;
     }
-    public void setTitle(String title) { 
-        this.title = title; 
+    public void setTitle(String title) {
+        this.title = title;
     }
-    public String getDescription() { 
-        return description; 
+    public String getDescription() {
+        return description;
     }
-    public void setDescription(String description) { 
-        this.description = description; 
+    public void setDescription(String description) {
+        this.description = description;
     }
-    public User getCreatedBy() { 
-        return createdBy; 
+    public User getCreatedBy() {
+        return createdBy;
     }
     public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy; 
+        this.createdBy = createdBy;
     }
 
     public Boolean getIsActive() {
@@ -86,9 +93,23 @@ public class JobTemplate extends BaseEntity {
         this.requiredSkills = requiredSkills;
     }
 
+    public String getDepartment() {
+        return department;
+    }
+    public void setDepartment(String department) {
+        this.department = department;
+    }
 
-    public static JobTemplateBuilder builder() { 
-        return new JobTemplateBuilder(); 
+    public String getRequirements() {
+        return requirements;
+    }
+    public void setRequirements(String requirements) {
+        this.requirements = requirements;
+    }
+
+
+    public static JobTemplateBuilder builder() {
+        return new JobTemplateBuilder();
     }
 
     public static final class JobTemplateBuilder {
@@ -101,34 +122,41 @@ public class JobTemplate extends BaseEntity {
         private Instant updatedAt;
         private Boolean isActive = true;
         private String requiredSkills;
+        private String department;
+        private String requirements;
 
-        public JobTemplateBuilder id(Long id) { 
-            this.id = id; 
-            return this; 
+        public JobTemplateBuilder id(Long id) {
+            this.id = id;
+            return this;
         }
-        public JobTemplateBuilder title(String title) { 
-            this.title = title; 
-            return this; 
+        public JobTemplateBuilder title(String title) {
+            this.title = title;
+            return this;
         }
-        public JobTemplateBuilder description(String description) { 
-            this.description = description; 
-            return this; 
+        public JobTemplateBuilder description(String description) {
+            this.description = description;
+            return this;
         }
-        public JobTemplateBuilder createdBy(User createdBy) { 
-            this.createdBy = createdBy; 
-            return this; 
+        public JobTemplateBuilder createdBy(User createdBy) {
+            this.createdBy = createdBy;
+            return this;
         }
-        public JobTemplateBuilder createdAt(Instant createdAt) { 
-            this.createdAt = createdAt; 
-            return this; 
+        public JobTemplateBuilder createdAt(Instant createdAt) {
+            this.createdAt = createdAt;
+            return this;
         }
-        public JobTemplateBuilder updatedAt(Instant updatedAt) { 
-            this.updatedAt = updatedAt; 
-            return this; 
+        public JobTemplateBuilder updatedAt(Instant updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
         }
 
         public JobTemplateBuilder isActive(Boolean isActive) {
             this.isActive = isActive;
+            return this;
+        }
+
+        public JobTemplateBuilder department(String department) {
+            this.department = department;
             return this;
         }
 
@@ -138,6 +166,10 @@ public class JobTemplate extends BaseEntity {
         }
         public JobTemplateBuilder requiredSkills(String requiredSkills) {
             this.requiredSkills = requiredSkills;
+            return this;
+        }
+        public JobTemplateBuilder requirements(String requirements) {
+            this.requirements = requirements;
             return this;
         }
 
@@ -152,6 +184,8 @@ public class JobTemplate extends BaseEntity {
             template.setIsActive(this.isActive);
             template.setCreatedById(this.createdById);
             template.setRequiredSkills(this.requiredSkills);
+            template.setDepartment(this.department);
+            template.setRequirements(this.requirements);
             return template;
         }
     }

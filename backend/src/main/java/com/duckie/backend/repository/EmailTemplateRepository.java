@@ -18,8 +18,18 @@ public interface EmailTemplateRepository extends JpaRepository<EmailTemplate, Lo
     boolean existsByTemplateName(String templateName);
 
     @Query("SELECT e FROM EmailTemplate e WHERE " +
-           "(:search IS NULL OR :search = '' OR " +
-           "LOWER(e.templateName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           "LOWER(e.subject) LIKE LOWER(CONCAT('%', :search, '%')))")
+            "(:search IS NULL OR :search = '' OR " +
+            "LOWER(e.templateName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(e.subject) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<EmailTemplate> searchTemplates(@Param("search") String search, Pageable pageable);
+
+    Optional<EmailTemplate> findByType(String type);
+
+    boolean existsByType(String type);
+
+    boolean existsByTypeAndIdNot(String type, Long id);
+
+    @Query("SELECT e FROM EmailTemplate e WHERE e.isActive = true AND " +
+            "(:search IS NULL OR LOWER(e.type) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(e.subject) LIKE LOWER(CONCAT('%', :search, '%')))")
+    Page<EmailTemplate> findAllBySearch(@Param("search") String search, Pageable pageable);
 }

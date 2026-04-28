@@ -20,8 +20,8 @@ public class EmailTemplate extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "template_name", nullable = false, length = 100)
-    private String templateName;
+    @Column(name = "type", nullable = false, length = 100)
+    private String type;
 
     @Column(nullable = false)
     private String subject;
@@ -40,11 +40,11 @@ public class EmailTemplate extends BaseEntity {
     public void setId(Long id) { 
         this.id = id; 
     }
-    public String getTemplateName() { 
-        return templateName; 
+    public String getType() { 
+        return type; 
     }
-    public void setTemplateName(String templateName) { 
-        this.templateName = templateName; 
+    public void setType(String type) { 
+        this.type = type; 
     }
     public String getSubject() { 
         return subject; 
@@ -72,7 +72,7 @@ public class EmailTemplate extends BaseEntity {
 
     public static final class EmailTemplateBuilder {
         private Long id;
-        private String templateName;
+        private String type;
         private String subject;
         private String body;
         private Instant createdAt;
@@ -83,8 +83,8 @@ public class EmailTemplate extends BaseEntity {
             this.id = id; 
             return this; 
         }
-        public EmailTemplateBuilder templateName(String templateName) { 
-            this.templateName = templateName; 
+        public EmailTemplateBuilder type(String type) { 
+            this.type = type; 
             return this; 
         }
         public EmailTemplateBuilder subject(String subject) { 
@@ -111,7 +111,7 @@ public class EmailTemplate extends BaseEntity {
         public EmailTemplate build() {
             EmailTemplate email = new EmailTemplate();
             email.setId(this.id);
-            email.setTemplateName(this.templateName);
+            email.setType(this.type);
             email.setSubject(this.subject);
             email.setBody(this.body);
             email.setCreatedAt(this.createdAt);

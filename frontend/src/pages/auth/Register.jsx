@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; 
+import { useNavigate, Link } from "react-router-dom";
 import api from "../../apis/AxiosClient.js";
 import { Button } from "../../components/common/Button.jsx";
 import "../../styles/auth.css";
@@ -25,11 +25,11 @@ function Register() {
 
     const validateForm = () => {
         if (formData.password.length < 6) {
-            setErrorMsg("Password need to have at least 6 characters");
+            setErrorMsg("Password needs to have at least 6 characters");
             return false;
         }
         if (formData.password !== formData.confirm) {
-            setErrorMsg("confirm password don't match!");
+            setErrorMsg("Confirm passwords do not match!");
             return false;
         }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -54,13 +54,13 @@ function Register() {
             };
 
             const response = await api.post("/auth/register", payload);
-            
+
             if (response.status === 201 || response.status === 200) {
                 navigate("/", { state: { message: "Successfully! Sign in now." } });
             }
         } catch (error) {
             console.error("Registration Error:", error);
-            setErrorMsg(error.response?.data?.message || "Fail to register, retry pls!");
+            setErrorMsg(error.response?.data?.message || "Fail to register, please retry!");
         } finally {
             setIsSubmitting(false);
         }
