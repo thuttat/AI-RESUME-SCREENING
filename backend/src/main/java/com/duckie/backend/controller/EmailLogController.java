@@ -25,13 +25,13 @@ public class EmailLogController {
 
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('RECRUITER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('RECRUITER', 'ADMIN', 'HIRING_MANAGER')")
     public ResponseEntity<List<EmailLogResponse>> getAllLogs() {
         return ResponseEntity.ok(emailService.getAllEmailLogs());
     }
 
     @GetMapping("/history")
-    @PreAuthorize("hasAnyRole('RECRUITER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('RECRUITER', 'ADMIN', 'HIRING_MANAGER')")
     public ResponseEntity<PaginationResponse<EmailLogResponse>> getAllEmailLogsByRecruiter(
             Principal principal,
             @RequestParam(defaultValue = "0") int page,

@@ -45,7 +45,7 @@ public class EmailTemplateController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HIRING_MANAGER')")
     public ResponseEntity<EmailTemplateResponse> createEmailTemplate(@Valid @RequestBody EmailTemplateRequest request) {
         EmailTemplate template = emailTemplateMapper.toEntity(request);
         EmailTemplateResponse saved = emailTemplateService.create(request);
@@ -53,7 +53,7 @@ public class EmailTemplateController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HIRING_MANAGER')")
     public ResponseEntity<EmailTemplateResponse> updateEmailTemplate(
             @PathVariable Long id, 
             @Valid @RequestBody EmailTemplateRequest request) {
@@ -61,7 +61,7 @@ public class EmailTemplateController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HIRING_MANAGER')")
     public ResponseEntity<Void> deleteEmailTemplate(@PathVariable Long id) {
         emailTemplateService.delete(id);
         return ResponseEntity.noContent().build();

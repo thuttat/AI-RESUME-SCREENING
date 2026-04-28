@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/email-templates/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")
                 .requestMatchers("/api/admin/dashboard").hasRole("ADMIN")
                 .requestMatchers("/api/reports/**").hasRole("RECRUITER")
-                .requestMatchers("/api/email-logs/**").hasAnyRole("RECRUITER", "ADMIN")
+                .requestMatchers("/api/email-logs/**").hasAnyRole("RECRUITER", "ADMIN", "HIRING_MANAGER")
                 .requestMatchers("/api/emails/send").hasAnyRole("RECRUITER", "ADMIN")
                 .requestMatchers("/api/email-templates/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")
                 .requestMatchers("/api/jobs/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")

@@ -71,7 +71,7 @@ export default function EmailTracking() {
                                         <div>
                                             <h3 className="font-bold text-gray-900 text-lg leading-tight">{log.subject}</h3>
                                             <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
-                                                Tới: <span className="font-semibold text-indigo-600 underline">{log.recipientEmail}</span>
+                                                Tới: <span className="font-semibold text-indigo-600 underline">{log.candidateEmail}</span>
                                             </p>
                                         </div>
                                     </div>

@@ -28,7 +28,7 @@ export const menuItems = {
     manager: createMenu("manager", [
         { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
         { path: "/pipeline", label: "Shortlisted Candidates", icon: Users },
-        { path: "/memail-logs", label: "Hiring History & Emails", icon: History },
+        { path: "/email-logs", label: "Hiring History & Emails", icon: History },
         {path: "/email-templates", label: "Email Template Config", icon: Settings}
     ]),
     admin: createMenu("admin", [
