@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TabNavigation from './components/TabNavigation'; 
-import JobTemplates from './JobTemplates';
-import EmailTemplates from './EmailTemplates';
+import JobTemplates from './templatemanagement/JobTemplates.jsx';
+import EmailTemplates from './templatemanagement/EmailTemplates.jsx';
 
 export default function TemplateManagement() {
   const [activeTab, setActiveTab] = useState('job-template');

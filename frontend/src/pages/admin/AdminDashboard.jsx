@@ -1,61 +1,69 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import DashboardMetrics from './dashboard/DashboardMetrics.jsx'
+import ApplicationTrend from './dashboard/ApplicationTrend.jsx';
+import CandidatesByStage from './dashboard/CandidatesByStage.jsx';
+import RecentJobsTable from './dashboard/RecentJobsTable.jsx';
 
-
-import api from '../../axiosConfig';
-
-
-
-const AdminDashboard = () => {
+export default function AdminDashboard() {
   const [dashboardData, setDashboardData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchDashboardMetrics = async () => {
+    const fetchDashboardData = async () => {
       try {
-        const response = await api.get('admin/dashboard');
-        if (response.status === 200) {
-          // setDashboardData(response.data);
-          console.log("Dữ liệu giả:", response.data);
-          setDashboardData({
-            chartData: [
-              { month: 1, aiCount: 40, normalCount: 24 },
-              { month: 2, aiCount: 30, normalCount: 13 },
-              { month: 3, aiCount: 20, normalCount: 98 },
-              { month: 4, aiCount: 27, normalCount: 39 },
-              { month: 5, aiCount: 18, normalCount: 48 },
-            ],
-            mock: "Dữ liệu tạm"
-          });
-        }
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get('http://localhost:8080/api/admin/dashboard', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setDashboardData(response.data);
+        setIsLoading(false);
       } catch (error) {
-        console.error("Lỗi khi tải dữ liệu Dashboard:", error);
-
-
+        console.error('Error fetching dashboard data:', error);
+        setIsLoading(false);
       }
     };
 
-    fetchDashboardMetrics();
+    fetchDashboardData();
   }, []);
 
-  if (!dashboardData) {
-    return <div className="flex items-center justify-center h-full">Đang tải số liệu...</div>;
+
+  if (isLoading) {
+    return (
+      <div className="!flex !h-screen !items-center !justify-center !bg-[#F8F9FA]">
+        <div className="!animate-spin !rounded-full !h-12 !w-12 !border-b-2 !border-blue-600"></div>
+      </div>
+    );
   }
 
-  const jobListMock = [
-    { name: 'Post 01' }, { name: 'Post 02' }, { name: 'Post 03' }, { name: 'Post 04' }
+  const applicationTrendData = dashboardData?.cvUploadedChart?.map(item => ({
+    date: `Month ${item.month}`,
+    applications: item.totalCount
+  })) || [];
+
+  const cvTypeData = [
+    { name: 'AI Screened CVs', value: dashboardData?.totalAiCv || 0, color: '#4F46E5' },
+    { name: 'Normal CVs', value: dashboardData?.totalNormalCv || 0, color: '#10B981' }
   ];
 
+  const topUsers = dashboardData?.topActiveUsers || [];
+
   return (
-    <div className="flex flex-col gap-8 p-8 w-full bg-[#f8f9fa] min-h-screen overflow-y-auto">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">Dashboard</h2>
-       
+    <div className="!flex !flex-col !h-screen !overflow-hidden">
+      <div className="!flex-1 !overflow-y-auto !bg-[#F8F9FA] !p-8">
+
+        <DashboardMetrics data={dashboardData} />
+
+        <div className="!grid !grid-cols-1 lg:!grid-cols-3 !gap-8 !mb-8">
+          <ApplicationTrend data={applicationTrendData} />
+          <CandidatesByStage data={cvTypeData} title="CV Types Breakdown" />
+        </div>
+
+        <RecentJobsTable users={topUsers} />
+
       </div>
-
-      
-      
-      
-    </div> 
+    </div>
   );
-};
-
-export default AdminDashboard;
+}

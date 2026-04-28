@@ -4,7 +4,7 @@ import java.time.Instant;
 
 public record EmailTemplateResponse(
     Long id,
-    String templateName,
+    String type,
     String subject,
     String body,
     Boolean isActive,

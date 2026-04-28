@@ -5,10 +5,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile; 
 
 import com.duckie.backend.dto.AIConfigRequest;
 import com.duckie.backend.dto.AIConfigResponse;
 import com.duckie.backend.entity.AIConfig;
+import com.duckie.backend.mapper.AIConfigMapper;
 import com.duckie.backend.repository.AIConfigRepository;
 import com.duckie.backend.repository.UserRepository;
 
@@ -19,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class AIConfigService {
 
     private final AIConfigRepository aiConfigRepository;
-    private final AIConfigMapper aiConfigMapper; 
+    private final AIConfigMapper aiConfigMapper;
     private final UserRepository userRepository;
     private final AIService aiService;
 
@@ -30,7 +32,6 @@ public class AIConfigService {
                 .collect(Collectors.toList());
     }
 
-   
     @Transactional
     public AIConfigResponse updateConfig(AIConfigRequest request, String username) {
         AIConfig config = aiConfigRepository.findByConfigKey(request.configKey())
@@ -47,5 +48,17 @@ public class AIConfigService {
         return aiConfigMapper.toResponse(savedConfig);
     }
 
-    
+    public String testAiConnection(MultipartFile file) {
+        String apiKey = aiConfigRepository.findByConfigKey("API_KEY")
+                .map(AIConfig::getConfigValue)
+                .orElseThrow(() -> new RuntimeException("Chưa cấu hình API Key trong hệ thống!"));
+                
+        String model = aiConfigRepository.findByConfigKey("MODEL_NAME")
+                .map(AIConfig::getConfigValue)
+                .orElse("gpt-4o-mini"); 
+
+        String extractedText = "Pls check your connection: " + file.getOriginalFilename();
+        
+        return aiService.testConnection(apiKey, model, extractedText);
+    }
 }

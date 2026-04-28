@@ -11,7 +11,7 @@ public class EmailTemplateMapper {
         if(template == null) return null;
         return new EmailTemplateResponse(
             template.getId(),
-            template.getTemplateName(),
+            template.getType(),
             template.getSubject(),
             template.getBody(),
             template.getIsActive(),

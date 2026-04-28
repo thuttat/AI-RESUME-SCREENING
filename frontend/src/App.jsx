@@ -19,9 +19,10 @@ import EmailTracking from "./pages/hiring-manager/EmailTracking.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import "./App.css";
 import UsersManagement from "./pages/admin/UsersManagement.jsx";
-import JobTemplates from "./pages/admin/JobTemplates.jsx";  
-import EmailTemplates from "./pages/admin/EmailTemplates.jsx";
+import JobTemplates from "./pages/admin/templatemanagement/JobTemplates.jsx";  
+import EmailTemplates from "./pages/admin/templatemanagement/EmailTemplates.jsx";
 import TemplateManagement from "./pages/admin/TemplateManagement.jsx";
+import AIConfiguration from "./pages/admin/AIConfiguration.jsx";
 
 
 export default function App() {
@@ -74,6 +75,7 @@ export default function App() {
                     <Route path="dashboard" element={<AdminDashboard />} />
                     <Route path="users" element={<UsersManagement />} />
                     <Route path="templates" element={<TemplateManagement />} />
+                    <Route path="config" element={<AIConfiguration />} />
                 </Route>
 
             </Routes>

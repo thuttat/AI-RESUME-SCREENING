@@ -11,12 +11,13 @@ import org.springframework.data.repository.query.Param;
 import com.duckie.backend.entity.EmailTemplate;
 
 public interface EmailTemplateRepository extends JpaRepository<EmailTemplate, Long> {
-    Optional<EmailTemplate> findByTemplateName(String templateName);
+    Optional<EmailTemplate> findByType(String type);
 
-    boolean existsByTemplateName(String templateName);
-    boolean existsByTemplateNameAndIdNot(String templateName, Long id);
+    boolean existsByType(String type);
+
+    boolean existsByTypeAndIdNot(String type, Long id);
 
     @Query("SELECT e FROM EmailTemplate e WHERE e.isActive = true AND " +
-           "(:search IS NULL OR LOWER(e.templateName) LIKE LOWER(CONCAT('%', :search, '%')))")
+           "(:search IS NULL OR LOWER(e.type) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(e.subject) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<EmailTemplate> findAllBySearch(@Param("search") String search, Pageable pageable);
 }

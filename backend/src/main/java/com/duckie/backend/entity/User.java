@@ -37,6 +37,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "avatar", length = 255)
+    private String avatar;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Role role; 
@@ -72,6 +75,8 @@ public class User extends BaseEntity {
         this.fullname = fullname; 
     }
 
+    public String getAvatar() { return avatar; }
+    public void setAvatar(String avatar) { this.avatar = avatar; }
 
     public String getEmail() { 
         return email; 
@@ -121,6 +126,7 @@ public class User extends BaseEntity {
         private Instant createdAt;
         private Instant updatedAt;
         private List<CV> uploadedCVs;
+        private String avatar;
 
         public UserBuilder id(Long id) { 
             this.id = id; 
@@ -162,7 +168,10 @@ public class User extends BaseEntity {
             this.uploadedCVs = uploadedCVs; 
             return this; 
         }
-
+        public UserBuilder avatar(String avatar) { 
+            this.avatar = avatar; 
+            return this; 
+        }
         public User build() {
             User user = new User();
             user.setId(this.id);
@@ -175,6 +184,7 @@ public class User extends BaseEntity {
             user.setCreatedAt(this.createdAt);
             user.setUpdatedAt(this.updatedAt);
             user.setUploadedCVs(this.uploadedCVs);
+            user.setAvatar(this.avatar);
             return user;
         }
     }

@@ -6,17 +6,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailRenderService {
-    public String renderContent(String rawContent, Map<String,String> variables) {
-        if (rawContent == null || rawContent.isBlank() || variables == null || variables.isEmpty()) {
-            return rawContent;
-        }
-        String renderedContent = rawContent;
+    public String renderContent(String content, Map<String, String> variables) {
+        if (content == null || variables == null) return content;
         
+        String rendered = content;
         for (Map.Entry<String, String> entry : variables.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue() != null ? entry.getValue() : ""; 
-            renderedContent = renderedContent.replace(key, value);
+            String placeholder = "\\{\\{" + entry.getKey() + "\\}\\}";
+            rendered = rendered.replaceAll(placeholder, entry.getValue());
         }
-        return renderedContent;
+        return rendered;
     }
 }

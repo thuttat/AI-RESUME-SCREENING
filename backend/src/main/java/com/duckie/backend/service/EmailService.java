@@ -52,9 +52,9 @@ public class EmailService {
         }
     }
 
-    private EmailTemplate getTemplateByName(String templateName) { 
-        return emailTemplateRepository.findByTemplateName(templateName)
-                .orElseThrow(() -> new ResourceNotFoundException("Template not found: " + templateName));
+    private EmailTemplate getTemplateByName(String type) { 
+        return emailTemplateRepository.findByType(type)
+                .orElseThrow(() -> new ResourceNotFoundException("Template not found: " + type));
     }
     
     private String fillTemplateVariables(String rawText, Application application) { 

@@ -38,38 +38,44 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            // 1. Vô hiệu hóa CSRF cho H2 Console và API (Stateless)
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/h2-console/**")
+                .disable()
+            )
             
+            // 2. Cấu hình CORS
             .cors(Customizer.withDefaults())
             
+            // 3. Quản lý Session (Stateless vì dùng JWT)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
+            // 4. Phân quyền Request
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/public/**", "/api/auth/**", "/error").permitAll()
+                // Cho phép H2 Console, các đường dẫn public và Auth
+                .requestMatchers("/h2-console/**", "/error", "/api/auth/**", "/public/**").permitAll()
                 
-                .requestMatchers("/h2-console/**").permitAll()
-                
+                // Phân quyền chi tiết cho API
                 .requestMatchers("/api/recruiter/**").hasAnyRole("RECUITER", "RECRUITER", "ADMIN")
-                
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN") 
-
                 .requestMatchers("/api/job-templates/**").hasRole("ADMIN")
                 .requestMatchers("/api/email-templates/**").hasRole("ADMIN")
                 .requestMatchers("/api/admin/dashboard").hasRole("ADMIN")
                 
-
                 .anyRequest().authenticated()
             )
             
-
+            // 5. Xử lý ngoại lệ
             .exceptionHandling(exceptions -> exceptions
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(customAccessDeniedHandler))
             
+            // 6. Thêm Filter kiểm tra JWT trước khi xác thực User
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+        // 7. QUAN TRỌNG: Mở khóa Iframe để hiển thị giao diện H2 Console
+        http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();
     }
@@ -77,7 +83,6 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Cho phép Frontend Vite truy cập
         configuration.setAllowedOrigins(List.of("http://localhost:5173")); 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "x-auth-token"));

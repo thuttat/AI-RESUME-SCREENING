@@ -36,6 +36,12 @@ public class JobTemplate extends BaseEntity {
     @Column(name = "created_at_by_id")
     private Long createdById;
 
+    @Column(name = "department", updatable = false)
+    private String department;
+
+    @Column(name = "requirements", updatable = false)
+    private String requirements;
+
     public JobTemplate() {}
 
     public Long getId() { 
@@ -77,6 +83,20 @@ public class JobTemplate extends BaseEntity {
         this.createdById = createdById;
     }
 
+    public String getDepartment() {
+        return department;
+    }
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getRequirements() {
+        return requirements;
+    }
+    public void setRequirements(String requirements) {
+        this.requirements = requirements;
+    }   
+
 
     public static JobTemplateBuilder builder() { 
         return new JobTemplateBuilder(); 
@@ -91,6 +111,8 @@ public class JobTemplate extends BaseEntity {
         private Instant createdAt;
         private Instant updatedAt;
         private Boolean isActive = true;
+        private String department;
+        private String requirements;
 
         public JobTemplateBuilder id(Long id) { 
             this.id = id; 
@@ -122,8 +144,17 @@ public class JobTemplate extends BaseEntity {
             return this;
         }
 
+        public JobTemplateBuilder department(String department) {
+            this.department = department;
+            return this;
+        }
+
         public JobTemplateBuilder createdById(Long createdById) {
             this.createdById = createdById;
+            return this;
+        }
+        public JobTemplateBuilder requirements(String requirements) {
+            this.requirements = requirements;
             return this;
         }
 
@@ -137,6 +168,8 @@ public class JobTemplate extends BaseEntity {
             template.setUpdatedAt(this.updatedAt);
             template.setIsActive(this.isActive);
             template.setCreatedById(this.createdById);
+            template.setDepartment(this.department);
+            template.setRequirements(this.requirements);
             return template;
         }
     }

@@ -21,20 +21,22 @@ import com.duckie.backend.repository.EmailTemplateRepository;
 
 @Service
 public class EmailTemplateService implements IEmailTemplateService {
-    private static final Logger logger=LoggerFactory.getLogger(EmailTemplateService.class); 
+    private static final Logger logger = LoggerFactory.getLogger(EmailTemplateService.class); 
 
     private final EmailTemplateRepository emailTemplateRepository;
-
     private final EmailTemplateMapper emailTemplateMapper;
-
     private final EmailRenderService emailRenderService;
 
-    public EmailTemplateService(EmailTemplateRepository emailTemplateRepository, EmailTemplateMapper emailTemplateMapper, EmailRenderService emailRenderService) {
+    public EmailTemplateService(EmailTemplateRepository emailTemplateRepository, 
+                                EmailTemplateMapper emailTemplateMapper, 
+                                EmailRenderService emailRenderService) {
         this.emailTemplateRepository = emailTemplateRepository;
         this.emailTemplateMapper = emailTemplateMapper;
         this.emailRenderService = emailRenderService;
     }
 
+
+    @Override
     @Transactional(readOnly = true)
     public PaginationResponse<EmailTemplateResponse> findAll(String search, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -54,25 +56,36 @@ public class EmailTemplateService implements IEmailTemplateService {
                 .build();
     }
 
+    @Override
     @Transactional
     public EmailTemplateResponse create(EmailTemplateRequest request) {
+        if (emailTemplateRepository.existsByType(request.type())) {
+            throw new RuntimeException("Email template with type '" + request.type() + "' already exists.");
+        }
+
         EmailTemplate template = EmailTemplate.builder()
-                .templateName(request.templateName())
+                .type(request.type())
                 .subject(request.subject())
                 .body(request.body())
                 .isActive(true)
                 .build();
                 
         template = emailTemplateRepository.save(template);
-        logger.info("Created new email template with id: {}", template.getId());
+        logger.info("Created new email template with id: {} and type: {}", template.getId(), template.getType());
         return emailTemplateMapper.toResponse(template);
     }
 
+    @Override
     @Transactional
     public EmailTemplateResponse update(Long id, EmailTemplateRequest request) {
         EmailTemplate template = emailTemplateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Email template not found by Id: " + id));
-        template.setTemplateName(request.templateName());
+        
+        if (!template.getType().equals(request.type()) && emailTemplateRepository.existsByType(request.type())) {
+            throw new RuntimeException("Email template with type '" + request.type() + "' already exists.");
+        }
+
+        template.setType(request.type());
         template.setSubject(request.subject());
         template.setBody(request.body());
         
@@ -81,44 +94,52 @@ public class EmailTemplateService implements IEmailTemplateService {
         return emailTemplateMapper.toResponse(template);
     }
 
+    @Override
     @Transactional
     public void delete(Long id) {
        EmailTemplate template = emailTemplateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Email template not found by Id: " + id));
-        
         template.setIsActive(false);
         emailTemplateRepository.save(template);
-        logger.info("Deleted email template with id: {}", id);
+        logger.info("Soft deleted email template with id: {}", id);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public EmailPreviewResponse preview(Long id, Map<String, String> variables) {
         EmailTemplate template = emailTemplateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Email template not found by Id: " + id));
+        
+       
         String renderedSubject = emailRenderService.renderContent(template.getSubject(), variables);
         String renderedBody = emailRenderService.renderContent(template.getBody(), variables);
+        
         return new EmailPreviewResponse(renderedSubject, renderedBody);
     }    
 
-
+   
     @Override
+    @Transactional
     public EmailTemplate createEmailTemplate(EmailTemplate emailTemplate) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (emailTemplate.getIsActive() == null) {
+            emailTemplate.setIsActive(true);
+        }
+        return emailTemplateRepository.save(emailTemplate);
     }
 
     @Override
+    @Transactional
     public EmailTemplate updateEmailTemplate(Long id, EmailTemplate emailTemplate) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        EmailTemplate existing = emailTemplateRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Email template not found by Id: " + id));
+        
+        existing.setType(emailTemplate.getType());
+        existing.setSubject(emailTemplate.getSubject());
+        existing.setBody(emailTemplate.getBody());
+        existing.setIsActive(emailTemplate.getIsActive());
+        
+        return emailTemplateRepository.save(existing);
     }
 
-    @Override
-    public void deleteEmailTemplate(Long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public PaginationResponse<EmailTemplateResponse> findAllEmailTemplate(String search, int page, int size) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
     
 }

@@ -3,8 +3,8 @@ package com.duckie.backend.dto;
 import jakarta.validation.constraints.NotBlank;
 
 public record EmailTemplateRequest(
-    @NotBlank(message = "Template name can not be blank")
-    String templateName,
+    @NotBlank(message = "Type can not be blank")
+    String type,
     
     @NotBlank(message = "Subject can not be blank")
     String subject,
