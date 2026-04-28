@@ -1,5 +1,6 @@
 package com.duckie.backend.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -38,24 +39,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // 1. Vô hiệu hóa CSRF cho H2 Console và API (Stateless)
+          
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers("/h2-console/**")
                 .disable()
             )
-            
-            // 2. Cấu hình CORS
+        
             .cors(Customizer.withDefaults())
             
-            // 3. Quản lý Session (Stateless vì dùng JWT)
+       
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
-            // 4. Phân quyền Request
+           
             .authorizeHttpRequests(auth -> auth
-                // Cho phép H2 Console, các đường dẫn public và Auth
+            
                 .requestMatchers("/h2-console/**", "/error", "/api/auth/**", "/public/**").permitAll()
                 
-                // Phân quyền chi tiết cho API
+               
                 .requestMatchers("/api/recruiter/**").hasAnyRole("RECUITER", "RECRUITER", "ADMIN")
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN") 
@@ -66,15 +66,15 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             
-            // 5. Xử lý ngoại lệ
+         
             .exceptionHandling(exceptions -> exceptions
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(customAccessDeniedHandler))
             
-            // 6. Thêm Filter kiểm tra JWT trước khi xác thực User
+          
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // 7. QUAN TRỌNG: Mở khóa Iframe để hiển thị giao diện H2 Console
+     
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();
@@ -83,7 +83,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); 
+        // configuration.setAllowedOrigins(List.of("http://localhost:5173")); 
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "x-auth-token"));
         configuration.setAllowCredentials(true); 

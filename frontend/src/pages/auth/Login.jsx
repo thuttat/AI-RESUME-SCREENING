@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import "../../styles/auth.css";
 import { Button } from "../../components/common/Button.jsx";
-import api from "../../api/AxiosClient";
+import axiosClient from "../../api/AxiosClient";
 
 function Login() {
     const [formData, setFormData] = useState({
@@ -29,7 +29,7 @@ function Login() {
                 password: formData.password.trim(),
             };
 
-            const response = await api.post("/auth/login", payloadToSend); 
+            const response = await axiosClient.post("/auth/login", payloadToSend);
             console.log("Response Full:", response);
             alert("Đăng nhập thành công! Status: " + response.status);
 
