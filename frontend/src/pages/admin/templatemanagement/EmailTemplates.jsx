@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from "../../../api/AxiosClient.js";
+import api from "../../../apis/AxiosClient.js";
 import EmailHeader from './email-templates/EmailHeader';
 import EmailTable from './email-templates/EmailTable';
 import EmailModal from './email-templates/EmailModal';

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from "../../api/AxiosClient.js";
+import api from "../../apis/AxiosClient.js";
 import { Play } from 'lucide-react';
 import Button from './components/Button.jsx';
 import ConfigSettingsCard from './aiconfiguration/ConfigSettingsCard.jsx';
