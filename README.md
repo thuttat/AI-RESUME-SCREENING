@@ -72,6 +72,13 @@ npm start
 
 ## Demo
 - Admin
+  ![1](../AI-RESUME-SCREENING/docs/assets/admin/admin-dashboard1.jpg)
+  ![2](../AI-RESUME-SCREENING/docs/assets/admin/admin-dashboard2.jpg)
+  ![3](../AI-RESUME-SCREENING/docs/assets/admin/AI-configuration1.jpg)
+  ![4](../AI-RESUME-SCREENING/docs/assets/admin/AI-configuration2.jpg)
+  ![5](../AI-RESUME-SCREENING/docs/assets/admin/email-template.jpg)
+  ![6](../AI-RESUME-SCREENING/docs/assets/admin/job-template.jpg)
+  ![7](../AI-RESUME-SCREENING/docs/assets/admin/user-management.jpg)
 - Hiring manager
   ![1](../AI-RESUME-SCREENING/docs/assets/hiring_manager/dashboard.png)
   ![2](../AI-RESUME-SCREENING/docs/assets/hiring_manager/shortlistest.png)
@@ -84,6 +91,19 @@ npm start
   ![9](../AI-RESUME-SCREENING/docs/assets/hiring_manager/maillog.png)
   ![10](../AI-RESUME-SCREENING/docs/assets/hiring_manager/mailtemp.png)
 - Recruiter
+  ![1](../AI-RESUME-SCREENING/docs/assets/hiring_manager/dashboard.png)
+  ![2](../AI-RESUME-SCREENING/docs/assets/recruiter/candidate-ranking.png)
+  ![3](../AI-RESUME-SCREENING/docs/assets/recruiter/cv-parse.png)
+  ![4](../AI-RESUME-SCREENING/docs/assets/recruiter/cv-upload1.png)
+  ![5](../AI-RESUME-SCREENING/docs/assets/recruiter/cv-upload2.png)
+  ![6](../AI-RESUME-SCREENING/docs/assets/recruiter/email-history.png)
+  ![7](../AI-RESUME-SCREENING/docs/assets/recruiter/job-management1.png)
+  ![8](../AI-RESUME-SCREENING/docs/assets/recruiter/job-management2.png)
+  ![9](../AI-RESUME-SCREENING/docs/assets/recruiter/job-management3.png)
+  ![10](../AI-RESUME-SCREENING/docs/assets/recruiter/job-management4.png)
+  ![11](../AI-RESUME-SCREENING/docs/assets/recruiter/pipeline-report.png)
+  ![12](../AI-RESUME-SCREENING/docs/assets/recruiter/send-email.png)
+  ![13](../AI-RESUME-SCREENING/docs/assets/hiring_manager/maillog.png)
 
 
 ## Tài liệu
