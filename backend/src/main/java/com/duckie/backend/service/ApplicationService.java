@@ -69,11 +69,11 @@ public class ApplicationService {
         app.setStatus(newStatus);
         Application savedApp = applicationRepository.save(app);
 
-        if (newStatus == Status.HIRED) {
-            emailService.sendNotificationEmail(savedApp, "OFFER_TEMPLATE");
-        } else if (newStatus == Status.REJECT) { 
-            emailService.sendNotificationEmail(savedApp, "REJECTION_TEMPLATE");
-        }
+//        if (newStatus == Status.HIRED) {
+//            emailService.sendNotificationEmail(savedApp, "OFFER_TEMPLATE");
+//        } else if (newStatus == Status.REJECT) {
+//            emailService.sendNotificationEmail(savedApp, "REJECTION_TEMPLATE");
+//        }
         
         return applicationMapper.toResponse(savedApp);
     }
