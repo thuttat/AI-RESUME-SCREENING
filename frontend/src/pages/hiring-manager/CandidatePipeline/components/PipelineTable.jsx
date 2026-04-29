@@ -4,29 +4,33 @@ import PipelineRow from "./PipelineRow";
 
 export default function PipelineTable({ loading, data, selectedIds, onToggle, onView, onEvaluate, onUpdateStatus }) {
     if (loading) return (
-        <div className="p-20 text-center"><Loader2 className="animate-spin inline mr-2"/> <span className="text-gray-500">Loading...</span></div>
+        <div className="p-24 text-center bg-white rounded-2xl shadow-sm border border-slate-100">
+            <Loader2 className="animate-spin inline text-indigo-600 mb-2" size={32}/>
+            <p className="text-slate-500 font-medium">Loading applications...</p>
+        </div>
     );
 
     return (
-        <div className="overflow-x-auto rounded-xl border bg-white shadow-sm">
-            <table className="w-full text-left">
-                <thead className="bg-gray-50 border-b text-xs uppercase text-gray-500 font-bold">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <table className="w-full text-left border-collapse">
+                <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
-                    <th className="p-4 w-10 text-center"></th>
-                    <th className="p-4">Candidate</th>
-                    <th className="p-4 text-center">AI score</th>
-                    <th className="p-4">Status</th>
-                    <th className="p-4">Applied date</th>
-                    <th className="p-4 text-right">Action</th>
+                    <th className="p-4 w-12 text-center"></th>
+                    <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Candidate</th>
+                    <th className="p-4 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">AI Score</th>
+                    <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                    <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Applied Date</th>
+                    <th className="p-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider px-6">Actions</th>
                 </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody className="divide-y divide-slate-100">
                 {data.length === 0 ? (
-                    <tr><td colSpan="6" className="p-10 text-center text-gray-400">Have no data</td></tr>
+                    <tr><td colSpan="6" className="p-12 text-center text-slate-400 font-medium">No candidates found</td></tr>
                 ) : (
                     data.map(app => (
                         <PipelineRow
-                            key={app.id} app={app}
+                            key={app.id}
+                            app={app}
                             isSelected={selectedIds.includes(app.id)}
                             onToggle={onToggle}
                             onView={onView}

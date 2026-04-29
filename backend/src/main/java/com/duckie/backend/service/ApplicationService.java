@@ -64,17 +64,18 @@ public class ApplicationService {
     @Transactional
     public ApplicationResponse updateApplicationStatus(Long applicationId, Status newStatus, String note) {
         Application app = applicationRepository.findById(applicationId)
-            .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy hồ sơ ID: " + applicationId));
-        
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot find application ID: " + applicationId));
+
         app.setStatus(newStatus);
+        app.setNote(note);
         Application savedApp = applicationRepository.save(app);
 
-//        if (newStatus == Status.HIRED) {
-//            emailService.sendNotificationEmail(savedApp, "OFFER_TEMPLATE");
-//        } else if (newStatus == Status.REJECT) {
-//            emailService.sendNotificationEmail(savedApp, "REJECTION_TEMPLATE");
-//        }
-        
+        if (newStatus == Status.HIRED) {
+            emailService.sendNotificationEmail(savedApp, "OFFER_TEMPLATE");
+        } else if (newStatus == Status.REJECT) {
+            emailService.sendNotificationEmail(savedApp, "REJECTION_TEMPLATE");
+        }
+
         return applicationMapper.toResponse(savedApp);
     }
 

@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/assets/**", "/static/**", "/favicon.ico").permitAll()
                         .requestMatchers("/public/**", "/api/auth/**", "/error", "/h2-console/**").permitAll()
 
                         .requestMatchers("/api/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")

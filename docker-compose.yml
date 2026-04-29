@@ -1,46 +1,33 @@
 services:
-
-  db:
-    image: mysql:8.0
-    container_name: mysql-db
-    environment:
-      MYSQL_DATABASE: ai_resume_screening
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-
-
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq-service
     ports:
-      - "5672:5672"  
-      - "15672:15672" 
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
-
 
   backend:
     build: ./backend
     container_name: spring-backend
     depends_on:
-      - db
       - rabbitmq
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/ai_resume_screening?useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:h2:file:/data/ai_resume_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    volumes:
+      - h2_data:/data
     ports:
       - "8080:8080"
 
-
   frontend:
-    build: ./frontend 
+    build: ./frontend
     container_name: react-frontend
     depends_on:
       - backend
@@ -48,4 +35,4 @@ services:
       - "80:80"
 
 volumes:
-  mysql_data:
+  h2_data:

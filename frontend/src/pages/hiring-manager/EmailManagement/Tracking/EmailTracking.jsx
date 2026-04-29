@@ -39,10 +39,10 @@ export default function EmailTracking() {
                     </h1>
                     <p className="text-gray-500">Follow status</p>
                 </div>
-                <div className="relative w-full md:w-80">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                    <input 
-                        className="w-full pl-10 pr-4 py-2.5 border rounded-xl outline-none focus:ring-2 focus:ring-primary/20 bg-white"
+                <div className="search-container w-full md:w-80">
+                    <Search className="search-input-icon" size={18} />
+                    <input
+                        className="search-input-field"
                         placeholder="Find by title..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}

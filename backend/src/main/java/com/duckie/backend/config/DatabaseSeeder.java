@@ -211,7 +211,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         CV cv = CV.builder()
                 .candidateName(name)
                 .candidateEmail(name.toLowerCase().replace(" ", "") + "@gmail.com")
-                .cvFileUrl("https://duckie.com/cv/" + name.replace(" ", "") + ".pdf")
+                .cvFileUrl("http://localhost:8080/assets/test.pdf")
                 .uploadedBy(uploadedBy)
                 .createdAt(time)
                 .build();

@@ -38,16 +38,28 @@ Hệ thống sàng lọc hồ sơ ứng viên ứng dụng AI, được xây d�
 - Frontend: React
 - Database: MySQL 
 - AI: OpenAI API
+- Email: MQ Rabbit
 
 ## Cài đặt và chạy
 ### Yêu cầu
 - Java 17+ 
 - Node.js 18+
 - MySQL
+### Build docker
+docker-compose build
+
+docker-compose up -d
+
+
 ### Chạy Backend
+### Trước khi chạy docker
+
 cd backend
 
 ./mvnw spring-boot:run
+
+### Sau khi chạy docker
+docker logs -f spring-backend
 ### Chạy Frontend
 cd frontend
 
@@ -55,11 +67,24 @@ npm install
 
 npm start
 ### Truy cập
-- Frontend: http://localhost:3000 
+- Frontend: http://localhost:5173
 - Backend API: http://localhost:8080
 
 ## Demo
-[Link video demo hoặc screenshots]
+- Admin
+- Hiring manager
+  ![1](../AI-RESUME-SCREENING/docs/assets/hiring_manager/dashboard.png)
+  ![2](../AI-RESUME-SCREENING/docs/assets/hiring_manager/shortlistest.png)
+  ![3](../AI-RESUME-SCREENING/docs/assets/hiring_manager/changestatus.png)
+  ![4](../AI-RESUME-SCREENING/docs/assets/hiring_manager/rating&feedback.png)
+  ![5](../AI-RESUME-SCREENING/docs/assets/hiring_manager/seach&filter.png)
+  ![6](../AI-RESUME-SCREENING/docs/assets/hiring_manager/viewdetail.png)
+  ![7](../AI-RESUME-SCREENING/docs/assets/hiring_manager/viewcv.png)
+  ![8](../AI-RESUME-SCREENING/docs/assets/hiring_manager/compare.png)
+  ![9](../AI-RESUME-SCREENING/docs/assets/hiring_manager/maillog.png)
+  ![10](../AI-RESUME-SCREENING/docs/assets/hiring_manager/mailtemp.png)
+- Recruiter
+
 
 ## Tài liệu
 - [Phân tích yêu cầu](docs/requirements.md) 
