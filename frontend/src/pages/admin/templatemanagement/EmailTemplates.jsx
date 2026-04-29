@@ -33,6 +33,14 @@ export default function EmailTemplates() {
 
  
   const handleSaveTemplate = async () => {
+    if (!formData.templateName || formData.templateName.trim() === '' ||
+        !formData.subject || formData.subject.trim() === '' ||
+        !formData.body || formData.body.trim() === ''
+    ) {
+      alert("Please fill in all fields!");
+      return;
+    }
+
     try {
       if (editingTemplate) {
         await api.put(`/email-templates/${editingTemplate.id}`, formData);
@@ -76,14 +84,15 @@ export default function EmailTemplates() {
   const handleOpenModal = (template = null) => {
     if (template) {
       setEditingTemplate(template);
-      setFormData({ 
-        templateName: template.templateName, 
+      setFormData({
+        type: template.type,
+        templateName: template.templateName,
         subject: template.subject, 
         body: template.body 
       });
     } else {
       setEditingTemplate(null);
-      setFormData({ templateName: 'Offer', subject: '', body: '' });
+      setFormData({ type: 'Offer', templateName: '', subject: '', body: '' });
     }
     setIsModalOpen(true);
   };

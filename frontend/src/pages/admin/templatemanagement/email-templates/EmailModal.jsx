@@ -12,6 +12,10 @@ export default function EmailModal({ isOpen, onClose, editingTemplate, formData,
           </select>
         </div>
         <div>
+          <label className="!block !text-[13px] !font-bold !text-slate-700 !mb-2">Template Name</label>
+          <input type="text" value={formData.templateName} onChange={(e) => setFormData({ ...formData, templateName: e.target.value })} className="!w-full !px-4 !py-2 !border !border-gray-300 !rounded-lg" placeholder="Eg: OFFER_TEMPLATE" />
+        </div>
+        <div>
           <label className="!block !text-[13px] !font-bold !text-slate-700 !mb-2">Subject Line</label>
           <input type="text" value={formData.subject} onChange={(e) => setFormData({ ...formData, subject: e.target.value })} className="!w-full !px-4 !py-2 !border !border-gray-300 !rounded-lg" placeholder="Use variables like {{applicant_name}}" />
         </div>

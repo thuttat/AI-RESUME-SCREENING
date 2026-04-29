@@ -61,10 +61,6 @@ public class EmailTemplateService implements IEmailTemplateService {
             }
         }
 
-        if (request.type() != null && emailTemplateRepository.existsByType(request.type())) {
-            throw new RuntimeException("Email template with type '" + request.type() + "' already exists.");
-        }
-
         EmailTemplate template = emailTemplateMapper.toEntity(request);
         EmailTemplate savedTemplate = emailTemplateRepository.save(template);
 
@@ -83,11 +79,6 @@ public class EmailTemplateService implements IEmailTemplateService {
             if (emailTemplateRepository.existsByTemplateName(request.templateName())) {
                 throw new RuntimeException("This Template '" + request.templateName() + "' already exist!");
             }
-        }
-
-        if (request.type() != null && !template.getType().equals(request.type())
-                && emailTemplateRepository.existsByType(request.type())) {
-            throw new RuntimeException("Email template with type '" + request.type() + "' already exists.");
         }
 
         emailTemplateMapper.updateEntityFromRequest(request, template);

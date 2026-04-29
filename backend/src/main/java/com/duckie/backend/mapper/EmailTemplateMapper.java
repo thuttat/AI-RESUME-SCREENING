@@ -33,6 +33,7 @@ public class EmailTemplateMapper {
         entity.setType(request.type());
         entity.setSubject(request.subject());
         entity.setBody(request.body());
+        entity.setIsActive(true);
         return entity;
     }
 

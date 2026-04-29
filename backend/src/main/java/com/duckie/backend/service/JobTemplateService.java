@@ -146,6 +146,9 @@ public class JobTemplateService implements IJobTemplateService {
         JobTemplate existing = getJobTemplateById(id);
         existing.setTitle(updatedData.getTitle());
         existing.setDescription(updatedData.getDescription());
+        existing.setDepartment(updatedData.getDepartment());
+        existing.setRequirements(updatedData.getRequirements());
+        existing.setRequiredSkills(updatedData.getRequiredSkills());
         return jobTemplateRepository.save(existing);
     }
 

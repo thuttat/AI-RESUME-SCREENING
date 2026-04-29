@@ -25,6 +25,16 @@ export default function JobModal({ isOpen, onClose, editingTemplate, formData, s
           <textarea value={formData.description || ''} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="!w-full !px-4 !py-3 !border !border-slate-300 !rounded-xl !min-h-[140px]" placeholder="Enter job description..." />
         </div>
         <div>
+          <label className="!block !text-[13px] !font-bold !text-slate-700 !mb-2">Required Skills</label>
+          <input
+              type="text"
+              value={formData.requiredSkills || ''}
+              onChange={(e) => setFormData({ ...formData, requiredSkills: e.target.value })}
+              className="!w-full !px-4 !py-2.5 !border !border-slate-300 !rounded-xl focus:!outline-none focus:!ring-2 focus:!ring-blue-500/50 !text-[14px]"
+              placeholder="e.g., React, TypeScript, Node.js"
+          />
+        </div>
+        <div>
           <label className="!block !text-[13px] !font-bold !text-slate-700 !mb-2">Requirements</label>
           <textarea value={formData.requirements || ''} onChange={(e) => setFormData({ ...formData, requirements: e.target.value })} className="!w-full !px-4 !py-3 !border !border-slate-300 !rounded-xl !min-h-[100px]" placeholder="List key requirements..." />
         </div>

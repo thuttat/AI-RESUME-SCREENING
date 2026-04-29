@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import api from "../../../apis/AxiosClient.js";
 import JobHeader from './job-templates/JobHeader.jsx';
 import JobGrid from './job-templates/JobGrid.jsx';
 import JobModal from './job-templates/JobModal.jsx';
+import api from "../../../apis/AxiosClient.js";
 
 export default function JobTemplates() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,7 +12,8 @@ export default function JobTemplates() {
     title: '',
     department: '',
     description: '',
-    requirements: ''
+    requirements: '',
+    requiredSkills: ''
   });
   const [templates, setTemplates] = useState([]);
 
@@ -20,7 +21,9 @@ export default function JobTemplates() {
     setIsLoading(true);
     try {
       const response = await api.get('/job-templates');
-      if (response.data && response.data.content) {
+      if (Array.isArray(response.data)) {
+        setTemplates(response.data);
+      } else if (response.data && response.data.content) {
         setTemplates(response.data.content);
       } else {
         setTemplates([]);
@@ -44,11 +47,12 @@ export default function JobTemplates() {
         title: template.title,
         department: template.department,
         description: template.description,
-        requirements: template.requirements
+        requirements: template.requirements,
+        requiredSkills: template.requiredSkills || ''
       });
     } else {
       setEditingTemplate(null);
-      setFormData({ title: '', department: '', description: '', requirements: '' });
+      setFormData({ title: '', department: '', description: '', requirements: '', requiredSkills: '' });
     }
     setIsModalOpen(true);
   };
@@ -92,28 +96,28 @@ export default function JobTemplates() {
 
 
   return (
-    <div className="flex flex-col gap-6">
-      <JobHeader onAddNew={() => handleOpenModal()} />
+      <div className="flex flex-col gap-6">
+        <JobHeader onAddNew={() => handleOpenModal()} />
 
-      {templates.length === 0 ? (
-        <div className="text-center p-10 text-gray-400">Don't have any job templates yet.</div>
-      ) : (
-        <JobGrid
-          templates={templates}
-          onEdit={handleOpenModal}
-          onDelete={handleDeleteTemplate}
-          onToggleActive={handleToggleActive}
+        {templates.length === 0 ? (
+            <div className="text-center p-10 text-gray-400">Don't have any job templates yet.</div>
+        ) : (
+            <JobGrid
+                templates={templates}
+                onEdit={handleOpenModal}
+                onDelete={handleDeleteTemplate}
+                onToggleActive={handleToggleActive}
+            />
+        )}
+
+        <JobModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            editingTemplate={editingTemplate}
+            formData={formData}
+            setFormData={setFormData}
+            onSave={handleSaveTemplate}
         />
-      )}
-
-      <JobModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        editingTemplate={editingTemplate}
-        formData={formData}
-        setFormData={setFormData}
-        onSave={handleSaveTemplate}
-      />
-    </div>
+      </div>
   );
 }

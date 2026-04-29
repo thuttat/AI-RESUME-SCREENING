@@ -15,6 +15,7 @@ public class JobTemplateMapper {
             template.getDepartment(),
             template.getDescription(),
             template.getRequirements(),
+            template.getRequiredSkills(),
             template.getIsActive(),
             template.getCreatedById(),
             template.getCreatedAt(),

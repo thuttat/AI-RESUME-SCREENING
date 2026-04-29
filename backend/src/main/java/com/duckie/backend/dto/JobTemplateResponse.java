@@ -8,6 +8,7 @@ public record JobTemplateResponse(
     String department,
     String description,
     String requirements,
+    String requiredSkills,
     Boolean isActive,
     Long createdById,
     Instant createdAt,

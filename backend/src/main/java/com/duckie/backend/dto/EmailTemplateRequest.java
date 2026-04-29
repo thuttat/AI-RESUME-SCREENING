@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 public record EmailTemplateRequest(
         String templateName,
 
-        @NotBlank(message = "Type can not be blank")
         String type,
 
         @NotBlank(message = "The email title can not be blank")

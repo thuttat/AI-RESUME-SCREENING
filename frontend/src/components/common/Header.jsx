@@ -51,9 +51,15 @@ export default function Header() {
                         <h4>{user ? (user.fullname || user.username) : "Loading..."}</h4>
                         <span>{user ? user.email : ""}</span>
                     </div>
-                    <div className="avatar">
-                        <User size={16} />
-                    </div>
+                    {user && user.avatar ? (
+                        <div className="avatar">
+                            <img src={user.avatar} alt="User Avatar" className="avatar-img" />
+                        </div>
+                    ) : (
+                        <div className="avatar-default">
+                            <User size={16} />
+                        </div>
+                    )}
                 </div>
 
                 <Button variant="outline-danger" size="sm" onClick={handleLogout}>
