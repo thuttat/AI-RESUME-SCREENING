@@ -18,7 +18,6 @@ export default function EmailTable({ templates, onEdit, onDelete, onPreview }) {
           <tr className="bg-gray-50/50 text-left">
             <th className="!px-4 !py-3 text-sm font-semibold text-gray-700">ID</th>
             <th className="!px-4 !py-3 text-sm font-semibold text-gray-700">Email Type</th>
-            <th className="!px-4 !py-3 text-sm font-semibold text-gray-700">Template Name</th>
             <th className="!px-4 !py-3 text-sm font-semibold text-gray-700">Subject Line</th>
             <th className="!px-4 !py-3 text-sm font-semibold text-gray-700">Actions</th>
           </tr>
@@ -35,7 +34,6 @@ export default function EmailTable({ templates, onEdit, onDelete, onPreview }) {
                   <Mail size={12} /> {template.type}
                 </span>
               </td>
-              <td className="px-4 py-4 text-sm text-gray-900">{template.templateName}</td>
               <td className="px-4 py-4 text-sm text-gray-900">{template.subject}</td>
               <td className="px-4 py-4">
                 <div className="flex gap-2">

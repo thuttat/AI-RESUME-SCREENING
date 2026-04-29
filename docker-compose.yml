@@ -30,6 +30,7 @@ services:
       - db
       - rabbitmq
     environment:
+      - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/ai_resume_screening?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
