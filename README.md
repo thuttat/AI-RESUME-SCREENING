@@ -4,11 +4,11 @@
 Hệ thống sàng lọc hồ sơ ứng viên ứng dụng AI, được xây dựng bằng Spring Boot và React. Hệ thống tự động phân tích CV, thực hiện so khớp ngữ nghĩa với mô tả công việc (JD) và xếp hạng ứng viên nhằm hỗ trợ nhà tuyển dụng đưa ra quyết định tuyển dụng nhanh chóng và chính xác hơn.
 
 ## Thành viên nhóm
-| MSSV       | Họ tên | Vai trò                                                                | 
-|------------|--------|------------------------------------------------------------------------| 
-| 2351010205 | Trịnh Thị Anh Thư	 | Leader, Project Manager, Backend & Frontend Developer cho Module Admin | 
-| 2351010214 | Lê Hoàng Bảo Trân	 | Backend & Frontend Developer cho Module Recruiter                      | 
-| 2351010036 | Nguyễn Triệu Duy	 | Backend & Frontend Developer cho Module Hiring Manager                 |
+| MSSV       | Họ tên | Vai trò                                                                          | 
+|------------|--------|----------------------------------------------------------------------------------| 
+| 2351010205 | Trịnh Thị Anh Thư	 | Leader, Project Manager, Backend & Frontend Developer cho Module Hirring manager | 
+| 2351010214 | Lê Hoàng Bảo Trân	 | Backend & Frontend Developer cho Module Recruiter                                | 
+| 2351010036 | Nguyễn Triệu Duy	 | Backend & Frontend Developer cho Module Admin                                    |
 
 ## Tính năng chính (MVP)
 - [ ] RECRUITER:
