@@ -35,6 +35,7 @@ function Login() {
             const response = await api.post("/auth/login", payload);
 
             const { accessToken, role } = response.data;
+            // Lấy role trực tiếp hoặc từ object user trả về
             const userRole = role || (response.data.user && response.data.user.role);
 
             if (accessToken && userRole) {
@@ -43,7 +44,7 @@ function Login() {
                 const roleKey = userRole.toUpperCase();
                 if (roleKey.includes("ADMIN")) navigate("/admin/dashboard");
                 else if (roleKey.includes("RECRUITER")) navigate("/recruiter/dashboard");
-                else if (roleKey.includes("MANAGER")) navigate("/manager/dashboard");
+                else if (roleKey.includes("MANAGER") || roleKey.includes("HIRING_MANAGER")) navigate("/manager/dashboard");
                 else navigate("/");
             }
         } catch (error) {

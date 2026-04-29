@@ -1,17 +1,12 @@
 import React from "react";
-import { Eye, Star } from "lucide-react";
+import { Eye, Star, Pencil } from "lucide-react";
 import { Badge } from "../../../../components/common/Badge";
 
-export default function PipelineRow({ app, isSelected, onToggle, onView, onEvaluate }) {
+export default function PipelineRow({ app, isSelected, onToggle, onView, onEvaluate, onUpdateStatus }) {
     return (
-        <tr className="hover:bg-gray-50 transition-colors border-b">
+        <tr className={`hover:bg-gray-50 transition-colors border-b ${isSelected ? 'bg-indigo-50/30' : ''}`}>
             <td className="p-4 text-center">
-                <input 
-                    type="checkbox" 
-                    checked={isSelected}
-                    onChange={() => onToggle(app.id)}
-                    className="w-4 h-4 rounded text-primary cursor-pointer"
-                />
+                <input type="checkbox" checked={isSelected} onChange={() => onToggle(app.id)} className="w-4 h-4 rounded text-primary cursor-pointer"/>
             </td>
             <td className="p-4">
                 <div className="font-bold text-gray-800">{app.candidateName}</div>
@@ -30,12 +25,11 @@ export default function PipelineRow({ app, isSelected, onToggle, onView, onEvalu
             </td>
             <td className="p-4 text-right">
                 <div className="flex justify-end gap-1">
-                    <button className="p-2 text-gray-400 hover:text-primary transition-all" onClick={() => onView(app)}>
-                        <Eye size={20} />
-                    </button>
-                    <button className="p-2 text-gray-400 hover:text-green-600 transition-all" onClick={() => onEvaluate(app)}>
-                        <Star size={20} />
-                    </button>
+                    <button className="p-2 text-gray-400 hover:text-primary transition-all" onClick={() => onView(app)} title="Details"><Eye size={20} /></button>
+
+                    <button className="p-2 text-gray-400 hover:text-amber-600 transition-all" onClick={() => onUpdateStatus(app)} title="Change status"><Pencil size={20} /></button>
+
+                    <button className="p-2 text-gray-400 hover:text-green-600 transition-all" onClick={() => onEvaluate(app)} title="Rating"><Star size={20} /></button>
                 </div>
             </td>
         </tr>

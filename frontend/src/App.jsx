@@ -24,6 +24,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import UsersManagement from "./pages/admin/UsersManagement.jsx";
 import TemplateManagement from "./pages/admin/TemplateManagement.jsx";
 import AIConfiguration from "./pages/admin/AIConfiguration.jsx";
+import JobTemplates from "./pages/admin/templatemanagement/JobTemplates.jsx";
+import EmailTemplates from "./pages/admin/templatemanagement/EmailTemplates.jsx";
 
 import "./App.css";
 
@@ -34,6 +36,7 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+
                     <Route
                         path="/recruiter/*"
                         element={
@@ -80,7 +83,10 @@ export default function App() {
                         <Route path="users" element={<UsersManagement />} />
                         <Route path="templates" element={<TemplateManagement />} />
                         <Route path="config" element={<AIConfiguration />} />
+                        <Route path="templates/jobs" element={<JobTemplates />} />
+                        <Route path="templates/emails" element={<EmailTemplates />} />
                     </Route>
+
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </BrowserRouter>

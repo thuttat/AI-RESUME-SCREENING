@@ -45,31 +45,32 @@ public class JobTemplate extends BaseEntity {
     @Column(name = "requirements", updatable = false)
     private String requirements;
 
+
     public JobTemplate() {}
 
-    public Long getId() { 
-        return id; 
+    public Long getId() {
+        return id;
     }
-    public void setId(Long id) { 
-        this.id = id; 
+    public void setId(Long id) {
+        this.id = id;
     }
-    public String getTitle() { 
-        return title; 
+    public String getTitle() {
+        return title;
     }
-    public void setTitle(String title) { 
-        this.title = title; 
+    public void setTitle(String title) {
+        this.title = title;
     }
-    public String getDescription() { 
-        return description; 
+    public String getDescription() {
+        return description;
     }
-    public void setDescription(String description) { 
-        this.description = description; 
+    public void setDescription(String description) {
+        this.description = description;
     }
-    public User getCreatedBy() { 
-        return createdBy; 
+    public User getCreatedBy() {
+        return createdBy;
     }
     public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy; 
+        this.createdBy = createdBy;
     }
 
     public Boolean getIsActive() {
@@ -104,11 +105,11 @@ public class JobTemplate extends BaseEntity {
     }
     public void setRequirements(String requirements) {
         this.requirements = requirements;
-    }   
+    }
 
 
-    public static JobTemplateBuilder builder() { 
-        return new JobTemplateBuilder(); 
+    public static JobTemplateBuilder builder() {
+        return new JobTemplateBuilder();
     }
 
     public static final class JobTemplateBuilder {
@@ -124,29 +125,29 @@ public class JobTemplate extends BaseEntity {
         private String department;
         private String requirements;
 
-        public JobTemplateBuilder id(Long id) { 
-            this.id = id; 
-            return this; 
+        public JobTemplateBuilder id(Long id) {
+            this.id = id;
+            return this;
         }
-        public JobTemplateBuilder title(String title) { 
-            this.title = title; 
-            return this; 
+        public JobTemplateBuilder title(String title) {
+            this.title = title;
+            return this;
         }
-        public JobTemplateBuilder description(String description) { 
-            this.description = description; 
-            return this; 
+        public JobTemplateBuilder description(String description) {
+            this.description = description;
+            return this;
         }
-        public JobTemplateBuilder createdBy(User createdBy) { 
-            this.createdBy = createdBy; 
-            return this; 
+        public JobTemplateBuilder createdBy(User createdBy) {
+            this.createdBy = createdBy;
+            return this;
         }
-        public JobTemplateBuilder createdAt(Instant createdAt) { 
-            this.createdAt = createdAt; 
-            return this; 
+        public JobTemplateBuilder createdAt(Instant createdAt) {
+            this.createdAt = createdAt;
+            return this;
         }
-        public JobTemplateBuilder updatedAt(Instant updatedAt) { 
-            this.updatedAt = updatedAt; 
-            return this; 
+        public JobTemplateBuilder updatedAt(Instant updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
         }
 
         public JobTemplateBuilder isActive(Boolean isActive) {
@@ -163,10 +164,10 @@ public class JobTemplate extends BaseEntity {
             this.createdById = createdById;
             return this;
         }
-
         public JobTemplateBuilder requiredSkills(String requiredSkills) {
             this.requiredSkills = requiredSkills;
-
+            return this;
+        }
         public JobTemplateBuilder requirements(String requirements) {
             this.requirements = requirements;
             return this;

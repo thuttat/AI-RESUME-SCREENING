@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.duckie.backend.dto.UserPatchRequest;
 import com.duckie.backend.dto.UserRequest;
 import com.duckie.backend.dto.UserResponse;
 import com.duckie.backend.service.IUserService;
@@ -26,7 +25,6 @@ import com.duckie.backend.service.IUserService;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
     private final IUserService userService;
 
     public UserController(IUserService userService) {
@@ -54,13 +52,13 @@ public class UserController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest request) {
-        return userService.update(id, request);
+        return ResponseEntity.ok(userService.update(id, request));
     }
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> patchUser(@PathVariable Long id, @RequestBody UserPatchRequest request) {
-        return userService.patchUpdate(id, request);
+    public ResponseEntity<UserResponse> patchUser(@PathVariable Long id, @RequestBody UserRequest request) {
+        return ResponseEntity.ok(userService.patchUpdate(id, request));
     }
 
     @PostMapping(value = "/upload-avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

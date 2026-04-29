@@ -39,28 +39,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**")
-                        .disable()
-                )
+                .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**", "/api/auth/**", "/error", "/h2-console/**").permitAll()
+
                         .requestMatchers("/api/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN", "HIRING_MANAGER", "RECRUITER")
+                        .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/job-templates/**").hasRole("ADMIN")
-                        .requestMatchers("/api/email-templates/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")
                         .requestMatchers("/api/admin/dashboard").hasRole("ADMIN")
+                        .requestMatchers("/api/ai-config/**").hasRole("ADMIN")
+
                         .requestMatchers("/api/reports/**").hasRole("RECRUITER")
                         .requestMatchers("/api/email-logs/**").hasAnyRole("RECRUITER", "ADMIN", "HIRING_MANAGER")
                         .requestMatchers("/api/emails/send").hasAnyRole("RECRUITER", "ADMIN")
+                        .requestMatchers("/api/email-templates/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")
                         .requestMatchers("/api/jobs/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")
                         .requestMatchers("/api/cvs/upload").hasAnyRole("ADMIN", "RECRUITER")
                         .requestMatchers("/api/applications/**").hasAnyRole("ADMIN", "HIRING_MANAGER", "RECRUITER")
-                        .requestMatchers("/api/ai-config/**").hasRole("ADMIN")
                         .requestMatchers("/api/evaluations/**").hasAnyRole("HIRING_MANAGER", "ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptions -> exceptions
@@ -68,6 +68,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(customAccessDeniedHandler))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
+        // Cho phép hiển thị H2 console trong iframe
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();

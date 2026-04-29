@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react"; 
+import React from "react";
 import { Bell, Search, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./../styles/Header.css";
 import { Button } from "./Button.jsx";
 import { menuItems } from "../../utils/MenuConfig.js";
 import { useAuth } from "../../context/AuthContext.jsx";
-import AxiosClient from "../../apis/AxiosClient.js";
 
 export default function Header() {
     const location = useLocation();
     const navigate = useNavigate();
     const { user, role, logout } = useAuth();
+
     const getPageTitle = () => {
         const allMenu = [
             ...menuItems.recruiter,
@@ -22,23 +22,6 @@ export default function Header() {
     }
 
     const title = getPageTitle();
-
-    const [userInfo, setUserInfo] = useState({
-        fullname: "Loading...",
-        email: "",
-    });
-
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const response = await AxiosClient().get("/auth/me");
-                setUserInfo(response.data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchUserProfile();
-    }, []);
 
     const handleLogout = () => {
         logout();

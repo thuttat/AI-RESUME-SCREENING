@@ -21,13 +21,13 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name="application", indexes = {
     @Index(name = "idx_application_status", columnList = "status")
-}) 
+})
 public class Application extends BaseEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_id", nullable = false)
     private JobPosting jobPosting;
@@ -38,7 +38,7 @@ public class Application extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable=false)
-    private Status status; 
+    private Status status;
 
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Evaluation> evaluations;
@@ -52,47 +52,47 @@ public class Application extends BaseEntity {
 
     public Application(){}
 
-    public Long getId(){ 
-        return id; 
+    public Long getId(){
+        return id;
     }
-    public void setId(Long id){ 
-        this.id=id; 
+    public void setId(Long id){
+        this.id=id;
     }
-    public JobPosting getJobPosting(){ 
-        
-        return jobPosting; 
+    public JobPosting getJobPosting(){
+
+        return jobPosting;
     }
-    public void setJobPosting(JobPosting jobPosting){ 
-        this.jobPosting = jobPosting; 
+    public void setJobPosting(JobPosting jobPosting){
+        this.jobPosting = jobPosting;
     }
-    public CV getCV(){ 
-        return cv; 
+    public CV getCV(){
+        return cv;
     }
-    public void setCV(CV cv){ 
-        this.cv = cv; 
+    public void setCV(CV cv){
+        this.cv = cv;
     }
-    public Status getStatus(){ 
-        return status; 
+    public Status getStatus(){
+        return status;
     }
-    public void setStatus(Status status){ 
-        this.status = status; 
+    public void setStatus(Status status){
+        this.status = status;
     }
-    public List<Evaluation> getEvaluations() { 
-        return evaluations; 
+    public List<Evaluation> getEvaluations() {
+        return evaluations;
     }
-    public void setEvaluations(List<Evaluation> evaluations) { 
-        this.evaluations = evaluations; 
-    }
-    
-    public List<EmailLog> getEmailLogs() { 
-        return emailLogs; 
-    }
-    public void setEmailLogs(List<EmailLog> emailLogs) { 
-        this.emailLogs = emailLogs; 
+    public void setEvaluations(List<Evaluation> evaluations) {
+        this.evaluations = evaluations;
     }
 
-    public static ApplicationBuilder builder() { 
-        return new ApplicationBuilder(); 
+    public List<EmailLog> getEmailLogs() {
+        return emailLogs;
+    }
+    public void setEmailLogs(List<EmailLog> emailLogs) {
+        this.emailLogs = emailLogs;
+    }
+
+    public static ApplicationBuilder builder() {
+        return new ApplicationBuilder();
     }
     public String getNote() {
         return note;
@@ -105,40 +105,40 @@ public class Application extends BaseEntity {
         private Long id;
         private JobPosting jobPosting;
         private CV cv;
-        private Status status; 
+        private Status status;
         private Instant createdAt;
         private Instant updatedAt;
         private List<Evaluation> evaluations;
-        private List<EmailLog> emailLogs; 
+        private List<EmailLog> emailLogs;
         private String note;
 
-        public ApplicationBuilder id(Long id){ 
-            this.id = id; 
-            return this; 
+        public ApplicationBuilder id(Long id){
+            this.id = id;
+            return this;
         }
-        public ApplicationBuilder jobPosting(JobPosting jobPosting){ 
-            this.jobPosting=jobPosting; 
-            return this; 
+        public ApplicationBuilder jobPosting(JobPosting jobPosting){
+            this.jobPosting=jobPosting;
+            return this;
         }
-        public ApplicationBuilder cv(CV cv){ 
-            this.cv = cv; 
-            return this; 
+        public ApplicationBuilder cv(CV cv){
+            this.cv = cv;
+            return this;
         }
-        public ApplicationBuilder status(Status status){ 
-            this.status = status; 
-            return this; 
+        public ApplicationBuilder status(Status status){
+            this.status = status;
+            return this;
         }
-        public ApplicationBuilder createdAt(Instant createdAt){ 
-            this.createdAt = createdAt; 
+        public ApplicationBuilder createdAt(Instant createdAt){
+            this.createdAt = createdAt;
             return this; }
-        public ApplicationBuilder updatedAt(Instant updatedAt){ 
-            this.updatedAt = updatedAt; 
+        public ApplicationBuilder updatedAt(Instant updatedAt){
+            this.updatedAt = updatedAt;
             return this; }
-        public ApplicationBuilder evaluations(List<Evaluation> evaluations){ 
-            this.evaluations = evaluations; 
+        public ApplicationBuilder evaluations(List<Evaluation> evaluations){
+            this.evaluations = evaluations;
             return this; }
-        public ApplicationBuilder emailLogs(List<EmailLog> emailLogs){ 
-            this.emailLogs = emailLogs; 
+        public ApplicationBuilder emailLogs(List<EmailLog> emailLogs){
+            this.emailLogs = emailLogs;
             return this; }
         public ApplicationBuilder note(String note) {
             this.note = note;
@@ -155,7 +155,7 @@ public class Application extends BaseEntity {
             application.setUpdatedAt(this.updatedAt);
             application.setEvaluations(this.evaluations);
             application.setEmailLogs(this.emailLogs);
-            application.setNote(this.note); 
+            application.setNote(this.note);
             return application;
         }
     }

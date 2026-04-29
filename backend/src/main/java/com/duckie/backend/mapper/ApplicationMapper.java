@@ -2,16 +2,16 @@ package com.duckie.backend.mapper;
 
 import com.duckie.backend.dto.RankedCandidateResponse;
 import com.duckie.backend.entity.AIAnalysisResult;
-import org.springframework.stereotype.Component;
-
 import com.duckie.backend.dto.ApplicationResponse;
 import com.duckie.backend.entity.Application;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ApplicationMapper {
-    
+
     public ApplicationResponse toResponse(Application application) {
         if (application == null) return null;
+        AIAnalysisResult ai = application.getCV() != null ? application.getCV().getAiAnalysisResult() : null;
 
         return new ApplicationResponse(
                 application.getId(),
@@ -21,14 +21,18 @@ public class ApplicationMapper {
                 application.getCV() != null ? application.getCV().getCandidateName() : null,
                 application.getCV() != null ? application.getCV().getCandidateEmail() : null,
                 application.getCV() != null ? application.getCV().getCvFileUrl() : null,
-                application.getCreatedAt()
+                application.getCreatedAt(),
+                ai != null ? ai.getMatchScore() : null,
+                ai != null ? ai.getCritique() : null,
+                ai != null ? ai.getExtractedSkills() : null,
+                ai != null ? ai.getYearsOfExperience() : null
         );
     }
+
     public RankedCandidateResponse toRankedResponse(Application application) {
         if (application == null) return null;
 
         AIAnalysisResult aiAnalysisResult = application.getCV() != null ? application.getCV().getAiAnalysisResult() : null;
-
         boolean hasSentEmail = application.getEmailLogs() != null && !application.getEmailLogs().isEmpty();
 
         return new RankedCandidateResponse(

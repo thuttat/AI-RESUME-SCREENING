@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from "../../../api/AxiosClient.js";
+import api from "../../../apis/AxiosClient.js";
 import JobHeader from './job-templates/JobHeader.jsx';
 import JobGrid from './job-templates/JobGrid.jsx';
 import JobModal from './job-templates/JobModal.jsx';

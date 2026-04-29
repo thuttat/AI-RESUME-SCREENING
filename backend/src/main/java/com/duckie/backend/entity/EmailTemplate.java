@@ -12,13 +12,16 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "email_template", indexes = {
-    @Index(name = "idx_email_template_name", columnList = "template_name", unique = true)
+        @Index(name = "idx_email_template_name", columnList = "template_name", unique = true)
 })
 public class EmailTemplate extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "template_name", nullable = false, unique = true, length = 100)
+    private String templateName;
 
     @Column(name = "type", nullable = false, length = 100)
     private String type;
@@ -34,44 +37,53 @@ public class EmailTemplate extends BaseEntity {
 
     public EmailTemplate() {}
 
-    public Long getId() { 
-        return id; 
+    public Long getId() {
+        return id;
     }
-    public void setId(Long id) { 
-        this.id = id; 
-    }
-    public String getType() { 
-        return type; 
-    }
-    public void setType(String type) { 
-        this.type = type; 
-    }
-    public String getSubject() { 
-        return subject; 
-    }
-    public void setSubject(String subject) { 
-        this.subject = subject; 
-    }
-    public String getBody() { 
-        return body; 
-    }
-    public void setBody(String body) { 
-        this.body = body; 
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Boolean getIsActive() { 
-        return isActive; 
+    public String getTemplateName() {
+        return templateName;
     }
-    public void setIsActive(Boolean isActive) { 
-        this.isActive = isActive; 
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
     }
 
-    public static EmailTemplateBuilder builder() { 
-        return new EmailTemplateBuilder(); 
+    public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
+    public String getSubject() {
+        return subject;
+    }
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+    public String getBody() {
+        return body;
+    }
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public static EmailTemplateBuilder builder() {
+        return new EmailTemplateBuilder();
     }
 
     public static final class EmailTemplateBuilder {
         private Long id;
+        private String templateName;
         private String type;
         private String subject;
         private String body;
@@ -79,38 +91,43 @@ public class EmailTemplate extends BaseEntity {
         private Instant updatedAt;
         private Boolean isActive;
 
-        public EmailTemplateBuilder id(Long id) { 
-            this.id = id; 
-            return this; 
+        public EmailTemplateBuilder id(Long id) {
+            this.id = id;
+            return this;
         }
-        public EmailTemplateBuilder type(String type) { 
-            this.type = type; 
-            return this; 
+        public EmailTemplateBuilder templateName(String templateName) {
+            this.templateName = templateName;
+            return this;
         }
-        public EmailTemplateBuilder subject(String subject) { 
-            this.subject = subject; 
-            return this; 
+        public EmailTemplateBuilder type(String type) {
+            this.type = type;
+            return this;
         }
-        public EmailTemplateBuilder body(String body) { 
-            this.body = body; 
-            return this; 
+        public EmailTemplateBuilder subject(String subject) {
+            this.subject = subject;
+            return this;
         }
-        public EmailTemplateBuilder createdAt(Instant createdAt) { 
-            this.createdAt = createdAt; 
-            return this; 
+        public EmailTemplateBuilder body(String body) {
+            this.body = body;
+            return this;
         }
-        public EmailTemplateBuilder updatedAt(Instant updatedAt) { 
-            this.updatedAt = updatedAt; 
-            return this; 
+        public EmailTemplateBuilder createdAt(Instant createdAt) {
+            this.createdAt = createdAt;
+            return this;
         }
-        public EmailTemplateBuilder isActive(Boolean isActive) { 
-            this.isActive = isActive; 
-            return this; 
+        public EmailTemplateBuilder updatedAt(Instant updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+        public EmailTemplateBuilder isActive(Boolean isActive) {
+            this.isActive = isActive;
+            return this;
         }
 
         public EmailTemplate build() {
             EmailTemplate email = new EmailTemplate();
             email.setId(this.id);
+            email.setTemplateName(this.templateName);
             email.setType(this.type);
             email.setSubject(this.subject);
             email.setBody(this.body);

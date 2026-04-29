@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from "../../api/AxiosClient";
+import api from "../../apis/AxiosClient";
 import UsersHeader from './users/UsersHeader';
 import UsersTable from './users/UsersTable';
 import UserModal from './users/UserModal';
