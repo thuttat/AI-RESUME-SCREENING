@@ -1,112 +1,47 @@
-# AI RESUME SCREENING SYSTEM
+# AI Resume Screening
 
-## Mô tả
-Hệ thống sàng lọc hồ sơ ứng viên ứng dụng AI, được xây dựng bằng Spring Boot và React. Hệ thống tự động phân tích CV, thực hiện so khớp ngữ nghĩa với mô tả công việc (JD) và xếp hạng ứng viên nhằm hỗ trợ nhà tuyển dụng đưa ra quyết định tuyển dụng nhanh chóng và chính xác hơn.
+[Tiếng Việt](README.vi.md)
 
-## Thành viên nhóm
-| MSSV       | Họ tên | Vai trò                                                                          | 
-|------------|--------|----------------------------------------------------------------------------------| 
-| 2351010205 | Trịnh Thị Anh Thư	 | Leader, Project Manager, Backend & Frontend Developer cho Module Hirring manager | 
-| 2351010214 | Lê Hoàng Bảo Trân	 | Backend & Frontend Developer cho Module Recruiter                                | 
-| 2351010036 | Nguyễn Triệu Duy	 | Backend & Frontend Developer cho Module Admin                                    |
+A three-person recruiting application built with React and Spring Boot. Recruiters upload résumés against a job opening. Hiring managers compare shortlisted applications, record interview feedback and decide whom to hire.
 
-## Tính năng chính (MVP)
-- [ ] RECRUITER:
-- Tạo Job Posting (JD)
-- Upload và parse CV bằng AI
-- Xem ranking ứng viên
-- Shortlist/Reject ứng viên
-- Gửi email thông báo
-- Xem báo cáo pipeline
-- [ ] HIRING MANAGER:
-- Xem danh sách shortlisted
-- So sánh ứng viên side-by-side
-- Đánh giá và rating ứng viên
-- Ghi feedback phỏng vấn
-- Quyết định tuyển dụng
-- Xem lịch sử tuyển dụng
-- [ ] ADMIN:
-- Quản lý users (CRUD)
-- Quản lý job templates
-- Cấu hình AI parsing rules
-- Cấu hình skill weighting
-- Báo cáo hệ thống
-- Quản lý email templates
+**Trịnh Thị Anh Thư** led the project and developed the Hiring Manager module across the frontend and backend. The comparison below shows the part of the workflow where a manager reads two candidates’ experience, skills and résumé analysis side by side.
 
-## Công nghệ sử dụng
-- Backend: Spring Boot 
-- Frontend: React
-- Database: MySQL 
-- AI: OpenAI API
-- Email: MQ Rabbit
+![Two sample candidates compared by match score, experience and skills](docs/assets/hiring_manager/compare.png)
 
-## Cài đặt và chạy
-### Yêu cầu
-- Java 17+ 
-- Node.js 18+
-- MySQL
-### Build docker
-docker-compose build
+## Inside the Hiring Manager module
 
-docker-compose up -d
+**Find the applications that need attention.** The dashboard groups applications by job and shows pending evaluations, shortlisted candidates and recent activity. The manager opens the pipeline to filter by name or status and select candidates for comparison. [Dashboard source](frontend/src/pages/hiring-manager/Dashboard/HiringManagerDashboard.jsx) · [Dashboard integration commit](https://github.com/thuttat/AI-RESUME-SCREENING/commit/00e0230f24663cfa7d066c5b8612b822b31e0649)
 
+![Hiring overview with pending evaluations, a breakdown by job and recent application activity](docs/assets/hiring_manager/dashboard.png)
 
-### Chạy Backend
-### Trước khi chạy docker
+**Compare the evidence and record a decision.** The comparison page reads the selected application IDs from the URL and fetches their records in parallel. From the pipeline, the manager can give a one-to-five rating, write feedback and choose a hiring outcome. The form saves the evaluation and then updates the application status through the Spring API. The scores in the screenshots come from demonstration records. [Comparison page](frontend/src/pages/hiring-manager/CandidateComparision/CandidateComparison.jsx) · [Evaluation form](frontend/src/pages/hiring-manager/CandidatePipeline/components/EvaluationForm.jsx) · [API controller](backend/src/main/java/com/duckie/backend/controller/EvaluationController.java)
 
-cd backend
+![Evaluation form with a rating, written feedback and hiring decision controls](docs/assets/hiring_manager/rating&feedback.png)
 
-./mvnw spring-boot:run
+## Team and scope
 
-### Sau khi chạy docker
-docker logs -f spring-backend
-### Chạy Frontend
-cd frontend
+| Contributor | Responsibility |
+| --- | --- |
+| Trịnh Thị Anh Thư | Team lead and project manager. Built the Hiring Manager frontend and backend. |
+| Lê Hoàng Bảo Trân | Built the Recruiter frontend and backend for job postings, résumé uploads and candidate ranking. |
+| Nguyễn Triệu Duy | Built the Admin frontend and backend for users, templates and screening configuration. |
 
-npm install
+[Recruiter screens](docs/assets/recruiter) · [Admin screens](docs/assets/admin) · [Requirements](docs/requirements.md) · [Database design](docs/database-design.md) · [API documentation](docs/api-docs.md)
 
-npm start
-### Truy cập
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:8080
+## Run locally
 
-## Demo
-- Admin
-  ![1](../AI-RESUME-SCREENING/docs/assets/admin/admin-dashboard1.jpg)
-  ![2](../AI-RESUME-SCREENING/docs/assets/admin/admin-dashboard2.jpg)
-  ![3](../AI-RESUME-SCREENING/docs/assets/admin/AI-configuration1.jpg)
-  ![4](../AI-RESUME-SCREENING/docs/assets/admin/AI-configuration2.jpg)
-  ![5](../AI-RESUME-SCREENING/docs/assets/admin/email-template.jpg)
-  ![6](../AI-RESUME-SCREENING/docs/assets/admin/job-template.jpg)
-  ![7](../AI-RESUME-SCREENING/docs/assets/admin/user-management.jpg)
-- Hiring manager
-  ![1](../AI-RESUME-SCREENING/docs/assets/hiring_manager/dashboard.png)
-  ![2](../AI-RESUME-SCREENING/docs/assets/hiring_manager/shortlistest.png)
-  ![3](../AI-RESUME-SCREENING/docs/assets/hiring_manager/changestatus.png)
-  ![4](../AI-RESUME-SCREENING/docs/assets/hiring_manager/rating&feedback.png)
-  ![5](../AI-RESUME-SCREENING/docs/assets/hiring_manager/seach&filter.png)
-  ![6](../AI-RESUME-SCREENING/docs/assets/hiring_manager/viewdetail.png)
-  ![7](../AI-RESUME-SCREENING/docs/assets/hiring_manager/viewcv.png)
-  ![8](../AI-RESUME-SCREENING/docs/assets/hiring_manager/compare.png)
-  ![9](../AI-RESUME-SCREENING/docs/assets/hiring_manager/maillog.png)
-  ![10](../AI-RESUME-SCREENING/docs/assets/hiring_manager/mailtemp.png)
-- Recruiter
-  ![1](../AI-RESUME-SCREENING/docs/assets/hiring_manager/dashboard.png)
-  ![2](../AI-RESUME-SCREENING/docs/assets/recruiter/candidate-ranking.png)
-  ![3](../AI-RESUME-SCREENING/docs/assets/recruiter/cv-parse.png)
-  ![4](../AI-RESUME-SCREENING/docs/assets/recruiter/cv-upload1.png)
-  ![5](../AI-RESUME-SCREENING/docs/assets/recruiter/cv-upload2.png)
-  ![6](../AI-RESUME-SCREENING/docs/assets/recruiter/email-history.png)
-  ![7](../AI-RESUME-SCREENING/docs/assets/recruiter/job-management1.png)
-  ![8](../AI-RESUME-SCREENING/docs/assets/recruiter/job-management2.png)
-  ![9](../AI-RESUME-SCREENING/docs/assets/recruiter/job-management3.png)
-  ![10](../AI-RESUME-SCREENING/docs/assets/recruiter/job-management4.png)
-  ![11](../AI-RESUME-SCREENING/docs/assets/recruiter/pipeline-report.png)
-  ![12](../AI-RESUME-SCREENING/docs/assets/recruiter/send-email.png)
-  ![13](../AI-RESUME-SCREENING/docs/assets/hiring_manager/maillog.png)
+Use Docker with the Compose plugin. From a terminal:
 
+```sh
+git clone https://github.com/thuttat/AI-RESUME-SCREENING.git
+cd AI-RESUME-SCREENING
+docker compose up --build -d
+```
 
-## Tài liệu
-- [Phân tích yêu cầu](docs/requirements.md) 
-- [Database Design](docs/database-design.md) 
-- [API Documentation](docs/api-docs.md)
+Open [the local app](http://localhost). On a fresh database, sign in as `manager_test` with the local demo password `123456`. Open **Shortlisted Candidates**, select two applications and choose **Compare**. The repository seeds sample records for this walkthrough.
+
+Compose serves the React build with Nginx on port 80, forwards `/api` to Spring Boot on port 8080 and starts RabbitMQ. The development database is H2, persisted in the `h2_data` volume. MySQL is configured separately for the production profile. Live résumé processing, file storage and outbound email require the corresponding OpenAI, Cloudinary and SMTP settings.
+
+To inspect startup, run `docker compose logs -f backend`. Stop the stack with `docker compose down`. For frontend development, keep the backend running, then run `npm ci` and `npm run dev` in `frontend/` using Node.js 22.12 or later. Vite proxies `/api` to the local backend.
+
+[Compose configuration](docker-compose.yml) · [Sample data](backend/src/main/java/com/duckie/backend/config/DatabaseSeeder.java) · [Controller tests](backend/src/test/java/com/duckie/backend/controller)
